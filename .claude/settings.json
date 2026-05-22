@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Write(outputs/**)",
+      "Write(_plan/**)",
+      "Write(inputs/**)",
+      "Bash(npx mmdc *)",
+      "Bash(npx mmdc -i * -o *)",
+      "Bash(node *)",
+      "Bash(python *)",
+      "Bash(bash preflight.sh)",
+      "Bash(bash preflight.ps1)",
+      "Bash(bash verify/*)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(git push *)"
+    ]
+  }
+}

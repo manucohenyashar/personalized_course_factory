@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\doc\\\\MainSubjectSpec-Practical-Cowork-Automation.md\" \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\inputs\\\\subject.md\")"
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+# Student Context Spec — REQUIRED. Fill in every field before running the planner.
+# This file defines the cohort profile that personalizes every artifact.
+# See GreatCourseSpec.md §3.3 for the full schema.
+
+cohort_id: REPLACE_ME           # e.g. ops-team-q2-2026
+
+age_range:
+  min: REPLACE_ME               # e.g. 25
+  max: REPLACE_ME               # e.g. 45
+
+locale: REPLACE_ME              # IETF tag, e.g. en-US, fr-FR, he-IL
+
+primary_language: REPLACE_ME    # e.g. English
+
+reading_level_target: REPLACE_ME  # Flesch-Kincaid grade target, e.g. 10
+
+prior_knowledge:
+  - domain: REPLACE_ME
+    level: none | beginner | intermediate | advanced
+  # List all relevant prior knowledge areas. Be specific — this drives Bloom calibration
+  # and the prerequisite diagnostic (prereq-diagnostic.md).
+
+professional_context: |
+  REPLACE ME — describe the learner's role, industry, and day-to-day work.
+  This grounds all examples and scenarios.
+
+mode_preference: self_taught | cohort | both
+  # self_taught: learner works through material alone, relies on detailed docs + verify/
+  # cohort: instructor-led; slide deck and instructor guide are primary delivery artifacts
+  # both: all artifacts generated for both modes
+
+accessibility_needs:
+  - screen_reader: false        # set true → alt text on every figure; no color-only info
+  - dyslexia: false             # set true → sans-serif body, ≥ 1.5 line height, left-aligned
+  - low_vision: false           # set true → ≥ 4.5:1 contrast enforced strictly
+
+preferred_modalities:
+  - read: true
+  - watch: false                # favors diagrams over text in slides
+  - do: true                    # hands-on exercises prioritized
+
+motivation_profile: intrinsic | extrinsic | mixed
+  # Guides tone: intrinsic → mastery framing; extrinsic → outcome/benefit framing
