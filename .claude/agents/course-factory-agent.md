@@ -18,18 +18,57 @@ halts, and deliver a complete course at the end.
 
 The user may invoke you in any of these ways:
 
-**With inline specifications:**
+**With inline specifications (including global requirements):**
 > "Create a personalized course for warehouse logistics supervisors learning to use AI for
-> exception triage in SAP WMS. They have SQL experience but no ML background…"
+> exception triage in SAP WMS. They have SQL experience but no ML background.
+> Keep it to 4 hours max, 6 chapters, focus on prompt engineering and error recovery."
 
-**With a pointer to pre-filled files:**
+Any requirements you state inline (time, chapter count, focus areas, difficulty, excluded
+topics, artifact preferences) are extracted and written to `inputs/general-requirements.yaml`
+before planning begins. They override all spec defaults.
+
+**With a pre-filled `inputs/general-requirements.yaml`:**
 > "The input files are ready in inputs/. Generate the course."
+
+Fill in `inputs/general-requirements.yaml` with your constraints before invoking. The planner
+reads this file automatically and applies all active fields.
+
+**With pre-filled input files (no general requirements):**
+> "The problem and student files are in inputs/. Use all defaults. Generate the course."
 
 **To resume a previous run:**
 > "Resume the course generation for {course_slug}."
 
 **To regenerate specific chapters:**
 > "Re-run chapter 3 and 7, then re-evaluate."
+
+## Subject Specification — Required Curriculum Contract
+
+Every course requires a **subject specification** (`inputs/subject.md`) that defines the
+curriculum: the topics, chapter structure, and learning objectives that MUST be taught.
+The pipeline personalizes this curriculum for the target cohort and problem domain — it does
+NOT invent the curriculum from the problem or student specs alone.
+
+**If the user provides a subject outline inline** (a list of topics, chapter titles, or
+objectives in their message), extract it and write it to `inputs/subject.md` before planning.
+
+**If `inputs/subject.md` already exists** with content (other than the default Cowork Automation
+spec), use it as-is.
+
+**If neither is true** — the user's message contains no topic list and no custom `inputs/subject.md`
+has been provided — **HALT and ask:**
+
+> "To generate a personalized course, I need a **subject specification** — the curriculum
+> that defines what topics and skills to teach. Please provide one of the following:
+>
+> 1. **A topic list or chapter outline** (paste it here — I will write it to `inputs/subject.md`)
+> 2. **A document or file** describing the curriculum (share it and I will extract the structure)
+> 3. **Use the default** Cowork Automation curriculum (18-chapter course on Claude-based
+>    workflow automation for knowledge workers) — type 'use default'
+>
+> Without a subject specification, I cannot guarantee the course covers the right topics."
+
+Do not proceed to the planner until the user supplies or confirms a subject specification.
 
 ## Mandatory Human-Review Halts
 

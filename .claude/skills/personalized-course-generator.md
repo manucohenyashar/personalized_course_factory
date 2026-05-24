@@ -64,11 +64,37 @@ STUDENT SPEC (→ inputs/students.yaml):
   preferred_modalities: infer from context (default ["text", "hands-on"])
 
 SUBJECT SPEC (→ inputs/subject.md):
-  If the user provides a subject outline or chapter list, write it to inputs/subject.md.
-  If not provided, keep the default inputs/subject.md and note that you will use it.
+  The subject spec is the curriculum contract — it defines what topics MUST be taught.
+  If the user provides a subject outline, chapter list, or topic list, write it to inputs/subject.md.
+  If the user explicitly says "use default" or doesn't provide a curriculum, keep the existing
+  inputs/subject.md and state clearly which curriculum will be used (e.g., "Using the default
+  18-chapter Cowork Automation curriculum").
+  If neither applies — no subject spec provided and no clear default confirmation — ask the user
+  to provide one before writing any other file (see course-factory-agent.md for the prompt).
 
 ORCHESTRATION SPEC (→ inputs/orchestration.yaml):
   Keep existing defaults unless the user specifies overrides.
+
+GLOBAL REQUIREMENTS (→ inputs/general-requirements.yaml):
+  Scan the user's message for any of these signals and extract them:
+
+  | Signal in message | Field to set |
+  |-------------------|-------------|
+  | "X hours", "X-hour course", "max X hours" | total_hours_max: X |
+  | "at least X hours", "minimum X hours" | total_hours_min: X |
+  | "X chapters", "N modules" | chapter_count: X |
+  | "X minutes per chapter", "X-minute chapters" | chapter_duration_minutes: X |
+  | "focus on X", "emphasize X", "prioritize X" | focus_areas: [X, ...] |
+  | "skip X", "exclude X", "no X", "without X" | exclude_topics: [X, ...] |
+  | "beginner", "intro level", "entry level" | difficulty_target: beginner |
+  | "intermediate", "mid-level" | difficulty_target: intermediate |
+  | "advanced", "expert level" | difficulty_target: advanced |
+  | "no slides", "no podcast", "no quiz", etc. | artifact_types: [all except named] |
+  | "self-paced", "instructor-led", "blended" | delivery_format: <value> |
+  | Any specific constraint not captured above | custom_instructions: "<verbatim>" |
+
+  If the user mentions any of these, write them to `inputs/general-requirements.yaml`.
+  If none are mentioned, leave the file at its defaults (all fields commented out).
 ```
 
 After extracting, write draft YAML to the input files. Then present a summary to the user:
@@ -76,14 +102,29 @@ After extracting, write draft YAML to the input files. Then present a summary to
 ```markdown
 ## Spec Summary — Please Review
 
+**Curriculum (subject spec):** {subject title from subject.md}
+  {N} chapters/topics defined — e.g., "Ch 1 — Introduction, Ch 2 — Automation Mindset, …"
+  _(This is the curriculum contract. Every topic listed here MUST be covered in the generated course.)_
 **Problem domain:** {domain}
 **Problem being solved:** {summary}
 **Scenarios provided:** {N} ({list titles})
 **Cohort:** {cohort_id} — {professional_context}
 **Reading level target:** FK grade {N}
 **Prior knowledge assumed:** {list}
-**Subject:** {subject title — from subject.md or stated}
 **Mode:** {mode_preference}
+
+### Global Requirements Applied:
+{If any general-requirements fields were set, list them here as:}
+- Total time: {min}–{max} h  (or "default")
+- Chapters: {count} (or "from subject spec")
+- Chapter duration: {N} min (or "45–90 min default")
+- Focus areas: {list} (or "none")
+- Excluded topics: {list} (or "none")
+- Difficulty: {target} (or "from subject spec")
+- Artifacts: {list} (or "all six")
+- Delivery format: {format} (or "blended")
+- Custom instructions: {yes/no}
+{If no requirements set: "None — all pipeline defaults apply."}
 
 ### Potential gaps I noticed:
 {List any missing required fields or scenarios that seem thin. If none: "None — all required fields present."}
@@ -130,6 +171,14 @@ subject.md:
 orchestration.yaml:
   ✓ output_root present
   ✓ quality_gates_to_run present
+
+general-requirements.yaml (OPTIONAL — skip validation if file absent):
+  ✓ total_hours_min < total_hours_max (if both set)
+  ✓ chapter_count is integer ≥ 3 and ≤ 30 (if set)
+  ✓ chapter_duration_minutes is integer ≥ 30 and ≤ 180 (if set)
+  ✓ difficulty_target is one of: beginner | intermediate | advanced (if set)
+  ✓ artifact_types contains at least: doc, exercises (if set — these two are non-negotiable)
+  ✓ delivery_format is one of: self_paced | instructor_led | blended (if set)
 ```
 
 If validation fails, list exactly which fields are missing and ask the user to supply them.
@@ -291,6 +340,8 @@ Invoke `@evaluator-agent` with:
 - `course_plan`: `_plan/course-plan.yaml`
 - `personalization_plan`: `_plan/personalization-plan.json`
 - `reserved_scenarios`: `_plan/reserved-scenarios.json`
+- `subject_spec_path`: `inputs/subject.md`
+- `subject_coverage_index`: `_plan/subject-coverage-index.json`
 
 After completion, read `COURSE_VERDICT.md`. Check `overall_status`:
 
@@ -391,6 +442,7 @@ All files are in: `outputs/{course_slug}/`
 ## Quality Summary
 | Gate | Status |
 |------|--------|
+| Subject spec coverage | ✓ N/N curriculum topics addressed |
 | §16.1 Coverage | ✓ all chapters |
 | §16.2 Pedagogy | ✓ all chapters |
 | §16.3 Personalization | ✓ all chapters |

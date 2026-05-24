@@ -32,11 +32,20 @@ common_envelope:
   canonical_references: []
   mode_targets: <from inputs/orchestration.yaml>
   numeric_overrides: <from inputs/orchestration.yaml.numeric_overrides>
+  global_requirements: <course-plan.yaml.global_requirements_applied; null if absent>
   output_paths: <computed per §5.2 naming in CLAUDE.md>
   quality_gates_to_satisfy: [16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7]
   feedback_failures: []
   forbidden_examples: <reserved-scenarios.json list>
 ```
+
+Read `course-plan.yaml.artifact_types_active`. This list controls which generators to run.
+If a type is absent from the list, skip that generator and its evaluator entirely —
+do not mark it failed; mark it "skipped" in `chapter.manifest.json`.
+If `artifact_types_active` is empty or absent, treat all six types as active (default).
+
+If `global_requirements.custom_instructions` is set, prepend it to the context passed to
+every generator in this chapter.
 
 Create the chapter output directory:
 `outputs/{course_slug}/chapters/ch{NN}-{slug}/`

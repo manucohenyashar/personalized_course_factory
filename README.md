@@ -29,6 +29,33 @@ principles, and the 4C/ID model.
 
 ## Quick Start
 
+### Before you start — prepare your input specifications (optional)
+
+Two helper agents can prepare your input files before you run the course generator:
+
+**Validate or build your curriculum (`inputs/subject.md`):**
+```
+@subject-spec-builder-agent
+```
+Provide an existing curriculum file, paste a chapter outline, or describe your course topic.
+The agent validates scope, chapter density, hands-on feasibility, and generator compatibility —
+then writes a validated `inputs/subject.md`. Use this when:
+- You have an existing training spec or syllabus you want to adapt
+- You want to build a curriculum from scratch with guided validation
+- You are unsure whether your topic list is the right scope for a single course
+
+**Build your domain and student specs from unstructured documents (`inputs/problem.yaml` + `inputs/students.yaml`):**
+```
+@spec-builder-agent
+```
+Share any documents — a business case, job descriptions, team wikis, a slide deck, or a
+paragraph. The agent extracts the problem domain, student context, and success criteria,
+asks targeted questions to fill gaps, and writes the two required YAML files.
+
+Once all spec files are written, continue with Option A or B below.
+
+---
+
 ### Option A — One command (recommended)
 
 Describe your course to Claude Code in plain language:
@@ -38,13 +65,24 @@ Describe your course to Claude Code in plain language:
 
 Create a personalized course for warehouse logistics supervisors learning to use AI
 for exception triage in SAP WMS. They have SQL experience but no ML background.
-The course should cover prompt engineering, context injection, and batch automation.
 Success criteria: students can build an automated triage pipeline and deploy it to
 their WMS environment independently.
+
+Curriculum:
+- Chapter 1: Introduction to AI-assisted triage
+- Chapter 2: Prompt engineering for exception analysis
+- Chapter 3: Context injection from SAP WMS data
+- Chapter 4: Building a triage automation workflow
+- Chapter 5: Batch processing and scheduling
+- Chapter 6: Testing, debugging, and deployment
 ```
 
+If you already have a curriculum in `inputs/subject.md`, you can omit the chapter list
+and the agent will use that file. If you provide neither, the agent will ask you to
+supply one before proceeding.
+
 The factory agent will:
-1. Parse your specifications and write the input files
+1. Parse your domain + student specs and write the input files
 2. Show you a **spec summary** for review → requires your approval
 3. Run the planner and show a **normalization diff** → requires your approval
 4. Show the **course plan** (chapters, LOs, scenarios) → requires your approval
@@ -54,6 +92,9 @@ The factory agent will:
 Two mandatory human-review halts occur during planning. All chapter generation runs
 automatically after your approvals.
 
+You can also add **global course requirements** to your message to override the defaults — see
+[Global Course Requirements](#global-course-requirements) below for the full list and examples.
+
 ---
 
 ### Option B — Pre-fill the input files, then run
@@ -62,10 +103,11 @@ If you prefer to edit the input files yourself:
 
 ```
 inputs/
-  problem.yaml   ← REQUIRED: fill in problem domain + ≥ 4 representative scenarios
-  students.yaml  ← REQUIRED: fill in cohort profile
-  subject.md     ← optional: replace with your subject spec (default: Cowork Automation)
-  orchestration.yaml  ← optional: adjust pipeline settings
+  subject.md                ← REQUIRED: your curriculum (default: Cowork Automation — replace with your own)
+  problem.yaml              ← REQUIRED: fill in problem domain + ≥ 4 representative scenarios
+  students.yaml             ← REQUIRED: fill in cohort profile
+  general-requirements.yaml ← OPTIONAL: global overrides (time, chapters, focus areas, etc.)
+  orchestration.yaml        ← optional: adjust low-level pipeline settings
 ```
 
 Open each file and replace all `REPLACE_ME` values. Then:
@@ -82,6 +124,8 @@ The input files are ready in inputs/. Generate the course.
 Run each agent individually for full control:
 
 ```
+@subject-spec-builder-agent                 ← Step 0a: validate/build inputs/subject.md (optional)
+@spec-builder-agent                         ← Step 0b: build inputs/problem.yaml + inputs/students.yaml (optional)
 @planner-agent                              ← Step 1: plan (two human-review halts)
 @environment-scaffold-generator             ← Step 2: environment (once)
 @chapter-supervisor-agent chapter_number: 1 ← Step 3: repeat for each chapter
@@ -94,6 +138,197 @@ Run each agent individually for full control:
 If generation was interrupted, re-invoke `@course-factory-agent`. It will detect the
 saved pipeline state and offer to resume from where it left off — no need to restart
 from scratch.
+
+---
+
+## Subject Specification — Your Curriculum Contract
+
+The **subject specification** (`inputs/subject.md`) is the curriculum baseline: it defines
+the topics, chapters, and learning objectives that the course MUST teach. Every generated
+artifact — chapter docs, exercises, quizzes, slides, the capstone lab — is built by taking
+this curriculum and personalizing it for your students and problem domain.
+
+**The subject spec is required.** The pipeline enforces that every topic listed in it is
+covered in the generated course. Any topic that ends up without a corresponding chapter
+section, exercise, or assessment will cause the final evaluation to fail.
+
+### What goes in the subject spec
+
+A subject spec is a structured document describing what to teach. It typically contains:
+- Course title and audience
+- A chapter or module list with titles
+- Per-chapter topics, subtopics, and learning objectives
+- Any deliberate simplifications or topics to avoid
+
+See [`doc/MainSubjectSpec-Practical-Cowork-Automation.md`](doc/MainSubjectSpec-Practical-Cowork-Automation.md)
+for a complete example (the 18-chapter default curriculum).
+
+### How to provide your subject spec
+
+**Option 1 — Use the default (no action needed)**
+
+The default `inputs/subject.md` contains an 18-chapter curriculum on Claude-based workflow
+automation for knowledge workers. If this matches your course, keep it as-is and skip to
+filling in `inputs/problem.yaml` and `inputs/students.yaml`.
+
+**Option 2 — Replace `inputs/subject.md` with your curriculum**
+
+Open `inputs/subject.md` and overwrite its contents with your curriculum. The format is
+flexible — a Markdown document with chapter headings, topic lists, and objectives works well:
+
+```markdown
+# My Course Title
+
+## Chapter 1 — Introduction to X
+### Topics
+- What X is
+- Why X matters in [domain]
+- Key concepts: A, B, C
+
+### Objectives
+- Understand the role of X in [domain]
+- Identify when to use X vs Y
+
+## Chapter 2 — …
+```
+
+**Option 3 — Paste it inline when invoking `@course-factory-agent`**
+
+If you don't want to edit files, paste your curriculum directly in your message. The agent
+extracts it and writes it to `inputs/subject.md` automatically:
+
+```
+@course-factory-agent
+
+Create a personalized course for claims adjusters learning AI-assisted coverage analysis.
+They have 3+ years experience and are familiar with common policy types.
+
+Curriculum:
+- Chapter 1: Introduction to LLM-assisted analysis — what it can and cannot do
+- Chapter 2: Reading and interpreting policy documents with AI
+- Chapter 3: Drafting settlement summaries
+- Chapter 4: Quality review and human oversight
+- Chapter 5: Building a personal workflow
+```
+
+**Option 4 — Let `@spec-builder-agent` extract it from existing documents**
+
+If you have existing documents (training manuals, job guides, a slide deck, an internal wiki)
+that describe what employees need to know, the spec builder can extract a curriculum from them:
+
+```
+@spec-builder-agent
+```
+
+Share your documents and the agent will draft `inputs/subject.md` along with `inputs/problem.yaml`
+and `inputs/students.yaml` through an interactive conversation.
+
+### What happens at planning time
+
+The planner reads `inputs/subject.md` and builds a **subject coverage index** — a map from
+every topic and chapter in the spec to the corresponding course chapters it generates. This
+index appears in the normalization diff (first human-review halt) so you can see exactly how
+your curriculum maps to the personalized course structure before any content is generated.
+
+At evaluation time, the `evaluator-agent` verifies that every item in the coverage index is
+actually addressed in the generated artifacts. Any uncovered topic blocks course delivery until
+resolved.
+
+---
+
+## Global Course Requirements
+
+You can tell the pipeline exactly how long your course should be, how many chapters to
+produce, which topics to emphasize, and more. These requirements take the **highest
+precedence** in the pipeline — they override the subject spec, orchestration settings,
+and all other defaults.
+
+### What you can control
+
+| Requirement | What it does | Example |
+|-------------|-------------|---------|
+| **Total course time** | Sets a maximum (and optionally minimum) total duration | "max 4 hours", "3 to 5 hours" |
+| **Chapter count** | Overrides the chapter count in the subject spec | "6 chapters", "8 modules" |
+| **Chapter duration** | Sets a per-chapter time target (default: 45–90 min) | "60 minutes per chapter" |
+| **Focus areas** | Topics that must have dedicated sections in some chapter | "focus on error recovery and debugging" |
+| **Excluded topics** | Topics to omit entirely, even if in the subject spec | "skip history and background" |
+| **Difficulty** | Shifts the Bloom taxonomy distribution across the course | "intermediate", "advanced" |
+| **Artifact types** | Skip artifact types you don't need | "no podcast scripts", "skip slides" |
+| **Delivery format** | Self-paced, instructor-led, or blended (affects tone and priorities) | "self-paced", "instructor-led" |
+| **Custom instructions** | Any other binding constraint for the planner and generators | "all code examples must be Python" |
+
+### How to provide them
+
+**Option 1 — Inline in your message (easiest)**
+
+State your requirements in plain language when you invoke `@course-factory-agent`.
+The agent extracts them automatically and writes `inputs/general-requirements.yaml`
+before planning begins.
+
+```
+@course-factory-agent
+
+Create a personalized course for warehouse logistics supervisors learning AI-assisted
+exception triage in SAP WMS. They know SQL but have no ML background.
+
+Requirements:
+- Max 4 hours total
+- 6 chapters
+- Focus on: prompt engineering, error recovery, batch automation
+- Intermediate difficulty
+- No podcast scripts
+- All code examples in Python
+```
+
+You can phrase requirements naturally — "keep it under 5 hours", "about 8 chapters",
+"emphasize hands-on practice" all work. The agent understands plain language.
+
+**Option 2 — Edit `inputs/general-requirements.yaml` directly**
+
+For precise control, open [`inputs/general-requirements.yaml`](inputs/general-requirements.yaml)
+and uncomment the fields you want to set. Every field is documented with examples:
+
+```yaml
+total_hours_max: 4
+chapter_count: 6
+difficulty_target: intermediate
+focus_areas:
+  - "prompt engineering"
+  - "error recovery"
+  - "batch automation"
+artifact_types:
+  - doc
+  - exercises
+  - slides
+  - quiz
+  - companion          # no podcast
+custom_instructions: |
+  All code examples must be in Python. No shell scripts.
+```
+
+Then run:
+
+```
+@course-factory-agent
+The input files are ready in inputs/. Generate the course.
+```
+
+**Option 3 — Mix both**
+
+Pre-fill `inputs/general-requirements.yaml` for your standing constraints (e.g., always
+Python, always self-paced), then add one-off overrides in your message (e.g., "this time
+make it 5 chapters"). Inline requirements are merged with the file; inline values win on
+any field that appears in both.
+
+### What happens at planning time
+
+Every active requirement is surfaced in the **normalization diff** (your first human-review
+halt) so you can confirm how the planner interpreted them before any content is generated.
+The final **course plan** also lists all applied requirements. If a requirement cannot be
+satisfied (e.g., 3 chapters is too few for 18 topics), the planner will flag the conflict
+and ask you how to resolve it.
+
+All requirements are logged in `_plan/CHANGELOG.md` for traceability.
 
 ---
 
@@ -159,8 +394,8 @@ automation for knowledge workers (Cowork Automation).
 
 ```
 .claude/
-  agents/           ← 26 agent files (generators, evaluators, gate sub-agents)
-  skills/           ← 5 skill files (detailed generation instructions)
+  agents/           ← 27 agent files (generators, evaluators, gate sub-agents, spec builder)
+  skills/           ← 7 skill files (detailed generation instructions)
   settings.json     ← project permissions
 
 doc/                ← specification documents (read-only)
@@ -173,11 +408,12 @@ doc/                ← specification documents (read-only)
   GreatLabSpec.md
   MainSubjectSpec-Practical-Cowork-Automation.md
 
-inputs/             ← user-supplied configuration (edit these)
-  subject.md        ← subject specification
-  problem.yaml      ← problem domain + scenarios (REQUIRED)
-  students.yaml     ← cohort profile (REQUIRED)
-  orchestration.yaml ← pipeline settings
+inputs/                      ← user-supplied configuration (edit these)
+  problem.yaml               ← problem domain + scenarios (REQUIRED)
+  students.yaml              ← cohort profile (REQUIRED)
+  general-requirements.yaml  ← global overrides: time, chapters, focus, difficulty (OPTIONAL)
+  subject.md                 ← subject specification (default: Cowork Automation)
+  orchestration.yaml         ← low-level pipeline settings
 
 outputs/            ← generated course content (created at runtime)
   {course_slug}/
@@ -195,14 +431,15 @@ CLAUDE.md           ← project guide + shared schemas (always loaded by Claude 
 
 ## Spec Precedence
 
-When specifications conflict on pedagogical numerics:
+When specifications conflict, this order resolves them:
 
 ```
-Student Context > Problem Spec > Subject Spec > Orchestration Spec > Master Spec defaults
+General Requirements > Student Context > Problem Spec > Subject Spec > Orchestration Spec > Master Spec defaults
 ```
 
-The master spec's MUST gates cannot be overridden. Numeric defaults (word counts, slide
-counts, quiz item counts) can be adjusted in `inputs/orchestration.yaml`.
+See [Global Course Requirements](#global-course-requirements) for how to set requirements
+and what they override. The master spec's quality MUST gates cannot be overridden by any
+input — they are non-negotiable.
 
 ---
 

@@ -100,9 +100,59 @@ Derive the appropriate register from `students.yaml.professional_context`:
 
 ---
 
+## Subject Specification — The Curriculum Contract
+
+`inputs/subject.md` is the **curriculum baseline**. It defines:
+- The topics, subjects, and chapters that MUST be taught
+- The high-level learning objectives for the course
+- The recommended chapter structure and delivery approach
+
+**The subject spec is not optional.** Every course is built by taking the subject spec as a
+syllabus and personalizing it — applying learning-science best practices, grounding every example
+in the student's domain, and adapting depth and register to the cohort's background. The subject
+spec defines *what* to teach; the student context and problem spec define *how* to teach it.
+
+### Relationship between specs and generated content
+
+```
+inputs/subject.md          ← WHAT to teach (curriculum contract, topic list, objectives)
+inputs/problem.yaml        ← Domain context for examples (scenarios, vocabulary, success criteria)
+inputs/students.yaml       ← WHO is being taught (prior knowledge, reading level, register)
+inputs/general-requirements.yaml ← User overrides (time, chapter count, difficulty, focus)
+                                    ↓
+              planner-agent produces a personalized course-plan.yaml
+              that MUST cover every topic in subject.md
+                                    ↓
+              generators produce artifacts grounded in problem.yaml
+              and calibrated to students.yaml
+                                    ↓
+              evaluator-agent verifies ALL subject.md topics are covered
+```
+
+### Subject spec coverage is a MUST gate
+
+The `evaluator-agent` checks every topic, chapter objective, and subject area listed in
+`inputs/subject.md` against the generated course. Any topic that has no corresponding
+chapter section, exercise, or assessment FAILS the coverage gate and blocks course delivery.
+
+This check is in addition to — not instead of — the Bloom LO coverage gate (§16.1).
+
+### Providing a subject specification
+
+When creating a course, the user MUST supply a subject specification. Three ways:
+- **Default**: keep `inputs/subject.md` (the 18-chapter Cowork Automation course)
+- **Replace**: overwrite `inputs/subject.md` with a custom curriculum outline
+- **Inline**: paste chapter titles, topics, and objectives in the message to
+  `@course-factory-agent` — the agent writes them to `inputs/subject.md`
+
+If no subject specification is provided and the user's message does not contain a topic list,
+`@course-factory-agent` MUST ask the user to supply one before proceeding.
+
+---
+
 ## Quick Start
 
-**One-command generation:**
+**One-command generation (recommended):**
 ```
 @course-factory-agent
 
@@ -112,8 +162,16 @@ Create a personalized course for [describe your students and domain].
 The factory agent handles the complete pipeline. Two human-review halts occur during
 planning (normalization diff + plan review). Everything else runs automatically.
 
+**If you have unstructured documents** (business cases, job descriptions, team wikis):
+```
+@spec-builder-agent
+```
+Share your documents in any format. The agent extracts structure, validates scope, and
+produces `inputs/problem.yaml` and `inputs/students.yaml` interactively. Then run
+`@course-factory-agent`.
+
 **Step-by-step (manual control):**
-1. Fill in `inputs/problem.yaml` and `inputs/students.yaml`
+1. Fill in `inputs/problem.yaml` and `inputs/students.yaml` (or run `@spec-builder-agent`)
 2. Invoke `@planner-agent` (two mandatory human-review halts)
 3. Invoke `@environment-scaffold-generator` (once)
 4. Invoke `@chapter-supervisor-agent chapter_number: N` for each chapter
@@ -127,6 +185,18 @@ All outputs land in `outputs/` under the course slug.
 ## Agent Pipeline Overview
 
 ```
+subject-spec-builder-agent  ← optional step 0a: validates/builds inputs/subject.md
+  │  Skill: /build-subject-spec
+  │  Accepts: existing spec file, pasted outline, or topic description
+  │  Validates: chapter count, duration, concept density, hands-on ratio, Bloom compatibility
+  │  Produces: inputs/subject.md (validated curriculum contract)
+  │  Uses AskUserQuestion to surface issues and gather user decisions
+
+spec-builder-agent  ← optional step 0b: builds problem/student specs from unstructured docs
+  │  Skill: /build-specifications
+  │  Produces: inputs/problem.yaml, inputs/students.yaml
+  │  Uses AskUserQuestion for interactive refinement + scope validation
+
 course-factory-agent  ← top-level entry point (invokes everything below)
   │  Skill: /personalized-course-generator
   │  Manages: spec intake, state tracking, human-review halts, resumability
@@ -242,6 +312,7 @@ common_inputs:
   canonical_references:   [<reference objects>]
   mode_targets:           [self_taught, cohort]   # or subset
   numeric_overrides:      <optional overrides block>
+  global_requirements:    <resolved object from inputs/general-requirements.yaml; null if file absent>
   output_paths:
     primary:              <path to primary artifact>
     sidecars:             [<paths>]
@@ -380,12 +451,18 @@ Naming rules:
 
 When specs conflict on pedagogical numerics:
 ```
-Student Context > Problem Spec > Subject Spec > Orchestration Spec > Master Spec defaults
+General Requirements > Student Context > Problem Spec > Subject Spec > Orchestration Spec > Master Spec defaults
 ```
 
-The master spec's MUST gates cannot be overridden by any spec. Numeric defaults (item counts,
-word budgets, time allocations) may be adjusted via `inputs/orchestration.yaml`
-`numeric_overrides` block; all overrides MUST be logged in `_plan/CHANGELOG.md`.
+`inputs/general-requirements.yaml` holds explicit user requirements (total time, chapter count,
+focus areas, excluded topics, difficulty target, artifact selection, custom instructions).
+These take the highest priority. If this file is absent or a field is commented out, the
+pipeline falls back to the chain below it.
+
+The master spec's MUST gates cannot be overridden by any spec — not even General Requirements.
+Numeric defaults (item counts, word budgets, time allocations) may be adjusted via
+`inputs/orchestration.yaml` `numeric_overrides` block; all overrides MUST be logged in
+`_plan/CHANGELOG.md`.
 
 ---
 
@@ -471,3 +548,13 @@ Both skills are available globally; no installation required.
 | `doc/GreatQuizSpec.md` | `quiz-generator` — quiz Forms A & B |
 | `doc/GreatLabSpec.md` | `lab-generator` — capstone lab |
 | `doc/MainSubjectSpec-Practical-Cowork-Automation.md` | Default subject spec (18-chapter Cowork Automation course) |
+
+### Input Files
+
+| File | Role | Required |
+|------|------|----------|
+| `inputs/subject.md` | **Curriculum contract** — defines topics, objectives, and chapter structure that MUST be taught | REQUIRED |
+| `inputs/problem.yaml` | Problem domain — representative scenarios, domain vocabulary, success criteria | REQUIRED |
+| `inputs/students.yaml` | Cohort profile — prior knowledge, reading level, professional context | REQUIRED |
+| `inputs/orchestration.yaml` | Pipeline settings — quality gates, numeric overrides, output root | REQUIRED |
+| `inputs/general-requirements.yaml` | Global user overrides — time, chapter count, difficulty, focus areas | OPTIONAL |
