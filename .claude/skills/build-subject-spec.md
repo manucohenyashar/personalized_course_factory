@@ -85,6 +85,116 @@ Estimate `estimated_minutes` for each chapter that has no stated duration:
 
 ---
 
+## PHASE R — Web Research
+
+Run this phase after parsing the spec and before running validation checks. The goal is to
+ground your evaluation in real-world knowledge of the subject: what practitioners actually
+need, what similar courses teach, what topics are standard vs. optional, and what is current
+vs. outdated. Research findings are used to supplement — not replace — the structural
+validation in Phase 2.
+
+### R.1 — Formulate search queries
+
+From `parsed_spec`, derive 4 targeted queries:
+
+```
+query_1 (breadth): "{course_topic} course curriculum syllabus {audience_type}"
+  → finds: what topics similar courses cover; typical chapter structures
+
+query_2 (depth): "{course_topic} what to learn {audience_type} {level}"
+  → finds: learning paths, recommended sequences, depth expectations
+
+query_3 (authority): "{course_topic} certification skills {year} OR industry standard"
+  → finds: professional certifications, official skill frameworks, employer expectations
+
+query_4 (recency): "{course_topic} best practices {current_year} new developments"
+  → finds: recent updates to the field; topics that have changed or emerged recently
+```
+
+If the spec covers a specific tool or platform (e.g., "Kubernetes", "SAP WMS", "Claude Code"),
+add a fifth query targeting that tool directly:
+```
+query_5 (tool): "{tool_name} training topics {audience_type} hands-on"
+```
+
+Use the `WebSearch` tool for each query. Also use `WebFetch` to read 2–3 of the most
+relevant results (course pages, syllabi, certification frameworks) in full.
+
+### R.2 — Extract research findings
+
+After completing all searches and reading key results, populate this structure:
+
+```
+research_findings:
+  sources_consulted:
+    - title: <page title>
+      url: <URL>
+      relevance: <why this source matters>
+
+  topics_commonly_covered:
+    # Topics that appear across ≥3 similar courses/resources.
+    # These are the "expected" topics for this subject.
+    - topic: <string>
+      found_in: [<source titles>]
+      in_spec: true | false    # does the user's spec include this?
+
+  topics_in_spec_rarely_seen_elsewhere:
+    # Topics in the user's spec that did NOT appear in similar courses/resources.
+    # Flag for discussion — may be niche, outdated, or ahead of the field.
+    - topic: <string>
+      note: <reason it seems unusual, e.g., "typically only in advanced courses">
+
+  recommended_ordering:
+    # How similar courses typically sequence topics. Compare to the user's chapter order.
+    description: <string>
+    differs_from_spec: true | false
+    ordering_notes: <specific differences, if any>
+
+  typical_depth_for_audience:
+    # What practitioners at this level are expected to be able to do (not just know).
+    description: <string>
+    spec_alignment: "well-aligned | too shallow | too deep | mixed"
+    depth_notes: <specific mismatches, if any>
+
+  industry_resources:
+    # Relevant certifications, official documentation, style guides, or standards.
+    - name: <string>
+      url: <URL>
+      relevance: <how it relates to the course>
+
+  recency_notes:
+    # Anything that suggests the spec is outdated or missing recent developments.
+    - note: <string>
+      source: <title>
+```
+
+### R.3 — Prepare research-based suggestions
+
+From `research_findings`, build two lists for Phase 3:
+
+**Suggested additions** — topics `commonly_covered` but missing from the spec (`in_spec: false`):
+```
+additions:
+  - topic: <string>
+    rationale: "Found in N similar courses/resources: {source_list}. Typical placement: after {topic X}."
+    suggested_chapter: <number or "new chapter">
+    priority: high | medium | low   # high = appears in most sources; low = appears in 1–2
+```
+
+**Suggested reviews** — topics in the spec that are `rarely_seen_elsewhere`:
+```
+reviews:
+  - topic: <string>
+    rationale: <why it may not belong>
+    options: ["Keep — this is intentionally included", "Move to advanced sequel",
+              "Replace with {alternative}", "Remove"]
+```
+
+Only surface suggestions with `priority: high` or `medium` unless the user asks for a full
+audit. Low-priority additions are offered as optional improvements in Phase 3.4.
+
+---
+
 ## PHASE 2 — Scope Validation
 
 Run the following checks and record results for each:
@@ -216,40 +326,63 @@ if parsed_spec.prerequisites is empty:
 
 ## PHASE 3 — Present Findings
 
-After running all checks, present findings to the user using `AskUserQuestion`.
+After running Phase R (research) and Phase 2 (validation), present all findings to the user.
+Present the research findings and the structural validation findings together — they tell a
+single story about the spec's quality and completeness. Work through them in this order:
+blocking issues → research gaps → structural warnings → optional improvements.
 
 ### 3.1 — Summary report
 
-Present this report in your text output before asking questions:
+Present this full report in your text output before asking any questions:
 
 ```markdown
 ## Subject Spec Review — {title or "Your Spec"}
 
-**Chapters:** {N}
-**Estimated total learning time:** ~{total_hours:.1f} hours
-**Per-chapter range:** {min_min}–{max_min} minutes
+**Chapters:** {N}  
+**Estimated total learning time:** ~{total_hours:.1f} hours  
+**Per-chapter range:** {min_min}–{max_min} minutes  
 
-### Findings
+---
+
+### Research Findings
+_Based on reviewing {N} sources including {source_list}_
+
+**Coverage vs. similar courses:**
+| Status | Topics |
+|--------|--------|
+| ✓ In spec and commonly taught | {list} |
+| ➕ Commonly taught but missing from spec | {list or "none"} |
+| ❓ In spec but rarely seen in similar courses | {list or "none"} |
+
+**Ordering:** {aligned / differs — with specific notes}
+**Depth for audience:** {well-aligned / too shallow / too deep / mixed — with notes}
+**Industry resources found:** {list relevant certifications or standards, or "none"}
+**Recency notes:** {any outdated content or missing recent developments, or "none"}
+
+---
+
+### Structural Validation
+
+#### ✗ Blocking issues (must resolve before generation)
+{List CRITICAL items, or "None"}
+
+#### ⚠ Warnings (may produce a suboptimal course)
+{List WARNING items, or "None"}
+
+#### ℹ Notices (optional improvements)
+{List NOTICE items, or "None"}
 
 #### ✓ Looks good
 {List all OK checks}
-
-#### ⚠ Warnings (may produce a suboptimal course)
-{List all WARNING items}
-
-#### ✗ Blocking issues (must be resolved before generation)
-{List all CRITICAL items}
-
-#### ℹ Notices (optional improvements)
-{List all NOTICE items}
 ```
 
-If there are no CRITICAL or WARNING issues: "This spec looks compatible with the generator.
-You can proceed with minor refinements if you wish, or write it to `inputs/subject.md` now."
+If there are no CRITICAL, WARNING, or research gaps: "This spec looks compatible with the
+generator and covers the expected topics for this subject and audience. You can proceed or
+make optional refinements."
 
 ### 3.2 — Ask for decisions on blocking issues (if any)
 
-For each CRITICAL issue, use `AskUserQuestion` to present options:
+For each CRITICAL issue, use `AskUserQuestion` to present options. One question per issue.
 
 **Example — chapter too long:**
 ```
@@ -270,37 +403,85 @@ Options:
   C. "Describe your topic in more detail and I will propose additional chapters"
 ```
 
-### 3.3 — Ask for decisions on warnings
+### 3.3 — Ask about research-identified gaps (high/medium priority only)
 
-Group warnings by type and present them together if there are multiple:
+For each `additions` item with `priority: high or medium`, ask the user one at a time:
+
+```
+Question: "Based on {N} similar courses I reviewed, '{topic}' is commonly included but not
+in your spec. Found in: {source_list}. Typical placement: after '{preceding_topic}'.
+
+Would you like to add it?"
+Options:
+  A. "Yes — add it to Chapter {suggested_chapter}"
+  B. "Yes — create a new chapter for it"
+  C. "No — this topic is out of scope for this course"
+  D. "No — it's already covered implicitly in {chapter X}"
+```
+
+For each `reviews` item (topics in spec rarely seen elsewhere):
+
+```
+Question: "'{topic}' is in your spec but doesn't appear in most similar courses I found.
+{rationale}. What would you like to do with it?"
+Options:
+  A. "Keep it — it's deliberately included for this audience"
+  B. "Move it to an 'advanced topics' chapter or sequel"
+  C. "Replace it with {alternative from research}"
+  D. "Remove it"
+```
+
+If there are ordering differences (`recommended_ordering.differs_from_spec: true`):
+
+```
+Question: "Similar courses for this subject typically sequence topics differently from your spec:
+  Your order:    {chapter_sequence}
+  Typical order: {recommended_ordering.description}
+
+The difference: {ordering_notes}.
+
+Would you like to adjust the chapter order?"
+Options:
+  A. "Yes — reorder to match the typical sequence"
+  B. "Yes — reorder partially: [I'll describe which chapters to move]"
+  C. "No — my ordering is intentional"
+```
+
+### 3.4 — Ask about structural warnings
+
+After resolving blocking issues and research gaps, group structural warnings and ask:
 
 ```
 AskUserQuestion (multiSelect: true):
-  "The spec has several warnings. Which would you like to address now?"
+  "Your spec has some structural warnings. Which would you like to address?"
   Options:
-    A. "Chapter duration issues ({N} chapters outside 45–90 min range)"
+    A. "Chapter duration issues ({N} chapters outside 30–90 min range)"
     B. "Concept density issues ({N} chapters with >7 topics)"
     C. "Low hands-on ratio ({N} chapters that are mostly conceptual)"
     D. "Vague learning objectives"
-    E. "Skip all warnings — generate the course as-is"
+    E. "Skip all — generate the course as-is"
 ```
 
-For each selected warning type, present the specific chapters and ask how to resolve them.
+For each selected warning type, present the specific chapters and options to resolve them.
 
-### 3.4 — Optional improvements (if user wants)
+### 3.5 — Optional improvements
 
-If no blockers remain, offer optional improvements:
+If no blockers or high-priority gaps remain, offer:
 
 ```
 AskUserQuestion (multiSelect: true):
-  "Would you like help improving any of these?"
+  "Would you like any optional improvements before writing the spec?"
   Options:
-    A. "Rewrite vague objectives using observable action verbs"
-    B. "Add a capstone scenario description to the spec"
+    A. "Rewrite vague objectives with observable action verbs"
+    B. "Add a capstone scenario description"
     C. "Add explicit prerequisite statements"
-    D. "Add a 'topics intentionally excluded' section to guide the planner"
-    E. "No further changes — write the spec now"
+    D. "Add a 'topics intentionally excluded' section"
+    E. "Review low-priority topics found in research ({N} additional topics)"
+    F. "No further changes — write the spec now"
 ```
+
+If the user selects E (low-priority research topics), present them one at a time with the
+same format as step 3.3.
 
 ---
 
@@ -308,14 +489,34 @@ AskUserQuestion (multiSelect: true):
 
 Max 3 rounds. For each round:
 
-1. Present the specific change to be made (show the current text and proposed new text)
-2. Make the change using the `Edit` tool if working on an existing file, or accumulate changes
-   in a working draft if building from scratch
-3. Re-run the affected checks from Phase 2
-4. If new issues arise, surface them before proceeding
+1. Present the specific change to be made — show the current text and proposed new text side
+   by side. For research-driven additions, also cite which source(s) the suggestion comes from:
+   > "Adding 'Error handling and debugging' to Chapter 6. This topic appeared in 4 of the 5
+   > similar courses I reviewed, including the official Kubernetes documentation learning path."
 
-If after round 3 there are still unresolved CRITICAL issues, write them to a
-`_subject-spec-issues.md` file and tell the user: "These blocking issues remain unresolved.
+2. Make the change using the `Edit` tool if working on an existing file, or accumulate changes
+   in a working draft if building from scratch.
+
+3. Re-run the affected checks from Phase 2. If a research-driven addition creates a concept
+   density warning (>7 topics in the receiving chapter), surface that immediately before
+   proceeding to the next change.
+
+4. After all approved changes in the round are applied, present a brief "changes made" summary
+   before moving to the next round.
+
+**Research-driven additions** — when inserting a topic the user approved from research:
+- Add it to the most natural chapter (based on prerequisite order and `recommended_ordering`)
+- If no existing chapter can absorb it without exceeding 7 topics, propose creating a new chapter
+- Keep the source attribution in a comment or note in the draft so the user can trace where
+  each added topic came from
+
+**Ordering changes** — when the user approves a reorder:
+- Show the new chapter sequence as a numbered list before applying
+- Verify that no chapter now references topics from later chapters (prerequisite order preserved)
+- Update any cross-chapter references in objectives/deliverables to reflect the new numbering
+
+If after round 3 there are still unresolved CRITICAL issues, write them to
+`_subject-spec-issues.md` and tell the user: "These blocking issues remain unresolved.
 The generator can still attempt planning, but will likely halt at Step 1 of the planner.
 You can resolve them manually in `inputs/subject.md` before running `@course-factory-agent`."
 

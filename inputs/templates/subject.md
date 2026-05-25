@@ -265,7 +265,6 @@ The course does NOT teach:
 - Generate skills quickly and safely
 
 ## Topics
-- Writing Skill Specification
 - Using Skill Creator
 - Reviewing generated skills
 - Refining instructions
@@ -620,6 +619,24 @@ Small immediately usable workflow.
 
 ---
 
+# IMPORTANT SIMPLIFICATIONS FROM THE ENGINEERING COURSE
+
+This curriculum intentionally simplifies or minimizes:
+
+| Advanced Topic | Simplified Treatment |
+|---|---|
+| Deep MCP internals | Operational usage only |
+| Complex architecture | Conceptual overview only |
+| Distributed orchestration | Practical workflows only |
+| Advanced evaluation frameworks | Simple rubrics |
+| Reliability engineering | Practical troubleshooting |
+| Security architecture | Safe usage principles |
+| Multi-agent coordination | Basic business agents |
+| Low-level CLI operations | Common commands only |
+| Token optimization | Basic context management |
+| Infrastructure concerns | Not covered |
+
+---
 
 # WHAT THIS COURSE EMPHASIZES MOST
 
@@ -654,3 +671,22 @@ A successful learner should be able to:
 - Reduce repetitive cognitive work
 - Operate confidently without deep technical expertise
 
+---
+
+# FINAL COURSE OUTCOME
+
+By the end of this curriculum, learners should think:
+
+“I can reliably automate large portions of my knowledge work safely and effectively.”
+
+—not—
+
+“I understand every technical detail of the platform.”
+
+This course optimizes for:
+- Practical leverage
+- Business productivity
+- Confidence
+- Reliability
+- Sustainable adoption
+- Immediate workplace value

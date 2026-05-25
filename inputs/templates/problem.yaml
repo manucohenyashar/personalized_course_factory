@@ -1,0 +1,48 @@
+# Problem Spec — REQUIRED. Fill in every field before running the planner.
+# This file defines the problem domain and the scenarios used throughout the course.
+# See GreatCourseSpec.md §3.2 for the full schema.
+
+problem_id: REPLACE_ME           # e.g. cowork-automation-2026
+summary: |
+  REPLACE ME — one paragraph describing the core professional problem
+  this course helps learners solve.
+
+domain: REPLACE_ME               # e.g. "knowledge-work automation"
+
+domain_vocabulary:
+  - term: REPLACE_ME
+    definition: REPLACE_ME
+  # Add all domain-specific terms the course will use.
+
+# Representative scenarios — MUST have ≥ 4. Each must be a realistic, concrete
+# situation from the target domain. The planner will reserve at least one for the
+# capstone lab (that one goes into reserved-scenarios.json and must NEVER appear
+# in chapter content).
+representative_scenarios:
+  - id: scenario-01
+    title: REPLACE_ME
+    description: |
+      REPLACE ME — 2–4 sentences describing a realistic situation in which
+      a learner would apply the skills taught in this course.
+    entities: []             # people, systems, or objects in the scenario
+    artifacts: []            # files, databases, APIs, etc.
+  - id: scenario-02
+    title: REPLACE_ME
+    description: REPLACE_ME
+    entities: []
+    artifacts: []
+  - id: scenario-03
+    title: REPLACE_ME
+    description: REPLACE_ME
+    entities: []
+    artifacts: []
+  - id: scenario-04
+    title: REPLACE_ME
+    description: REPLACE_ME
+    entities: []
+    artifacts: []
+  # Add more scenarios as needed. More scenarios = richer personalization.
+
+success_criteria:
+  - REPLACE_ME   # What does success look like for a learner who completes this course?
+  - REPLACE_ME

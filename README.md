@@ -38,11 +38,15 @@ Two helper agents can prepare your input files before you run the course generat
 @subject-spec-builder-agent
 ```
 Provide an existing curriculum file, paste a chapter outline, or describe your course topic.
-The agent validates scope, chapter density, hands-on feasibility, and generator compatibility —
-then writes a validated `inputs/subject.md`. Use this when:
-- You have an existing training spec or syllabus you want to adapt
-- You want to build a curriculum from scratch with guided validation
-- You are unsure whether your topic list is the right scope for a single course
+The agent **searches the web** for similar courses, syllabi, and industry resources to
+evaluate whether your curriculum is complete, well-sequenced, and current — then asks you
+targeted questions and suggests additions or changes based on what it finds. It also validates
+scope, chapter density, hands-on feasibility, and generator compatibility before writing a
+validated `inputs/subject.md`. Use this when:
+- You have an existing training spec or syllabus you want to adapt or improve
+- You want to build a curriculum from scratch with research-backed guidance
+- You are unsure whether your topic list covers the subject adequately for your audience
+- You want to verify your curriculum is current and reflects industry expectations
 
 **Build your domain and student specs from unstructured documents (`inputs/problem.yaml` + `inputs/students.yaml`):**
 ```
@@ -152,50 +156,73 @@ this curriculum and personalizing it for your students and problem domain.
 covered in the generated course. Any topic that ends up without a corresponding chapter
 section, exercise, or assessment will cause the final evaluation to fail.
 
-### What goes in the subject spec
+### The recommended path: use `@subject-spec-builder-agent`
 
-A subject spec is a structured document describing what to teach. It typically contains:
-- Course title and audience
-- A chapter or module list with titles
-- Per-chapter topics, subtopics, and learning objectives
-- Any deliberate simplifications or topics to avoid
+In most cases, you will start with a rough idea of what the course should cover — a list of
+topics, a training brief, an existing syllabus, or just a description of what your students
+need to learn. **Rather than writing `inputs/subject.md` by hand, use the subject spec
+builder agent to turn that starting point into a validated curriculum.**
 
-See [`doc/MainSubjectSpec-Practical-Cowork-Automation.md`](doc/MainSubjectSpec-Practical-Cowork-Automation.md)
-for a complete example (the 18-chapter default curriculum).
-
-### How to provide your subject spec
-
-**Option 1 — Use the default (no action needed)**
-
-The default `inputs/subject.md` contains an 18-chapter curriculum on Claude-based workflow
-automation for knowledge workers. If this matches your course, keep it as-is and skip to
-filling in `inputs/problem.yaml` and `inputs/students.yaml`.
-
-**Option 2 — Replace `inputs/subject.md` with your curriculum**
-
-Open `inputs/subject.md` and overwrite its contents with your curriculum. The format is
-flexible — a Markdown document with chapter headings, topic lists, and objectives works well:
-
-```markdown
-# My Course Title
-
-## Chapter 1 — Introduction to X
-### Topics
-- What X is
-- Why X matters in [domain]
-- Key concepts: A, B, C
-
-### Objectives
-- Understand the role of X in [domain]
-- Identify when to use X vs Y
-
-## Chapter 2 — …
+```
+@subject-spec-builder-agent
 ```
 
-**Option 3 — Paste it inline when invoking `@course-factory-agent`**
+Tell it what you have — paste a topic list, share a file path, or describe the course goal
+in plain language. The agent will:
 
-If you don't want to edit files, paste your curriculum directly in your message. The agent
-extracts it and writes it to `inputs/subject.md` automatically:
+1. **Research the subject** — searches the web for similar courses, syllabi, professional
+   certifications, and industry learning paths to understand what practitioners in this field
+   actually need to know
+2. **Evaluate your coverage** — compares your topics against what similar courses teach,
+   flags common topics you may have missed, and identifies any topics in your spec that are
+   unusual or rarely covered at this level
+3. **Ask you targeted questions** — presents research-backed suggestions one at a time
+   ("This topic appears in 4 of 5 similar curricula I found — would you like to add it?")
+   and lets you accept, modify, or decline each one
+4. **Validate generator compatibility** — checks chapter count, per-chapter scope, hands-on
+   feasibility, concept density, and learning objective quality against the pipeline's
+   hard constraints
+5. **Write `inputs/subject.md`** — produces the validated, structured curriculum file ready
+   for the planner
+
+You can start from something as rough as:
+
+```
+@subject-spec-builder-agent
+
+I want to build a course on AI-assisted exception triage for warehouse supervisors using
+SAP WMS. They should learn to use prompts to analyse shipment exceptions, automate
+escalations, and build a recurring monitoring workflow. No ML background assumed.
+```
+
+Or review an existing file:
+
+```
+@subject-spec-builder-agent
+
+Review doc/MainSubjectSpec-Practical-Cowork-Automation.md and validate it.
+Suggest any topics that are missing or could be improved.
+```
+
+See [`doc/MainSubjectSpec-Practical-Cowork-Automation.md`](doc/MainSubjectSpec-Practical-Cowork-Automation.md)
+for a complete example of a finished subject spec (the 18-chapter default curriculum).
+
+---
+
+### Other ways to provide the subject spec
+
+If you prefer not to use the agent interactively, two alternatives are available:
+
+**Use the default curriculum (no action needed)**
+
+`inputs/subject.md` already contains the 18-chapter Cowork Automation curriculum. If this
+matches your course, keep it as-is and move straight to filling in `inputs/problem.yaml`
+and `inputs/students.yaml`.
+
+**Paste your curriculum inline when invoking `@course-factory-agent`**
+
+Include your chapter list directly in the message. The factory agent extracts it and writes
+it to `inputs/subject.md` automatically — without validation or research:
 
 ```
 @course-factory-agent
@@ -211,28 +238,21 @@ Curriculum:
 - Chapter 5: Building a personal workflow
 ```
 
-**Option 4 — Let `@spec-builder-agent` extract it from existing documents**
+Note that this path skips the research and validation that `@subject-spec-builder-agent`
+performs. Use it when you are confident your topic list is complete and well-scoped.
 
-If you have existing documents (training manuals, job guides, a slide deck, an internal wiki)
-that describe what employees need to know, the spec builder can extract a curriculum from them:
-
-```
-@spec-builder-agent
-```
-
-Share your documents and the agent will draft `inputs/subject.md` along with `inputs/problem.yaml`
-and `inputs/students.yaml` through an interactive conversation.
+---
 
 ### What happens at planning time
 
 The planner reads `inputs/subject.md` and builds a **subject coverage index** — a map from
-every topic and chapter in the spec to the corresponding course chapters it generates. This
-index appears in the normalization diff (first human-review halt) so you can see exactly how
-your curriculum maps to the personalized course structure before any content is generated.
+every topic and chapter in the spec to the course chapters it generates. This index appears
+in the normalization diff (first human-review halt) so you can see exactly how your curriculum
+maps to the personalized course structure before any content is generated.
 
 At evaluation time, the `evaluator-agent` verifies that every item in the coverage index is
-actually addressed in the generated artifacts. Any uncovered topic blocks course delivery until
-resolved.
+actually addressed in the generated artifacts. Any uncovered topic blocks course delivery
+until resolved.
 
 ---
 
