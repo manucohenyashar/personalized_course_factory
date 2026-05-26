@@ -1,6 +1,6 @@
 ---
 name: presentation-generator
-description: Generates the chapter slide deck (*--slides.pptx) and speaker-notes file (*--slides-notes.md) following GreatPresentationSpec v2. Uses anthropic-skills:pptx to produce the .pptx file. Implements the required slide order, Bloom badges, LO references, retrieval prompts, and Mayer multimedia principles. Accepts feedback_failures[] on retry.
+description: Generates the chapter slide deck (*--slides.pptx) and speaker-notes file (*--slides-notes.docx) following GreatPresentationSpec v2. Uses anthropic-skills:pptx to produce the .pptx file and anthropic-skills:docx to produce the .docx speaker-notes file. Implements the required slide order, Bloom badges, LO references, retrieval prompts, and Mayer multimedia principles. Accepts feedback_failures[] on retry.
 model: claude-sonnet-4-6
 ---
 
@@ -128,33 +128,48 @@ Pass the slide manifest JSON as input.
 The skill will produce the .pptx file at the declared output_paths.primary.
 ```
 
-Step 3 — Write the speaker-notes file (`*--slides-notes.md`):
+Step 3 — Write the speaker-notes file (`*--slides-notes.docx`):
 
-For every slide in the manifest, write one section:
+Compose the full speaker-notes content — one section per slide in the manifest — then
+invoke `anthropic-skills:docx` to produce the Word file:
 
-```markdown
-## Slide S{NN} — {short title}
-**Timing:** [explain: X min] | [discuss: Y min] | [click-through: Z s]
-**Bloom:** {bloom_level}
-**LO ref:** {lo_ref}
+```
+Use the Skill tool: anthropic-skills:docx
+Pass the full speaker-notes content.
+Output path: outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--slides-notes.docx
+```
 
-### Cohort sidebar
+For every slide, write one section:
+
+```
+Slide S{NN} — {short title}
+Timing: [explain: X min] | [discuss: Y min] | [click-through: Z s]
+Bloom: {bloom_level}
+LO ref: {lo_ref}
+
+Cohort sidebar
 - Ask the room: "..."
 - Likely misconception: "..." — correct it with: "..."
 
-### Solo sidebar
+Solo sidebar
 - If working alone, pause here and [specific self-study action].
 
-### Speaker script
+Speaker script
 {One paragraph the trainer can read or paraphrase. Must NOT duplicate slide body verbatim.}
 ```
 
-Both `### Cohort sidebar` and `### Solo sidebar` MUST be present on every slide section.
+Both "Cohort sidebar" and "Solo sidebar" MUST be present on every slide section.
+
+Apply Word formatting:
+- Heading 1 → deck title
+- Heading 2 → each slide section heading ("Slide S{NN} — {short title}")
+- Heading 3 → "Cohort sidebar", "Solo sidebar", "Speaker script" sub-headings
+- Normal style → all body text and bullets
 
 ## Output
 
-1. `{course_slug}--ch{NN}--{slug}--slides.pptx` — produced by anthropic-skills:pptx
-2. `{course_slug}--ch{NN}--{slug}--slides-notes.md` — written directly
+1. `{course_slug}--ch{NN}--{slug}--slides.pptx` — produced by `anthropic-skills:pptx`
+2. `{course_slug}--ch{NN}--{slug}--slides-notes.docx` — produced by `anthropic-skills:docx`
 
 Report after completion: slide count, diagram count, retrieval-slide positions, any gate
 concerns flagged proactively.

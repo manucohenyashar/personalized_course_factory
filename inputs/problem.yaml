@@ -1,48 +1,213 @@
-# Problem Spec — REQUIRED. Fill in every field before running the planner.
-# This file defines the problem domain and the scenarios used throughout the course.
+# Problem Spec — Populated by spec-builder-agent from:
+#   Source 1: inputs/test_scenarios/Intern Job Assignment.docx
+#   Source 2: Tracy Zlatkova LinkedIn profile
 # See GreatCourseSpec.md §3.2 for the full schema.
 
-problem_id: REPLACE_ME           # e.g. cowork-automation-2026
-summary: |
-  REPLACE ME — one paragraph describing the core professional problem
-  this course helps learners solve.
+problem_id: pm-cowork-automation-2026
 
-domain: REPLACE_ME               # e.g. "knowledge-work automation"
+summary: |
+  Tracy is a Senior Program Manager (AI Program Manager) at a wealth-management SaaS company
+  who oversees two concurrent, unrelated projects. Each week she manually reads, interprets,
+  and synthesizes information scattered across 10+ systems — Jira, Confluence, Google Docs,
+  Google Meet transcripts, Slack, ServiceNow, DragonBoat, and email — into executive status
+  reports and detailed supporting notes. She also cannot reliably locate past decisions,
+  action items, or meeting content because her digital workspace (inbox, Google Drive, meeting
+  recordings) has accumulated without a consistent organizational structure. Her goal is to
+  build Claude Cowork automations that aggregate cross-system project information into
+  reliable weekly reports, organize her digital workspace for fast retrieval, and produce
+  accurate structured meeting summaries from raw transcripts — reducing manual synthesis time
+  by at least 60 percent while maintaining leadership-quality output.
+
+domain: program-management-automation
 
 domain_vocabulary:
-  - term: REPLACE_ME
-    definition: REPLACE_ME
-  # Add all domain-specific terms the course will use.
+  - term: status report
+    definition: >
+      A weekly document summarizing a project's progress, accomplishments, risks, upcoming
+      milestones, and key discussion points — produced in two versions: an executive summary
+      for leadership and detailed supporting notes for the PM's own reference.
+  - term: executive summary
+    definition: >
+      The short, high-level version of a status report formatted for leadership consumption,
+      covering the most important updates, decisions needed, and risks in 1-2 pages.
+  - term: supporting notes
+    definition: >
+      The detailed, granular companion to the executive summary — organized by category, team,
+      or milestone — that Tracy uses to answer follow-up questions and track nuance over time.
+  - term: Jira board
+    definition: >
+      An Agile project tracking board in Atlassian Jira where tickets (tasks, bugs, stories)
+      are organized by status columns (To Do, In Progress, Done) for a specific project.
+  - term: Jira Plans
+    definition: >
+      A Jira feature (formerly Advanced Roadmaps) that shows cross-project milestones,
+      dependencies, and capacity planning on a timeline view.
+  - term: Confluence
+    definition: >
+      Atlassian's wiki-style documentation platform used to store project pages, meeting notes,
+      decision logs, and reference documentation alongside Jira.
+  - term: DragonBoat
+    definition: >
+      A portfolio and roadmap planning tool used to align product initiatives with business
+      objectives, track strategic priorities, and manage cross-team capacity.
+  - term: ServiceNow
+    definition: >
+      An IT service management (ITSM) platform used for client service requests, incident
+      tracking, change management, and workflow automation in operations and IT contexts.
+  - term: meeting transcript
+    definition: >
+      A verbatim or near-verbatim text record of a meeting's audio, produced automatically
+      by Google Meet — distinct from meeting notes or summaries, and currently the primary
+      source Tracy uses for post-meeting context.
+  - term: triage
+    definition: >
+      The process of quickly classifying and prioritizing a large set of items (emails, tickets,
+      tasks) to separate what requires immediate action from what can be deferred or discarded.
+  - term: source of truth
+    definition: >
+      A single authoritative data source for a given type of information. In Tracy's context
+      no single source of truth exists — information must be gathered and reconciled across
+      multiple systems.
+  - term: action item
+    definition: >
+      A specific task assigned to a named person with an expected completion date, surfaced
+      from a meeting, email, or discussion and tracked until resolved.
+  - term: blocker
+    definition: >
+      An impediment that prevents a team or task from moving forward — must be surfaced in
+      the status report and escalated to leadership if unresolved within the reporting period.
+  - term: naming convention
+    definition: >
+      A standardized pattern for naming files, folders, or email labels so that content is
+      consistently identifiable and sortable (e.g., YYYY-MM-DD_ProjectName_MeetingType).
+  - term: human-in-the-loop checkpoint
+    definition: >
+      A deliberate pause in an automated workflow where Tracy reviews and approves the
+      automation's output before it takes an action such as sending, filing, or archiving.
 
-# Representative scenarios — MUST have ≥ 4. Each must be a realistic, concrete
-# situation from the target domain. The planner will reserve at least one for the
-# capstone lab (that one goes into reserved-scenarios.json and must NEVER appear
-# in chapter content).
+# Representative scenarios — 6 scenarios drawn from the three intern assignments.
+# The planner will reserve at least one for the capstone lab.
 representative_scenarios:
   - id: scenario-01
-    title: REPLACE_ME
+    title: Weekly project status report from scattered sources
     description: |
-      REPLACE ME — 2–4 sentences describing a realistic situation in which
-      a learner would apply the skills taught in this course.
-    entities: []             # people, systems, or objects in the scenario
-    artifacts: []            # files, databases, APIs, etc.
+      Tracy needs to produce a weekly status report for one of her two projects. Progress
+      information for the past week is spread across a Jira board, a Confluence project page,
+      a Slack channel, and notes from two stand-up transcripts. A Claude skill aggregates and
+      synthesizes this information into a draft executive summary and detailed supporting notes
+      following the existing report template, then waits for Tracy's review before distribution.
+    entities:
+      - Tracy, Senior Program Manager
+      - project stakeholders and leadership audience
+      - Jira board for the project
+      - Confluence project page
+      - Slack project channel
+      - Google Meet stand-up transcripts
+    artifacts:
+      - weekly executive status report (using existing template)
+      - detailed supporting notes document
+      - source citations linking to each system
+
   - id: scenario-02
-    title: REPLACE_ME
-    description: REPLACE_ME
-    entities: []
-    artifacts: []
+    title: Cross-project risk and dependency detection
+    description: |
+      Tracy oversees two unrelated projects whose teams occasionally share resources or
+      timelines. A Claude agent reviews both projects' Jira Plans and DragonBoat roadmap
+      entries alongside recent meeting transcripts to surface shared blockers, overlapping
+      milestones, and cross-team dependencies that Tracy needs to raise at the next leadership
+      meeting.
+    entities:
+      - Tracy, Senior Program Manager
+      - leadership team (meeting audience)
+      - Project Alpha team
+      - Project Beta team
+    artifacts:
+      - Jira Plans for both projects
+      - DragonBoat roadmap items
+      - recent meeting transcripts (both projects)
+      - prioritized cross-project risk and dependency summary
+
   - id: scenario-03
-    title: REPLACE_ME
-    description: REPLACE_ME
-    entities: []
-    artifacts: []
+    title: Meeting transcript to structured summary
+    description: |
+      After a Google Meet session, Tracy receives a raw transcript but no useful summary —
+      the Gemini auto-notes are inaccurate and too vague to be actionable. A Claude skill reads
+      the transcript and produces a structured meeting summary covering decisions made, action
+      items with owners, risks raised, and a narrative of key discussion themes, flagging
+      ambiguous items for Tracy's clarification.
+    entities:
+      - Tracy, Senior Program Manager
+      - meeting attendees (varies by meeting type)
+    artifacts:
+      - raw Google Meet transcript
+      - structured meeting summary (decisions, action items, risks, discussion narrative)
+
   - id: scenario-04
-    title: REPLACE_ME
-    description: REPLACE_ME
-    entities: []
-    artifacts: []
-  # Add more scenarios as needed. More scenarios = richer personalization.
+    title: Email inbox triage and categorization
+    description: |
+      Tracy's inbox contains thousands of messages — many unread — mixing critical project
+      communications with notifications, spam, and low-value threads. A Claude workflow scans
+      the past week of messages, classifies each by project and action type, and produces a
+      short triage report surfacing the emails that require Tracy's direct attention, along with
+      a proposed set of bulk-label and bulk-archive actions for her approval.
+    entities:
+      - Tracy, Senior Program Manager
+      - leadership senders
+      - vendor and system notification senders
+    artifacts:
+      - Gmail inbox (past 7 days)
+      - weekly email triage report (top action-required items + proposed bulk actions)
+      - Gmail labels and archive actions (applied after Tracy's approval)
+
+  - id: scenario-05
+    title: Google Drive meeting content organization
+    description: |
+      Tracy's Google Drive contains hundreds of meeting recordings, transcripts, and notes
+      scattered across inconsistently named folders. A Claude agent reviews file names,
+      metadata, and document content, then proposes a logical folder hierarchy grouped by
+      project and meeting type. After Tracy approves the structure, the agent reorganizes and
+      renames files, logging every change and flagging duplicates or low-value content for
+      Tracy to decide on deletion.
+    entities:
+      - Tracy, Senior Program Manager
+      - project teams (as meeting participants reflected in file content)
+    artifacts:
+      - Google Drive meeting folders (current disorganized state)
+      - proposed folder hierarchy and naming convention
+      - reorganized Drive structure with change log
+      - list of duplicate or low-value files flagged for deletion
+
+  - id: scenario-06
+    title: ServiceNow ticket integration into weekly reports
+    description: |
+      One of Tracy's projects relies on ServiceNow for client service requests and IT
+      operations tickets. Each week she manually checks ServiceNow for open, escalated, or
+      newly resolved tickets relevant to her project and incorporates this data into the status
+      report. A Claude skill automates this lookup, classifies tickets by status and priority,
+      and formats a ticket summary section that feeds directly into the weekly report draft
+      from scenario-01.
+    entities:
+      - Tracy, Senior Program Manager
+      - ServiceNow ticket owners and requesters
+      - client service team
+    artifacts:
+      - ServiceNow ticket query (past 7 days, project-tagged)
+      - formatted ticket status summary (open / in-progress / resolved / escalated)
+      - merged weekly status report including ticket section
 
 success_criteria:
-  - REPLACE_ME   # What does success look like for a learner who completes this course?
-  - REPLACE_ME
+  - Weekly status reports (executive summary + detailed supporting notes) for both projects
+    generated with minimal manual effort, drawing from Jira, Confluence, Slack, and meeting
+    transcripts — without requiring Tracy to read every source herself
+  - Time spent on weekly report preparation reduced by at least 60 percent compared to the
+    current fully manual process
+  - Email inbox organized with consistent labels and a cleared backlog; any email, document,
+    or meeting recording locatable within 30 seconds using the new structure
+  - Meeting transcripts converted into structured summaries (decisions, action items, risks,
+    discussion themes) that are demonstrably more accurate and useful than the Gemini auto-notes
+  - At least one reusable skill or workflow built for each of the three assignment areas
+    (reporting, workspace organization, meeting summarization)
+  - All automations include human-review checkpoints before any report is sent or any
+    file-system action (labeling, archiving, moving) is taken
+
+forbidden_scenarios: []  # reserved for capstone — planner-agent fills this

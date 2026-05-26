@@ -98,7 +98,7 @@ final third toward Analyze/Evaluate/Create. Check this from `course_plan.chapter
 
 ### Step 6 — Glossary completeness (§8.7)
 
-Read `outputs/{course_slug}/glossary.md`. Verify:
+Read `outputs/{course_slug}/glossary.docx`. Verify:
 - Every term in every chapter's `handoff_json.glossary_delta` appears in the master glossary.
 - No term is defined differently in the master glossary vs. the chapter that introduced it.
 

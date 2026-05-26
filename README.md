@@ -11,15 +11,15 @@ For each chapter, the pipeline generates six artifacts:
 
 | Artifact | File | Purpose |
 |----------|------|---------|
-| Chapter doc | `*--doc.md` | 3,500–6,000 word structured learning text |
-| Exercise pack | `*--exercises/` | Worked example + completion + independent exercises |
-| Slide deck | `*--slides.pptx` | 12–25 slide instructor deck + speaker notes |
-| Quiz | `*--quiz.json` + `*--quiz-formB.json` | 10-item assessment (Form A + Form B) |
-| Podcast script | `*--podcast-script.md` | 1,200–2,300 word audio narration |
-| Companion | `*--cheatsheet.md` + `*--instructor-guide.md` | Quick reference + facilitation guide |
+| Chapter doc | `*--doc.docx` | 3,500–6,000 word structured learning text (Word) |
+| Exercise pack | `*--exercises/` | Worked example + completion + independent exercises (Word briefs + code) |
+| Slide deck | `*--slides.pptx` + `*--slides-notes.docx` | 12–25 slide deck (PowerPoint) + presenter notes (Word) |
+| Quiz | `*--quiz.json` + `*--quiz-formB.json` | 10-item assessment, Form A + Form B |
+| Podcast script | `*--podcast-script.md` | 1,200–2,300 word recording production script |
+| Companion | `*--cheatsheet.docx` + `*--instructor-guide.docx` | Quick reference + facilitation guide (Word) |
 
-Plus course-level artifacts: capstone lab, master glossary, prerequisite diagnostic, and
-lab environment scaffold.
+Plus course-level artifacts: capstone lab (`capstone-lab.docx`), master glossary
+(`glossary.docx`), prerequisite diagnostic, and lab environment scaffold.
 
 All content is grounded in evidence-based learning science: Bloom's Taxonomy, retrieval
 practice (Roediger & Karpicke), cognitive load theory (Sweller), Mayer's multimedia
@@ -441,7 +441,7 @@ outputs/            ← generated course content (created at runtime)
     chapters/
     capstone/
     environment/
-    glossary.md
+    glossary.docx
     COURSE_VERDICT.md
 
 CLAUDE.md           ← project guide + shared schemas (always loaded by Claude Code)

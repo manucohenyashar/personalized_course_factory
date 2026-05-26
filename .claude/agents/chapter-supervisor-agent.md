@@ -137,7 +137,7 @@ Invoke `@companion-generator` with:
 
 Invoke `@glossary-aggregator` with:
 - `glossary_delta`: from handoff_json.glossary_delta
-- `master_glossary_path`: `outputs/{course_slug}/glossary.md`
+- `master_glossary_path`: `outputs/{course_slug}/glossary.docx`
 - `chapter_number`: integer
 
 ## Step Final — Write chapter.manifest.json

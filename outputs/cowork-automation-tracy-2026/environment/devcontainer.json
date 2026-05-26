@@ -1,0 +1,62 @@
+{
+  "name": "cowork-automation-tracy-2026 Lab Environment",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22.12.0"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11.9"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "2.44.0"
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "installOhMyZsh": false,
+      "upgradePackages": false
+    }
+  },
+  "postCreateCommand": "bash environment/preflight.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "davidanson.vscode-markdownlint",
+        "streetsidesoftware.code-spell-checker",
+        "ms-playwright.playwright"
+      ],
+      "settings": {
+        "editor.wordWrap": "on",
+        "editor.fontSize": 14,
+        "editor.lineHeight": 1.6,
+        "editor.tabSize": 2,
+        "files.autoSave": "afterDelay",
+        "files.autoSaveDelay": 2000,
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "markdown.preview.fontSize": 14,
+        "editor.formatOnSave": true,
+        "[json]": {
+          "editor.defaultFormatter": "vscode.json-language-features"
+        },
+        "[yaml]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
+        "[markdown]": {
+          "editor.defaultFormatter": "davidanson.vscode-markdownlint",
+          "editor.wordWrap": "on"
+        }
+      }
+    }
+  },
+  "remoteEnv": {
+    "COURSE_SLUG": "cowork-automation-tracy-2026",
+    "NODE_ENV": "development",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUNBUFFERED": "1"
+  },
+  "mounts": [],
+  "forwardPorts": [],
+  "portsAttributes": {}
+}

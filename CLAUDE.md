@@ -390,35 +390,51 @@ Produced by `chapter-text-generator`. Passed explicitly to every downstream chap
 ```
 outputs/
   {course_slug}/
-    _plan/
+    _plan/                                                ← internal pipeline files
       course-plan.yaml
       personalization-plan.json
       reserved-scenarios.json
+      subject-coverage-index.json
       PLAN_REVIEW.md
       CHANGELOG.md
-    glossary.md
-    prereq-diagnostic.md
+    glossary.docx                                         ← student-facing reference (Word)
+    prereq-diagnostic.md                                  ← internal planning artifact
     chapters/
       ch{NN}-{chapter_slug}/
-        {course_slug}--ch{NN}--{chapter_slug}--doc.md
-        {course_slug}--ch{NN}--{chapter_slug}--doc.handoff.json
-        {course_slug}--ch{NN}--{chapter_slug}--slides.pptx
-        {course_slug}--ch{NN}--{chapter_slug}--slides-notes.md
-        {course_slug}--ch{NN}--{chapter_slug}--quiz.json
-        {course_slug}--ch{NN}--{chapter_slug}--quiz-formB.json
-        {course_slug}--ch{NN}--{chapter_slug}--podcast-script.md
-        {course_slug}--ch{NN}--{chapter_slug}--cheatsheet.md
-        {course_slug}--ch{NN}--{chapter_slug}--instructor-guide.md
+        {course_slug}--ch{NN}--{chapter_slug}--doc.docx          ← chapter doc (Word)
+        {course_slug}--ch{NN}--{chapter_slug}--doc.handoff.json   ← internal handoff
+        {course_slug}--ch{NN}--{chapter_slug}--slides.pptx        ← slide deck (PowerPoint)
+        {course_slug}--ch{NN}--{chapter_slug}--slides-notes.docx  ← presenter notes (Word)
+        {course_slug}--ch{NN}--{chapter_slug}--quiz.json          ← quiz data (internal)
+        {course_slug}--ch{NN}--{chapter_slug}--quiz-formB.json    ← quiz form B (internal)
+        {course_slug}--ch{NN}--{chapter_slug}--podcast-script.md  ← recording script (internal)
+        {course_slug}--ch{NN}--{chapter_slug}--cheatsheet.docx    ← cheatsheet (Word)
+        {course_slug}--ch{NN}--{chapter_slug}--instructor-guide.docx ← instructor guide (Word)
         {course_slug}--ch{NN}--{chapter_slug}--exercises/
-          manifest.json
-          README.md
+          manifest.json                                   ← pack metadata (internal)
+          README.md                                       ← directory index (internal)
           worked-example/
+            brief.docx                                    ← worked example instructions (Word)
+            solution/                                     ← code files
+            walkthrough.docx                              ← narrated solution (Word)
           exercise-02/
+            brief.docx                                    ← completion exercise (Word)
+            starter/                                      ← code scaffold
+            solution/                                     ← code solution
+            verify/                                       ← test scripts
+            rubric.json                                   ← rubric data (internal)
+            failure-modes.md                              ← failure reference (internal)
           exercise-NN/
-          debrief.md
+            brief.docx
+            starter/ | solution/ | verify/
+            rubric.json | failure-modes.md
+          debrief.docx                                    ← pack debrief (Word)
     capstone/
-      {course_slug}--capstone-lab.md
-      {course_slug}--capstone-lab-rubric.json
+      {course_slug}--capstone-lab.docx                   ← capstone brief (Word)
+      {course_slug}--capstone-lab-rubric.json             ← rubric data (internal)
+      {course_slug}--capstone-instructor-guide.docx       ← instructor guide (Word)
+      {course_slug}--capstone-debrief.docx                ← debrief & reflection (Word)
+      capstone-starter/ | capstone-solution/ | capstone-verify/  ← code
     environment/
       devcontainer.json
       preflight.sh
@@ -431,6 +447,9 @@ Naming rules:
 - Slugs are lowercase, hyphen-separated, no underscores
 - Chapter numbers are zero-padded to 2 digits: `ch01`, `ch02`, …
 - All artifact filenames include the `{course_slug}` prefix
+- **Student-facing deliverables are `.docx` (Word) or `.pptx` (PowerPoint)**
+- Internal pipeline files (JSON, YAML, `.md` plan files, code) stay in their native format
+- The podcast script stays `.md` — it is a recording production script, not a student deliverable
 
 ---
 
@@ -527,12 +546,28 @@ the `.mmd` is the editable source. Every diagram MUST include alt text in the ha
 
 ## Available Anthropic Skills
 
-- **`anthropic-skills:pptx`** — generates `.pptx` slide decks; invoked by
+- **`anthropic-skills:pptx`** — generates `.pptx` PowerPoint slide decks; invoked by
   `presentation-generator` via the `Skill` tool
-- **`anthropic-skills:docx`** — generates `.docx` documents; invoked by `companion-generator`
-  for instructor guides when `.docx` output is needed
+- **`anthropic-skills:docx`** — generates `.docx` Word documents; invoked by ALL content
+  generators that produce student-facing text artifacts: `chapter-text-generator`,
+  `exercise-generator`, `companion-generator`, `lab-generator`, `presentation-generator`
+  (for speaker notes), and `glossary-aggregator`
 
-Both skills are available globally; no installation required.
+Both skills are available globally in Claude Code; no installation or configuration required.
+Invoke them via the `Skill` tool, passing the document content as input.
+
+### When to use each skill
+
+| Output needed | Skill to invoke | Applies to |
+|---------------|----------------|------------|
+| Student reads a chapter | `anthropic-skills:docx` | `chapter-text-generator` |
+| Student works an exercise | `anthropic-skills:docx` | `exercise-generator` (brief.docx, walkthrough.docx, debrief.docx) |
+| Instructor presents slides | `anthropic-skills:pptx` | `presentation-generator` |
+| Instructor reads presenter notes | `anthropic-skills:docx` | `presentation-generator` (slides-notes.docx) |
+| Student reads cheatsheet | `anthropic-skills:docx` | `companion-generator` |
+| Instructor reads guide | `anthropic-skills:docx` | `companion-generator` |
+| Student does capstone | `anthropic-skills:docx` | `lab-generator` (capstone-lab.docx, debrief.docx) |
+| Student looks up terms | `anthropic-skills:docx` | `glossary-aggregator` |
 
 ---
 

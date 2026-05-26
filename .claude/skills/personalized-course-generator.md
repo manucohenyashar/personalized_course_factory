@@ -427,7 +427,7 @@ Present the following completion report to the user:
 - **Acceptance criteria:** {N} criteria, all implemented and verified
 
 ### Supporting Artifacts
-- Course glossary: `outputs/{course_slug}/glossary.md` ({term_count} terms)
+- Course glossary: `outputs/{course_slug}/glossary.docx` ({term_count} terms)
 - Prerequisite diagnostic: `outputs/{course_slug}/prereq-diagnostic.md`
 - Lab environment: `outputs/{course_slug}/environment/`
 - Course verdict: `outputs/{course_slug}/COURSE_VERDICT.md`

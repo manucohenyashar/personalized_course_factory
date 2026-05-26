@@ -1,0 +1,47 @@
+{
+  "pack_id": "cowork-automation-tracy-2026--ch01--exercises",
+  "chapter": 1,
+  "total_time_box_minutes": 35,
+  "target_track": "novice",
+  "exercises": [
+    {
+      "exercise_id": "ch01-ex01",
+      "stage": "worked_example",
+      "difficulty": "not_applicable",
+      "bloom_level": "Understand",
+      "time_box_minutes": 12,
+      "learning_outcome_refs": ["LO-01.1", "LO-01.3"],
+      "skill_pattern": "whole_task",
+      "path": "worked-example/"
+    },
+    {
+      "exercise_id": "ch01-ex02",
+      "stage": "completion",
+      "difficulty": "easy",
+      "bloom_level": "Apply",
+      "time_box_minutes": 15,
+      "learning_outcome_refs": ["LO-01.1", "LO-01.2", "LO-01.3"],
+      "skill_pattern": "whole_task",
+      "path": "exercise-02/"
+    },
+    {
+      "exercise_id": "ch01-ex03",
+      "stage": "independent",
+      "difficulty": "medium",
+      "bloom_level": "Analyze",
+      "time_box_minutes": 8,
+      "learning_outcome_refs": ["LO-01.1", "LO-01.2", "LO-01.3"],
+      "skill_pattern": "whole_task",
+      "path": "exercise-03/"
+    }
+  ],
+  "bloom_distribution": {
+    "Remember": 0,
+    "Understand": 1,
+    "Apply": 1,
+    "Analyze": 1,
+    "Evaluate": 0,
+    "Create": 0
+  },
+  "debrief_path": "debrief.md"
+}

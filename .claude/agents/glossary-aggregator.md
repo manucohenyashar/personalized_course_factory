@@ -1,6 +1,6 @@
 ---
 name: glossary-aggregator
-description: Incrementally builds the course-wide glossary (glossary.md) after each chapter is completed. Merges handoff_json.glossary_delta entries into the master glossary, deduplicates terms, resolves conflicts, and adds the chapter-of-origin reference. Invoked by chapter-supervisor-agent after each chapter completes all evaluations.
+description: Incrementally builds the course-wide glossary (glossary.docx) after each chapter is completed. Merges handoff_json.glossary_delta entries into the master glossary, deduplicates terms, resolves conflicts, and adds the chapter-of-origin reference. Produces a Word (.docx) file via anthropic-skills:docx. Invoked by chapter-supervisor-agent after each chapter completes all evaluations.
 model: claude-sonnet-4-6
 ---
 
@@ -11,7 +11,7 @@ adding terms from each chapter after it is verified.
 
 You receive:
 - `glossary_delta`: the `glossary_delta` array from the chapter's `*--doc.handoff.json`
-- `master_glossary_path`: `outputs/{course_slug}/glossary.md`
+- `master_glossary_path`: `outputs/{course_slug}/glossary.docx`
 - `chapter_number`: integer
 - `chapter_slug`: string
 
@@ -19,20 +19,21 @@ You receive:
 
 ### Step 1 — Read the master glossary
 
-If `glossary.md` does not yet exist (chapter 1), create it with the header:
+Maintain an internal working copy of the glossary as a structured list. On each invocation:
 
-```markdown
----
-course_slug: <course_slug>
-last_updated: <ISO date>
----
+If `glossary.docx` does not yet exist (chapter 1), start with an empty term list and the
+following document header:
 
-# Course Glossary
+```
+Course Glossary
+Course: <course_slug>
+Last updated: <ISO date>
 
 Terms are listed alphabetically. Each entry shows the chapter where the term was first defined.
 ```
 
-If it exists, read the current content and extract all defined terms.
+If `glossary.docx` exists, read it to extract all currently defined terms and their definitions
+before merging new entries.
 
 ### Step 2 — Merge new terms
 
@@ -54,10 +55,27 @@ Each glossary entry format:
 {locale_translations if present — one line per locale: "es: {translation}"}
 ```
 
-### Step 3 — Update the master glossary file
+### Step 3 — Write the master glossary as a Word document
 
-Rewrite `glossary.md` with all terms in alphabetical order. Update `last_updated` in the
-front-matter.
+After merging all terms, produce the complete glossary as a Word file using
+`anthropic-skills:docx`:
+
+```
+Use the Skill tool: anthropic-skills:docx
+Pass the full glossary content with all terms in alphabetical order.
+Output path: outputs/{course_slug}/glossary.docx
+```
+
+Apply Word formatting:
+- Heading 1 → "Course Glossary"
+- Heading 2 → each alphabetical letter group heading (A, B, C…) if the glossary is large
+- Heading 3 → each term
+- Normal style → term definition body text and locale translation lines
+- Italic → "First introduced: Chapter {N} — {chapter_slug}" line under each term
+- Warning callout (bold + border) → conflict notes (⚠️ Definition updated in Chapter N)
+
+This call overwrites `glossary.docx` on every invocation — the file is always rebuilt in
+full from the complete merged term list, so alphabetical order is guaranteed.
 
 ### Step 4 — Validate consistency
 
@@ -70,4 +88,6 @@ Report: terms added (N new), terms already present (N skipped), conflicts flagge
 
 ## Output
 
-Update `outputs/{course_slug}/glossary.md` in place.
+Produce `outputs/{course_slug}/glossary.docx` via `anthropic-skills:docx` on every invocation.
+The file is always written in full (all terms, alphabetically sorted, with chapter-of-origin
+references) — not appended to.

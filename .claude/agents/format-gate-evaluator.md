@@ -59,8 +59,8 @@ You receive:
 
 ### MUST checks — Companion (`artifact_type: companion`)
 
-20. **Cheatsheet present** — `{course_slug}--ch{NN}--{slug}--cheatsheet.md`.
-21. **Instructor guide present** — `{course_slug}--ch{NN}--{slug}--instructor-guide.md` (or `.docx`).
+20. **Cheatsheet present** — `{course_slug}--ch{NN}--{slug}--cheatsheet.docx`.
+21. **Instructor guide present** — `{course_slug}--ch{NN}--{slug}--instructor-guide.docx`.
 
 ### SHOULD checks
 - Section headings match the exact names in the GreatTextSpec §4.1 table.

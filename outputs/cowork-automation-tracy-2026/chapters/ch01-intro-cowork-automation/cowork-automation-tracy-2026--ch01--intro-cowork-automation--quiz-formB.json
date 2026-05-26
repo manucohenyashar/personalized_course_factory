@@ -1,0 +1,376 @@
+{
+  "quiz_id": "cowork-automation-tracy-2026--ch01--quiz-formB",
+  "form": "B",
+  "chapter": 1,
+  "passing_threshold": 0.80,
+  "parallel_form_ref": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--quiz.json",
+  "items": [
+    {
+      "item_id": "ch01-qB01",
+      "chapter": 1,
+      "section_ref": "3",
+      "learning_outcome_ref": "LO-01.2",
+      "bloom_level": "Remember",
+      "item_type": "mcq",
+      "assessment_mode": "summative",
+      "carryforward_from": null,
+      "stem": "Tracy is onboarding a junior program manager at Advisor360° and asks her to match each Claude Cowork building block with its primary function. Which of the following correctly describes a Claude skill?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A Claude configuration that plans and executes a sequence of retrieval, synthesis, and delivery steps autonomously, pausing at human-in-the-loop checkpoints before high-stakes outputs.",
+          "correct": false,
+          "misconception": "surface-pattern",
+          "rationale": "Wrong because this describes an agent, not a skill. Agents orchestrate multi-step workflows; skills are single-purpose instruction sets that encode one task's logic and output format."
+        },
+        {
+          "id": "B",
+          "text": "A connector that handles authentication and data retrieval from a specific external system — such as pulling closed Jira tickets or reading a Confluence page — and formats the result for Claude to use.",
+          "correct": false,
+          "misconception": "surface-pattern",
+          "rationale": "Wrong because this describes a plugin. Plugins are connectors to external systems; skills call plugins to obtain live data but do not themselves connect to external systems."
+        },
+        {
+          "id": "C",
+          "text": "A saved, reusable instruction set that tells Claude what inputs to expect, what output format to produce, and what constraints to apply — equivalent to a written SOP that Claude executes on demand.",
+          "correct": true,
+          "rationale": "Correct because a skill encodes the 'what and how' of a task: the expected inputs, the required output structure, and the constraints Claude must respect. Tracy's status-report skill, for example, specifies the five-section executive format and the rules for classifying Slack messages."
+        },
+        {
+          "id": "D",
+          "text": "A subscription license that grants Tracy's team access to Claude's third-party integration marketplace, enabling one-click connections to Jira, Confluence, and ServiceNow.",
+          "correct": false,
+          "misconception": "previously-correct",
+          "rationale": "Wrong because this conflates a commercial product concept with the technical definition. A skill is not a license or marketplace offering — it is a technical artifact containing instructions that Tracy or a developer writes and saves."
+        }
+      ],
+      "estimated_difficulty": 0.90,
+      "time_seconds": 45,
+      "remediation_link": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md#sec-3",
+      "accessibility": {
+        "alt_text_for_figures": null,
+        "screen_reader_safe": true
+      }
+    },
+    {
+      "item_id": "ch01-qB02",
+      "chapter": 1,
+      "section_ref": "6",
+      "learning_outcome_ref": "LO-01.3",
+      "bloom_level": "Remember",
+      "item_type": "mcq",
+      "assessment_mode": "summative",
+      "carryforward_from": null,
+      "stem": "Tracy is preparing a lunch-and-learn for her Advisor360° program management peers about evaluating automation candidates. She wants to open with a one-sentence definition of the RSTRM framework. Which of the following definitions is accurate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "RSTRM is a five-criterion checklist — Repetitive, Structured, Time-consuming, Rules-based, Multi-step — used to evaluate whether a workflow is a strong candidate for Claude Cowork automation.",
+          "correct": true,
+          "rationale": "Correct because RSTRM is a suitability checklist with exactly these five criteria. A task scoring Strong on all five is a high-confidence automation candidate; two or more Weak ratings indicate the task scope should be redesigned or deferred."
+        },
+        {
+          "id": "B",
+          "text": "RSTRM is a project management maturity model — Reactive, Standardized, Tracked, Reviewed, Measured — that Advisor360° uses to rate team readiness before deploying automation.",
+          "correct": false,
+          "misconception": "surface-pattern",
+          "rationale": "Wrong because these terms describe a maturity-model progression, not automation-suitability criteria. RSTRM is not a maturity model; it evaluates individual tasks for automation fitness, not team readiness levels."
+        },
+        {
+          "id": "C",
+          "text": "RSTRM is an acronym for the five required technical components of any Claude automation: Runtime, Schema, Trigger, Router, and Memory.",
+          "correct": false,
+          "misconception": "surface-pattern",
+          "rationale": "Wrong because these are plausible-sounding technical architecture terms but are not the RSTRM criteria. RSTRM describes task characteristics (what makes a task automatable), not technical infrastructure components."
+        },
+        {
+          "id": "D",
+          "text": "RSTRM is a risk-assessment framework — Reputational, Security, Technical, Regulatory, and Maintenance — that teams must pass before deploying any Claude automation to a production environment.",
+          "correct": false,
+          "misconception": "previously-correct",
+          "rationale": "Wrong because this describes a risk-category framework, not a suitability framework. RSTRM evaluates whether a task is a good automation candidate, not the risks of deploying automation to production."
+        }
+      ],
+      "estimated_difficulty": 0.90,
+      "time_seconds": 45,
+      "remediation_link": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md#sec-6",
+      "accessibility": {
+        "alt_text_for_figures": null,
+        "screen_reader_safe": true
+      }
+    },
+    {
+      "item_id": "ch01-qB03",
+      "chapter": 1,
+      "section_ref": "4",
+      "learning_outcome_ref": "LO-01.1",
+      "bloom_level": "Understand",
+      "item_type": "tf_justified",
+      "assessment_mode": "summative",
+      "carryforward_from": null,
+      "stem": "A colleague tells Tracy: 'Any task that takes Tracy more than two hours per week is automatically a strong automation candidate for Claude Cowork, because the time savings will always justify the build effort.' Is this claim true or false? Provide a one-sentence justification that identifies which RSTRM criterion the claim ignores.",
+      "options": null,
+      "expected_answer": "False. Time consumption (the Time-consuming criterion) is only one of five RSTRM criteria — a task that is time-consuming but not Rules-based (requiring subjective judgment that cannot be articulated as consistent rules) or not Structured (drawing on inconsistently formatted inputs) cannot be reliably automated, regardless of its time cost.",
+      "grading_rubric_ref": null,
+      "estimated_difficulty": 0.85,
+      "time_seconds": 75,
+      "remediation_link": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md#sec-4",
+      "accessibility": {
+        "alt_text_for_figures": null,
+        "screen_reader_safe": true
+      }
+    },
+    {
+      "item_id": "ch01-qB04",
+      "chapter": 1,
+      "section_ref": "5",
+      "learning_outcome_ref": "LO-01.2",
+      "bloom_level": "Understand",
+      "item_type": "mcq",
+      "assessment_mode": "summative",
+      "carryforward_from": null,
+      "stem": "Tracy is diagramming the architecture of her weekly status report automation for a Confluence documentation page. She wants to show the correct call direction between the three building blocks. Which description correctly captures the call hierarchy?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Plugins orchestrate the overall workflow: each plugin invokes a skill when it has retrieved data, and the skill passes the result back to the plugin for delivery.",
+          "correct": false,
+          "misconception": "surface-pattern",
+          "rationale": "Wrong because this inverts the call hierarchy. Plugins are called by skills to retrieve data — a plugin does not orchestrate or invoke a skill. Confusing the initiator (skill or agent) with the connector (plugin) is a surface-pattern error."
+        },
+        {
+          "id": "B",
+          "text": "Agents call plugins directly for retrieval, then call skills for synthesis; skills never call plugins independently.",
+          "correct": false,
+          "misconception": "off-by-one",
+          "rationale": "Wrong because skills do call plugins directly when not orchestrated by an agent. The correct pattern is: agents orchestrate skills, and skills call plugins. Skills can also call plugins outside of agent orchestration — for example, a standalone skill that pulls Confluence data and formats it without agent-level sequencing."
+        },
+        {
+          "id": "C",
+          "text": "Skills and plugins share a bidirectional relationship — the skill calls the plugin to retrieve data, but the plugin also calls the skill back to apply formatting rules before returning the result to the agent.",
+          "correct": false,
+          "misconception": "surface-pattern",
+          "rationale": "Wrong because the relationship is not bidirectional. A plugin's function is limited to connection, authentication, querying, and returning raw data — it does not call back into a skill for formatting. The skill applies formatting to whatever the plugin returns; the plugin has no awareness of the skill's instructions."
+        },
+        {
+          "id": "D",
+          "text": "The agent orchestrates skills; skills call plugins to retrieve live data from external systems; plugins expose a consistent interface to Jira, Confluence, Slack, and Google Meet, handling authentication on behalf of the skill.",
+          "correct": true,
+          "rationale": "Correct because this accurately describes all three relationships: the agent manages the overall multi-step sequence, skills encode the logic and call plugins for data, and plugins handle the external-system connection including authentication and data formatting. This matches the three-layer mental model from section 5."
+        }
+      ],
+      "estimated_difficulty": 0.80,
+      "time_seconds": 80,
+      "remediation_link": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md#sec-5",
+      "accessibility": {
+        "alt_text_for_figures": null,
+        "screen_reader_safe": true
+      }
+    },
+    {
+      "item_id": "ch01-qB05",
+      "chapter": 1,
+      "section_ref": "7",
+      "learning_outcome_ref": "LO-01.1",
+      "bloom_level": "Apply",
+      "item_type": "scenario_mcq",
+      "assessment_mode": "summative",
+      "carryforward_from": null,
+      "stem": "Tracy applies the RSTRM framework to a candidate workflow: every Monday morning she manually copies the previous week's DragonBoat roadmap items that changed status from 'Planned' to 'In Progress' into a Confluence changelog entry. The task runs for all active programs, takes about 30 minutes per program per week, and the DragonBoat export format has been stable for six months. Her decision rules are explicit: any item that moved to 'In Progress' gets a one-line entry with the item name, owner, and target quarter. Which RSTRM verdict is best supported?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Weak automation candidate — the task fails the Rules-based criterion because deciding what to include in the changelog requires Tracy's professional knowledge of roadmap context that Claude cannot possess.",
+          "correct": false,
+          "misconception": "named-misconception",
+          "rationale": "Wrong because the decision rule is fully explicit and consistent: any item moving from 'Planned' to 'In Progress' gets a one-line entry with three defined fields (name, owner, target quarter). When rules are articulable without exception, the Rules-based criterion is satisfied — professional context knowledge is not required for a clearly defined status-change rule."
+        },
+        {
+          "id": "B",
+          "text": "Weak automation candidate — the task fails the Multi-step criterion because copying data from one system into another is a single action, not a multi-step workflow.",
+          "correct": false,
+          "misconception": "off-by-one",
+          "rationale": "Wrong because Multi-step counts discrete process steps, and this task has at least three: (1) retrieve changed DragonBoat items, (2) apply the inclusion rule and format each entry, (3) write the formatted entries to the Confluence changelog. A three-step sequence satisfies the Multi-step criterion."
+        },
+        {
+          "id": "C",
+          "text": "Strong automation candidate — the task is Repetitive (weekly, every Monday), Structured (stable DragonBoat export format and fixed Confluence format), Time-consuming (30 min/program × multiple programs × 50 weeks), Rules-based (explicit status-change rule with three defined output fields), and Multi-step (retrieve, filter and format, write to Confluence).",
+          "correct": true,
+          "rationale": "Correct because all five RSTRM criteria are satisfied: the task runs on a predictable weekly schedule (Repetitive), both source and destination formats are stable (Structured), the cumulative time cost across programs is material (Time-consuming), the inclusion rule is explicit and consistent (Rules-based), and the workflow has three discrete steps (Multi-step)."
+        },
+        {
+          "id": "D",
+          "text": "Partial automation candidate — the task passes four of five RSTRM criteria but fails the Structured criterion because DragonBoat is a less common tool and Claude may not have reliable access to its export format.",
+          "correct": false,
+          "misconception": "previously-correct",
+          "rationale": "Wrong because the Structured criterion evaluates the consistency of the data format, not Claude's prior familiarity with the tool. A DragonBoat plugin handles the connection and data formatting; Tracy confirmed the export format has been stable for six months, so the Structured criterion is satisfied regardless of how well-known the tool is."
+        }
+      ],
+      "estimated_difficulty": 0.60,
+      "time_seconds": 100,
+      "remediation_link": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md#sec-7",
+      "accessibility": {
+        "alt_text_for_figures": null,
+        "screen_reader_safe": true
+      }
+    },
+    {
+      "item_id": "ch01-qB06",
+      "chapter": 1,
+      "section_ref": "5",
+      "learning_outcome_ref": "LO-01.2",
+      "bloom_level": "Apply",
+      "item_type": "scenario_mcq",
+      "assessment_mode": "summative",
+      "carryforward_from": null,
+      "stem": "Tracy wants to convert a raw Google Meet transcript from her Monday stand-up into a structured summary with three sections: Decisions Made, Blockers Raised, and Action Items Assigned. The transcript is already available as a text file. No external system retrieval is needed. Which Claude building block is minimally sufficient, and why?",
+      "options": [
+        {
+          "id": "A",
+          "text": "A skill alone — because the transcript is already available as text input, so no plugin is needed to retrieve it; the skill encodes the three-section output format and transformation logic.",
+          "correct": true,
+          "rationale": "Correct because when the input data is already supplied directly to Claude (the transcript text is provided), no plugin is required for retrieval. The skill encodes the transformation instructions (classify text into three defined sections) and the output format. This is a pure transformation task — exactly what a skill handles without a plugin or agent."
+        },
+        {
+          "id": "B",
+          "text": "A plugin — because Google Meet produces the transcript, so the Google Meet plugin must be invoked to parse and format it before the transformation can occur.",
+          "correct": false,
+          "misconception": "off-by-one",
+          "rationale": "Wrong because the transcript is already available as a text file — Tracy is not asking Claude to retrieve it from Google Meet in real time. A plugin is only needed for live system retrieval. When the data is already supplied, a skill alone is sufficient."
+        },
+        {
+          "id": "C",
+          "text": "An agent — because converting unstructured text into a structured three-section document is a complex synthesis task that requires autonomous multi-step planning.",
+          "correct": false,
+          "misconception": "named-misconception",
+          "rationale": "Wrong because this encodes the misconception that complex synthesis requires an agent. Synthesis with a defined output structure is a skill's domain — agents add value when the workflow requires multiple retrieval steps, intermediate decisions about what to do next, or coordination across systems. A single-input-to-structured-output transformation does not meet that threshold."
+        },
+        {
+          "id": "D",
+          "text": "A skill calling the Google Meet plugin — because all transcript-based tasks require the plugin to handle authentication even when the transcript is already available locally.",
+          "correct": false,
+          "misconception": "surface-pattern",
+          "rationale": "Wrong because plugins handle live system connections, not local file processing. If the transcript is already provided as text input, no plugin authentication or retrieval step is needed. Adding the Google Meet plugin would be unnecessary complexity."
+        }
+      ],
+      "estimated_difficulty": 0.60,
+      "time_seconds": 90,
+      "remediation_link": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md#sec-5",
+      "accessibility": {
+        "alt_text_for_figures": null,
+        "screen_reader_safe": true
+      }
+    },
+    {
+      "item_id": "ch01-qB07",
+      "chapter": 1,
+      "section_ref": "7",
+      "learning_outcome_ref": "LO-01.1",
+      "bloom_level": "Apply",
+      "item_type": "scenario_mcq",
+      "assessment_mode": "summative",
+      "carryforward_from": null,
+      "stem": "Tracy's colleague asks whether a task that scores Weak on one RSTRM criterion can still be automated. Tracy applies the worked example's logic. Which response best reflects the RSTRM framework's guidance on tasks with a mix of Strong and Weak ratings?",
+      "options": [
+        {
+          "id": "A",
+          "text": "No — the RSTRM framework requires all five criteria to be rated Strong before automation is attempted; a single Weak rating means the task must be redesigned or deferred entirely.",
+          "correct": false,
+          "misconception": "named-misconception",
+          "rationale": "Wrong because this encodes the misconception that RSTRM is a binary all-or-nothing gate. The framework distinguishes between one Weak rating (which may be mitigated by a design compensation such as a human-in-the-loop checkpoint) and two or more Weak ratings (which signal the task scope should be redesigned or deferred)."
+        },
+        {
+          "id": "B",
+          "text": "A task with one Weak rating may still be automatable if a specific design compensation addresses the weak criterion — such as a human-in-the-loop checkpoint for a partially Rules-based step — but two or more Weak ratings indicate the task scope should be redesigned before automation.",
+          "correct": true,
+          "rationale": "Correct because the RSTRM framework is a calibration tool, not a binary gate. One Weak rating with a targeted mitigation strategy (for example, Tracy validating Claude's first-pass Slack classification at the human-in-the-loop checkpoint) is an acceptable design decision. Two or more Weak ratings signal that the task needs scope reduction or input standardization before automation is viable."
+        },
+        {
+          "id": "C",
+          "text": "Yes — a task can be automated even with two or more Weak ratings, provided Tracy reviews the output before distribution, because the human-in-the-loop checkpoint compensates for any number of framework weaknesses.",
+          "correct": false,
+          "misconception": "off-by-one",
+          "rationale": "Wrong because the human-in-the-loop checkpoint mitigates risk but does not make a fundamentally unsuitable task automatable. Two or more Weak ratings indicate the task itself is not yet a good automation candidate — the solution is to redesign the task (for example, standardizing the input format), not to add a review checkpoint and proceed."
+        },
+        {
+          "id": "D",
+          "text": "Whether a task with Weak ratings can be automated depends entirely on the team's risk tolerance — the RSTRM framework gives a score but provides no decision rules about acceptable thresholds.",
+          "correct": false,
+          "misconception": "previously-correct",
+          "rationale": "Wrong because the RSTRM framework does provide explicit decision guidance: two or more Weak ratings signal redesign or deferral, while one Weak rating with a design compensation is acceptable. The framework is not a pure scoring tool that leaves all decisions to the team."
+        }
+      ],
+      "estimated_difficulty": 0.65,
+      "time_seconds": 95,
+      "remediation_link": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md#sec-7",
+      "accessibility": {
+        "alt_text_for_figures": null,
+        "screen_reader_safe": true
+      }
+    },
+    {
+      "item_id": "ch01-qB08",
+      "chapter": 1,
+      "section_ref": "10",
+      "learning_outcome_ref": "LO-01.1",
+      "bloom_level": "Analyze",
+      "item_type": "tf_justified",
+      "assessment_mode": "summative",
+      "carryforward_from": null,
+      "stem": "Tracy's assistant suggests the following after three months of successful status report automation: 'The human-in-the-loop checkpoint delays distribution by 15 minutes each week — since the automation has never produced an error, we should set it to auto-send so Tracy can use those 15 minutes for higher-value work.' Analyze whether this suggestion is sound. Provide a one-sentence justification that identifies the logical flaw.",
+      "options": null,
+      "expected_answer": "False. The suggestion commits the base-rate fallacy: the absence of past errors does not guarantee future accuracy, and the asymmetric cost of a single error reaching executive leadership — damaged credibility for Tracy and her team — far outweighs the cumulative value of 15 minutes per week saved; the human-in-the-loop checkpoint is a non-negotiable design element for high-stakes outputs, not an efficiency trade-off.",
+      "grading_rubric_ref": null,
+      "estimated_difficulty": 0.65,
+      "time_seconds": 80,
+      "remediation_link": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md#sec-10",
+      "accessibility": {
+        "alt_text_for_figures": null,
+        "screen_reader_safe": true
+      }
+    },
+    {
+      "item_id": "ch01-qB09",
+      "chapter": 1,
+      "section_ref": "5",
+      "learning_outcome_ref": "LO-01.2",
+      "bloom_level": "Analyze",
+      "item_type": "error_spotting",
+      "assessment_mode": "summative",
+      "carryforward_from": null,
+      "stem": "Tracy reviews documentation her team drafted for a new automation. It states: 'Step 1 — The Confluence plugin synthesizes a summary from the page content and formats it into the five-section executive template. Step 2 — The skill authenticates with Jira and retrieves the closed ticket list. Step 3 — The agent formats the final report and sends it to the leadership distribution list.' Identify every role-assignment error in this description and state the correct function of each component.",
+      "code_block": null,
+      "options": null,
+      "expected_answer": "Three errors: (1) 'The Confluence plugin synthesizes a summary' — synthesis and formatting are skill functions, not plugin functions. The Confluence plugin retrieves and formats raw page content; a skill performs the synthesis into the executive template structure. (2) 'The skill authenticates with Jira and retrieves the closed ticket list' — authentication and data retrieval from Jira are plugin functions. The Jira plugin handles authentication and querying; the skill calls the plugin and specifies what data to request. (3) 'The agent formats the final report' — formatting is a skill function. The agent orchestrates the multi-step sequence (calling the skill and managing the workflow); the skill handles output formatting. The agent's final action would be to pause at the human-in-the-loop checkpoint, not to format or send the report directly.",
+      "grading_rubric_ref": null,
+      "estimated_difficulty": 0.60,
+      "time_seconds": 110,
+      "remediation_link": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md#sec-5",
+      "accessibility": {
+        "alt_text_for_figures": null,
+        "screen_reader_safe": true
+      }
+    },
+    {
+      "item_id": "ch01-qB10",
+      "chapter": 1,
+      "section_ref": "13",
+      "learning_outcome_ref": "LO-01.3",
+      "bloom_level": "Evaluate",
+      "item_type": "short_answer",
+      "assessment_mode": "summative",
+      "carryforward_from": null,
+      "stem": "A new program manager at Advisor360° asks Tracy: 'The RSTRM framework sounds useful, but couldn't I just use my gut instinct to decide which tasks to automate? I've been doing this job for ten years and I have a good sense of what's tedious.' In two to three sentences, explain to Tracy why the RSTRM framework adds value beyond experienced judgment, referencing at least one specific RSTRM criterion that experienced intuition tends to underweight.",
+      "options": null,
+      "expected_answer": "Tracy should explain that experienced intuition reliably identifies the Repetitive and Time-consuming dimensions of a task — the 'what feels tedious' signal — but tends to underweight the Rules-based criterion, because tasks that feel routine often contain embedded judgment calls that are invisible to the person performing them. The RSTRM framework forces explicit articulation of the decision rules before building the automation, which surfaces hidden subjectivity (for example, classifying a Slack message as a real blocker versus a casual concern) that would otherwise produce inconsistent automation output. Writing down the rules in advance is both a suitability test and the first design step of the automation itself.",
+      "grading_rubric_ref": null,
+      "estimated_difficulty": 0.50,
+      "time_seconds": 120,
+      "remediation_link": "cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md#sec-13",
+      "accessibility": {
+        "alt_text_for_figures": null,
+        "screen_reader_safe": true
+      }
+    }
+  ]
+}

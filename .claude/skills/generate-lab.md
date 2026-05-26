@@ -94,14 +94,14 @@ All filenames follow `{course_slug}--capstone--{artifact}.{ext}` (master §5.2).
 ```
 outputs/{course_slug}/capstone/
   README.md                                         ← entry point + navigation
-  {course_slug}--capstone--brief.md                 ← 14-section lab document (§6 below)
-  {course_slug}--capstone--rubric.json              ← 6-criterion rubric (§8 below)
-  {course_slug}--capstone--starter/                 ← TODO-marked scaffold files
-  {course_slug}--capstone--solution/                ← instructor-only canonical solution
-  {course_slug}--capstone--verify/                  ← public + hidden tests + expected outputs
-  {course_slug}--capstone--failure-modes.md         ← ≥ 3 documented failure modes
-  {course_slug}--capstone--instructor-guide.md      ← timing, demo notes, common mistakes
-  {course_slug}--capstone--debrief.md               ← reflection prompts + self-scoring sheet
+  {course_slug}--capstone--lab.docx                 ← 14-section lab document (Word — student-facing)
+  {course_slug}--capstone--rubric.json              ← 6-criterion rubric (internal)
+  {course_slug}--capstone--starter/                 ← TODO-marked scaffold files (code)
+  {course_slug}--capstone--solution/                ← instructor-only canonical solution (code)
+  {course_slug}--capstone--verify/                  ← public + hidden tests + expected outputs (code)
+  {course_slug}--capstone--failure-modes.md         ← ≥ 3 documented failure modes (internal)
+  {course_slug}--capstone--instructor-guide.docx    ← timing, demo notes, common mistakes (Word — instructor-facing)
+  {course_slug}--capstone--debrief.docx             ← reflection prompts + self-scoring sheet (Word — student-facing)
   {course_slug}--capstone--environment/             ← delta from course environment (if any)
     preflight.sh / preflight.ps1
     reset.sh
@@ -119,11 +119,11 @@ outputs/{course_slug}/capstone/
 
 | File | Purpose |
 |------|---------|
-| `{course_slug}--capstone--brief.md` | Lab instructions — start here |
+| `{course_slug}--capstone--lab.docx` | Lab instructions — start here |
 | `{course_slug}--capstone--rubric.json` | Assessment rubric |
 | `{course_slug}--capstone--starter/` | Your starting files |
 | `{course_slug}--capstone--verify/` | Run `verify.sh` to check your work |
-| `{course_slug}--capstone--debrief.md` | Reflection + self-scoring |
+| `{course_slug}--capstone--debrief.docx` | Reflection + self-scoring |
 
 ## Setup
 
@@ -469,7 +469,7 @@ Before submitting, score yourself honestly.
 **Weighted score:** sum(score × weight) / sum(weights)
 ```
 
-### Section 12 — Debrief (`{course_slug}--capstone--debrief.md`)
+### Section 12 — Debrief (`{course_slug}--capstone--debrief.docx`)
 
 Write as a separate file. Must contain:
 
@@ -520,7 +520,7 @@ This question has no right answer — it is about your ability to think beyond t
 - **{goal title}** (≈ {N} min): {description}
 ```
 
-### Section 14 — Instructor Guide (`{course_slug}--capstone--instructor-guide.md`)
+### Section 14 — Instructor Guide (`{course_slug}--capstone--instructor-guide.docx`)
 
 ```markdown
 # Instructor Guide — Capstone Lab
@@ -675,7 +675,7 @@ The tracks MUST be meaningfully different — not just cosmetically different in
   `personalization_plan.vocabulary_substitutions` and the reserved scenario's `entities[]`
   and `artifacts[]`.
 - No generic placeholders ("a user", "the system", "an item") permitted.
-- All terminology MUST match `outputs/{course_slug}/glossary.md`.
+- All terminology MUST match `outputs/{course_slug}/glossary.docx`.
 - The capstone MUST NOT introduce any domain not represented in `problem_spec`.
 
 ---

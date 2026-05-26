@@ -1,6 +1,6 @@
 ---
 name: companion-generator
-description: Generates chapter companion artifacts — the cheatsheet (*--cheatsheet.md) and the instructor guide (*--instructor-guide.md or .docx) following GreatCourseSpec §8.6. The cheatsheet is a ≤2-page quick reference; the instructor guide provides per-exercise timing, common mistakes, and discussion prompts for cohort delivery. Accepts feedback_failures[] on retry.
+description: Generates chapter companion artifacts — the cheatsheet (*--cheatsheet.docx) and the instructor guide (*--instructor-guide.docx) following GreatCourseSpec §8.6. The cheatsheet is a ≤2-page quick reference; the instructor guide provides per-exercise timing, common mistakes, and discussion prompts for cohort delivery. Both are Word (.docx) files produced via anthropic-skills:docx. Accepts feedback_failures[] on retry.
 model: claude-sonnet-4-6
 ---
 
@@ -15,35 +15,51 @@ You receive the full **common input envelope** plus:
 - `quiz_path`: path to the quiz JSON (Form A)
 - `feedback_failures[]`: empty on first attempt
 
-## Cheatsheet (`*--cheatsheet.md`)
+## Cheatsheet (`*--cheatsheet.docx`)
 
-The cheatsheet is a **≤ 2 printed pages** (≈ 800 words) quick reference. Structure:
+The cheatsheet is a **≤ 2 printed pages** (≈ 800 words) quick reference. Produce it as a
+Word document using `anthropic-skills:docx`:
 
-```markdown
-# Chapter {N} Cheatsheet — {chapter title}
+```
+Use the Skill tool: anthropic-skills:docx
+Pass the cheatsheet content.
+Output path: outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--cheatsheet.docx
+```
 
-## Learning Outcomes
+Apply Word formatting:
+- Heading 1 → "Chapter {N} Cheatsheet — {chapter title}"
+- Heading 2 → each section heading (Key Terms, Syntax Reference, etc.)
+- Tables → for Key Terms, Syntax/Command Reference, and Common Pitfalls
+- Normal style → body text and decision guide narrative
+- Code text → Courier New or Consolas, 10pt (never images)
+
+Content structure:
+
+```
+Chapter {N} Cheatsheet — {chapter title}
+
+Learning Outcomes
 - LO-NN.1: {verb} {object} [Bloom: {level}]
 ...
 
-## Key Terms
+Key Terms
 | Term | Definition |
 |------|-----------|
 | {term from glossary_delta} | {concise definition} |
 
-## Syntax / Command Reference
+Syntax / Command Reference
 {If the domain involves commands, APIs, or syntax — a concise reference table}
-{Code blocks must be plain text, syntactically valid}
+{Code must be plain text, syntactically valid}
 
-## Decision Guide
+Decision Guide
 {A simple decision table or flowchart description (text only) for the chapter's main decision point}
 
-## Common Pitfalls Quick Reference
+Common Pitfalls Quick Reference
 | Pitfall | Symptom | Fix |
 |---------|---------|-----|
 | {misconception from chapter_pitfalls} | {error/symptom} | {one-line fix} |
 
-## Key Formulas / Rules
+Key Formulas / Rules
 {If applicable: the 2–3 most important rules or patterns from the chapter, stated concisely}
 ```
 
@@ -82,12 +98,28 @@ at a desk, in a classroom, during an exercise. Generic content breaks the flow.
 
 ---
 
-## Instructor Guide (`*--instructor-guide.md`)
+## Instructor Guide (`*--instructor-guide.docx`)
 
 The instructor guide is for cohort instructors; it MUST NOT be distributed to learners.
-Structure:
+Produce it as a Word document using `anthropic-skills:docx`:
 
-```markdown
+```
+Use the Skill tool: anthropic-skills:docx
+Pass the instructor guide content.
+Output path: outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--instructor-guide.docx
+```
+
+Apply Word formatting:
+- Heading 1 → "Instructor Guide — Chapter {N}: {title}"
+- Heading 2 → each major section (Before the Session, Session Flow, etc.)
+- Heading 3 → each sub-section (Opening, Concept Introduction, Exercise sections, etc.)
+- Normal style → body text, instructions, discussion prompts
+- Tables → for timing summaries or structured data
+- Code text → Courier New or Consolas, 10pt (never images)
+
+Content structure:
+
+```
 # Instructor Guide — Chapter {N}: {title}
 
 ## Chapter Overview
@@ -142,24 +174,12 @@ Structure:
 - Learners below threshold: point to remediation_link in quiz items
 ```
 
-## Generating the Instructor Guide as .docx
-
-If `mode_targets` includes `cohort`, the instructor guide may be produced as `.docx`
-using the docx skill:
-
-```
-Use the Skill tool: anthropic-skills:docx
-Pass the instructor guide markdown content.
-Output path: {course_slug}--ch{NN}--{slug}--instructor-guide.docx
-```
-
-If cohort mode is not active, produce `.md` only.
-
 ## Output
 
+Both companion artifacts are always produced as Word (`.docx`) files — no `.md` alternatives.
+
 Write:
-1. `{course_slug}--ch{NN}--{slug}--cheatsheet.md`
-2. `{course_slug}--ch{NN}--{slug}--instructor-guide.md` (always)
-3. `{course_slug}--ch{NN}--{slug}--instructor-guide.docx` (if cohort mode active)
+1. `{course_slug}--ch{NN}--{slug}--cheatsheet.docx` — via `anthropic-skills:docx`
+2. `{course_slug}--ch{NN}--{slug}--instructor-guide.docx` — via `anthropic-skills:docx`
 
 Report after completion: word count per artifact, any warnings about missing content.

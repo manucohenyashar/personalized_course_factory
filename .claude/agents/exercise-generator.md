@@ -50,28 +50,34 @@ Address every item in `feedback_failures` before regenerating. Key fixes per gat
 
 ### Pack directory structure
 
+Student-facing exercise briefs are **Microsoft Word `.docx` files**. Students open `brief.docx`
+to read the exercise instructions. Code files (`starter/`, `solution/`, `verify/`) remain as
+source code. Internal metadata files (`rubric.json`, `failure-modes.md`, `manifest.json`)
+remain in their native formats.
+
 ```
 outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--exercises/
-  manifest.json
-  README.md
+  manifest.json                ← pack metadata (internal JSON)
+  README.md                    ← directory index only (internal)
   worked-example/
-    README.md            ← front-matter: stage=worked_example, difficulty=not_applicable
-    solution/
-    walkthrough.md       ← narrated step-by-step solution
+    brief.docx                 ← worked example instructions (Word — student-facing)
+    solution/                  ← code files
+    walkthrough.docx           ← narrated step-by-step solution (Word — student-facing)
   exercise-02/
-    README.md            ← stage=completion, difficulty=easy
-    starter/             ← ≥30% TODO lines
-    solution/
-    verify/
-    rubric.json
-    failure-modes.md
+    brief.docx                 ← completion exercise instructions (Word — student-facing)
+    starter/                   ← ≥30% TODO lines (code files)
+    solution/                  ← code files
+    verify/                    ← test scripts (code files)
+    rubric.json                ← rubric data (internal)
+    failure-modes.md           ← failure reference for evaluators (internal)
   exercise-03/
-    README.md            ← stage=independent, difficulty=medium
-    starter/             ← minimal scaffold only
-    solution/
-    verify/
+    brief.docx                 ← independent exercise instructions (Word — student-facing)
+    starter/                   ← minimal scaffold (code files)
+    solution/                  ← code files
+    verify/                    ← test scripts
     rubric.json
     failure-modes.md
+  debrief.docx                 ← pack debrief and reflection (Word — student-facing)
 ```
 
 ### Exercise 1: Worked Example

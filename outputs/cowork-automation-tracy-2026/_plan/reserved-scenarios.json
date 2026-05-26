@@ -1,0 +1,24 @@
+{
+  "reserved_for_capstone": [
+    {
+      "id": "scenario-02",
+      "title": "Cross-project risk and dependency detection",
+      "description": "Tracy oversees two unrelated projects whose teams occasionally share resources or timelines. A Claude agent reviews both projects' Jira Plans and DragonBoat roadmap entries alongside recent meeting transcripts to surface shared blockers, overlapping milestones, and cross-team dependencies that Tracy needs to raise at the next leadership meeting.",
+      "entities": [
+        "Tracy, Senior Program Manager",
+        "leadership team (meeting audience)",
+        "Project Alpha team",
+        "Project Beta team"
+      ],
+      "artifacts": [
+        "Jira Plans for both projects",
+        "DragonBoat roadmap items",
+        "recent meeting transcripts (both projects)",
+        "prioritized cross-project risk and dependency summary"
+      ],
+      "reservation_reason": "Confirmed by user at Step 2 normalization review. This scenario requires Tracy to synthesize skills from all 16 chapters — multi-source aggregation (ch01, ch06, ch11), context management (ch04, ch05), agent design (ch11, ch12), browser/SaaS automation (ch09, ch10), human-in-the-loop checkpoints (ch13), and governance (ch15). It is the only scenario that spans both concurrent projects simultaneously, making it unseen at chapter scope and maximally integrative at capstone scope.",
+      "chapters_forbidden_from_using_this_scenario": "all — chapters 01 through 16 MUST NOT reference or consume scenario-02 in any example, worked problem, quiz item, or exercise"
+    }
+  ],
+  "notes": "ChapterTextGenerator, ExerciseGenerator, QuizGenerator, PresentationGenerator, PodcastGenerator, and CompanionGenerator MUST NOT consume scenario-02. The forbidden_examples field in every chapter's common envelope will carry this entry at runtime."
+}

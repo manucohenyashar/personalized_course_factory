@@ -1,0 +1,281 @@
+{
+  "plan_id": "pers-cowork-automation-tracy-2026",
+  "plan_version": "1.0.0",
+  "created_at": "2026-05-25T00:00:00Z",
+  "authored_by": "PlannerAgent v2.0.0",
+  "course_slug": "cowork-automation-tracy-2026",
+  "cohort_id": "tracy-zlatkova-senior-pm-2026",
+
+  "voice_register": "professional",
+  "register_rationale": "Tracy is a Senior Program Manager with 15+ years of experience and a university degree. FK grade 13 professional prose is appropriate — outcome-focused framing with executive register, compound sentences acceptable, no heavy academic abstraction.",
+
+  "reading_level": {
+    "fk_grade_target": 13,
+    "max_avg_sentence_length": 30,
+    "vocabulary_rule": "Technical terms may appear without inline definition if in glossary; academic prose OK; compound sentences acceptable. Expert PM vocabulary assumed."
+  },
+
+  "vocabulary_substitutions": {
+    "user": "Tracy",
+    "the user": "Tracy",
+    "a user": "Tracy",
+    "system": "Claude Cowork",
+    "the system": "Claude Cowork",
+    "item": "project artifact",
+    "an item": "a project artifact",
+    "items": "project artifacts",
+    "process": "workflow",
+    "the process": "the workflow",
+    "task": "PM task",
+    "work": "program management work",
+    "document": "status report or meeting summary",
+    "data": "project data",
+    "input": "source information",
+    "output": "report draft",
+    "request": "automation run",
+    "result": "generated report",
+    "platform": "Claude Cowork",
+    "tool": "Claude Cowork skill or plugin",
+    "notification": "Slack message or email alert",
+    "record": "Jira ticket or Confluence page",
+    "event": "project milestone or meeting",
+    "customer": "project stakeholder",
+    "report": "executive status report or meeting summary",
+    "meeting": "stand-up, leadership review, or project sync",
+    "file": "Google Drive file or meeting recording",
+    "folder": "Google Drive project folder",
+    "inbox": "Gmail inbox",
+    "ticket": "ServiceNow ticket or Jira ticket",
+    "dashboard": "Jira board or DragonBoat roadmap",
+    "team": "project team or cross-functional team",
+    "manager": "Tracy, Senior Program Manager",
+    "analyst": "Tracy, in her analysis role",
+    "project": "one of Tracy's two concurrent programs"
+  },
+
+  "domain_protagonist": {
+    "name": "Tracy",
+    "role": "Senior Program Manager (AI Program Manager)",
+    "company": "Advisor360°",
+    "company_type": "wealth-management SaaS",
+    "location": "Weston, Massachusetts (hybrid)",
+    "key_pain_point": "manually synthesizing information from 10+ systems into weekly executive reports — a process that consumes hours she could spend on strategic work"
+  },
+
+  "domain_systems": [
+    "Jira (boards, Plans, filters)",
+    "Confluence (project pages, decision logs)",
+    "Slack (project channels, DMs)",
+    "Google Meet (transcripts, recordings)",
+    "Gmail (inbox, labels, archive)",
+    "Google Drive (meeting recordings, Docs, Sheets, folders)",
+    "DragonBoat (portfolio roadmap, strategic priorities)",
+    "ServiceNow (ITSM tickets, change management)",
+    "Claude Cowork (skills, plugins, agents, orchestrations)"
+  ],
+
+  "domain_objects": [
+    "executive status report",
+    "detailed supporting notes",
+    "meeting transcript",
+    "action item",
+    "blocker",
+    "Jira ticket",
+    "Confluence page",
+    "DragonBoat roadmap entry",
+    "ServiceNow ticket",
+    "Gmail label",
+    "Google Drive folder",
+    "naming convention",
+    "human-in-the-loop checkpoint",
+    "source of truth"
+  ],
+
+  "scenario_assignments": {
+    "ch01-intro-to-cowork-automation": {
+      "scenario_id": "scenario-01",
+      "scenario_title": "Weekly project status report from scattered sources",
+      "rationale": "Establishes the core problem Tracy is solving — manual aggregation of Jira, Confluence, Slack, and meeting transcripts into a status report — grounding Chapter 1's conceptual overview in her exact Monday-morning pain point."
+    },
+    "ch02-automation-mindset": {
+      "scenario_id": "scenario-03",
+      "scenario_title": "Meeting transcript to structured summary",
+      "rationale": "Chapter 2 uses Tracy's transcript-to-summary pain point to teach workflow decomposition: a raw transcript is a structured input; a summary with decisions/action items/risks is a structured output. Tracy can immediately map the framework to her Tuesday post-meeting routine."
+    },
+    "ch03-setting-up-claude": {
+      "scenario_id": "scenario-04",
+      "scenario_title": "Email inbox triage and categorization",
+      "rationale": "Workspace setup is motivated by the inbox problem — Tracy needs a configured Claude environment and organized session outputs before she can run a triage workflow. Setting up file handling, session management, and organized outputs is directly preparatory to the email triage workflow."
+    },
+    "ch04-context-management": {
+      "scenario_id": "scenario-05",
+      "scenario_title": "Google Drive meeting content organization",
+      "rationale": "Context quality determines whether Claude can correctly propose a folder hierarchy and rename hundreds of files without hallucinating. Chapter 4's context management principles (reference docs, structured inputs, avoiding overloaded conversations) are taught through Tracy's Drive reorganization task."
+    },
+    "ch05-claude-md": {
+      "scenario_id": "scenario-03",
+      "scenario_title": "Meeting transcript to structured summary",
+      "rationale": "CLAUDE.MD persistent instructions encode Tracy's output standards for meeting summaries: who owns action items, how decisions are formatted, which project terminology to use. The transcript summarization scenario is a natural CLAUDE.MD use case Tracy can build in Chapter 5 and reuse immediately."
+    },
+    "ch06-creating-skills": {
+      "scenario_id": "scenario-01",
+      "scenario_title": "Weekly project status report from scattered sources",
+      "rationale": "The status report workflow is Tracy's highest-value automation candidate. Chapter 6 builds her first reusable skill — the status report aggregation skill — using this scenario as the design brief, aligning the chapter's 'first reusable skill' deliverable with her stated primary learning goal."
+    },
+    "ch07-evaluating-skills": {
+      "scenario_id": "scenario-03",
+      "scenario_title": "Meeting transcript to structured summary",
+      "rationale": "Tracy needs a reliable evaluation rubric for her transcript summarization skill before she can trust it over Gemini auto-notes. Chapter 7's accuracy, completeness, format, usefulness, and risk checks are applied to a meeting summary output — a high-stakes artifact that goes to leadership."
+    },
+    "ch08-connecting-tools": {
+      "scenario_id": "scenario-04",
+      "scenario_title": "Email inbox triage and categorization",
+      "rationale": "Connecting to Gmail via a plugin or MCP tool is the prerequisite for automated inbox triage. Chapter 8's safe import checklist and tool integration map are built around Tracy's Gmail + label + archive workflow, establishing trust and permissions before the automation runs."
+    },
+    "ch09-playwright-browser-automation": {
+      "scenario_id": "scenario-05",
+      "scenario_title": "Google Drive meeting content organization",
+      "rationale": "Google Drive reorganization requires browser-based navigation — clicking through folders, reading file metadata, applying renames — when no Drive MCP is available. Chapter 9's browser automation workflow and human-review checkpoints are taught through Tracy's Drive cleanup task."
+    },
+    "ch10-zapier-saas-automation": {
+      "scenario_id": "scenario-04",
+      "scenario_title": "Email inbox triage and categorization",
+      "rationale": "Zapier enables trigger-action workflows that connect Gmail, Slack, and Jira — for example, routing a flagged email to a Slack project channel or creating a Jira ticket from an action-item email. Chapter 10's cross-application automation is grounded in Tracy's inbox-to-project-system workflow."
+    },
+    "ch11-practical-agents": {
+      "scenario_id": "scenario-01",
+      "scenario_title": "Weekly project status report from scattered sources",
+      "rationale": "A multi-step status-report agent — plan reads Jira, then Confluence, then Slack, then drafts the report, then halts for Tracy's review — is the natural agent design exercise for Chapter 11. This is the autonomous version of the Chapter 6 skill, now with a planner, sub-tasks, and escalation logic."
+    },
+    "ch12-orchestrations-scheduled-work": {
+      "scenario_id": "scenario-01",
+      "scenario_title": "Weekly project status report from scattered sources",
+      "rationale": "Chapter 12's recurring automation is Tracy's weekly status report workflow scheduled for every Monday morning — automatically aggregating the past week's Jira, Confluence, Slack, and transcript data and halting for her review before distribution. This is the highest-value recurring automation in her portfolio."
+    },
+    "ch13-ask-user-question": {
+      "scenario_id": "scenario-06",
+      "scenario_title": "ServiceNow ticket integration into weekly reports",
+      "rationale": "ServiceNow ticket integration requires multiple clarification and approval checkpoints: which project's tickets to include, which priority threshold warrants escalation, and whether the merged report is ready to send. Chapter 13's AskUserQuestion patterns are taught through these decision points in the ticket workflow."
+    },
+    "ch14-debugging-improving-automations": {
+      "scenario_id": "scenario-06",
+      "scenario_title": "ServiceNow ticket integration into weekly reports",
+      "rationale": "The ServiceNow integration is a realistic debugging candidate — query results may be incomplete, ticket status classifications may be wrong, or the merged report section may be malformed. Chapter 14's troubleshooting checklist is applied to diagnosing and fixing these automation failures."
+    },
+    "ch15-security-safety-governance": {
+      "scenario_id": "scenario-06",
+      "scenario_title": "ServiceNow ticket integration into weekly reports",
+      "rationale": "ServiceNow contains sensitive client service request data and incident records. Chapter 15's data privacy, permissions, and governance principles are grounded in the risks of automating ServiceNow access — prompt injection from ticket content, unauthorized data exposure, and output review before distribution."
+    },
+    "ch16-personal-automation-system": {
+      "scenario_id": "scenario-01",
+      "scenario_title": "Weekly project status report from scattered sources",
+      "rationale": "Chapter 16's synthesis exercise asks Tracy to design her personal automation portfolio. The status report workflow anchors the portfolio as the 'flagship' automation — illustrating how skills (ch06), agents (ch11), scheduling (ch12), and governance (ch15) combine into a sustainable operating model."
+    }
+  },
+
+  "running_example_per_chapter": {
+    "ch01-intro-to-cowork-automation": {
+      "protagonist": "Tracy",
+      "artifact": "a partially completed weekly executive status report for one of her two programs, showing which sections she currently fills in manually from Jira, Confluence, Slack, and meeting transcripts"
+    },
+    "ch02-automation-mindset": {
+      "protagonist": "Tracy",
+      "artifact": "a raw Google Meet transcript from her Monday stand-up, annotated with the manual steps she takes to extract decisions and action items"
+    },
+    "ch03-setting-up-claude": {
+      "protagonist": "Tracy",
+      "artifact": "her Claude workspace folder structure — organized session outputs, saved prompts, and a reference document pointing to her Gmail inbox triage workflow"
+    },
+    "ch04-context-management": {
+      "protagonist": "Tracy",
+      "artifact": "a context package for the Google Drive reorganization task — a reference document listing the current folder structure and target naming convention"
+    },
+    "ch05-claude-md": {
+      "protagonist": "Tracy",
+      "artifact": "a CLAUDE.MD file encoding her meeting summary standards: action item format, decision attribution rules, and Advisor360° project naming conventions"
+    },
+    "ch06-creating-skills": {
+      "protagonist": "Tracy",
+      "artifact": "the Status Report Aggregation skill — a reusable Claude skill that accepts Jira board data, Confluence page content, Slack channel summary, and two transcript excerpts, then produces an executive summary and detailed supporting notes"
+    },
+    "ch07-evaluating-skills": {
+      "protagonist": "Tracy",
+      "artifact": "an evaluation rubric applied to the output of her transcript summarization skill — checking accuracy of action item attribution, completeness of decision capture, format compliance, and absence of hallucinated risks"
+    },
+    "ch08-connecting-tools": {
+      "protagonist": "Tracy",
+      "artifact": "a business tool integration map showing Gmail, Google Drive, Jira, and Slack connected to Claude Cowork, with a safe import checklist applied to the Gmail plugin"
+    },
+    "ch09-playwright-browser-automation": {
+      "protagonist": "Tracy",
+      "artifact": "a browser automation workflow that navigates Tracy's Google Drive, reads folder metadata, and proposes a rename and reorganization plan — with a human-review checkpoint before any file is moved"
+    },
+    "ch10-zapier-saas-automation": {
+      "protagonist": "Tracy",
+      "artifact": "a Zapier workflow that triggers on a Gmail label applied by Claude's triage automation and creates a Jira ticket in the appropriate project board for emails classified as action-required"
+    },
+    "ch11-practical-agents": {
+      "protagonist": "Tracy",
+      "artifact": "a weekly report agent design document — goal statement, sub-task list (read Jira, read Confluence, read Slack, draft report, halt for review), escalation rules, and scope boundaries"
+    },
+    "ch12-orchestrations-scheduled-work": {
+      "protagonist": "Tracy",
+      "artifact": "a scheduled Monday-morning automation that triggers her weekly report agent at 7:00 AM, collects the previous week's data, and delivers a review-ready draft to her Gmail inbox by 8:00 AM"
+    },
+    "ch13-ask-user-question": {
+      "protagonist": "Tracy",
+      "artifact": "a ServiceNow ticket integration workflow with three AskUserQuestion checkpoints: (1) confirm ticket query scope, (2) approve escalation classification, (3) approve merged report before send"
+    },
+    "ch14-debugging-improving-automations": {
+      "protagonist": "Tracy",
+      "artifact": "a troubleshooting log for a broken ServiceNow ticket query — root cause analysis (overly broad ticket filter), fix applied (project-specific tag added), and before/after output comparison"
+    },
+    "ch15-security-safety-governance": {
+      "protagonist": "Tracy",
+      "artifact": "Tracy's personal automation governance policy — defining which systems require human review before output distribution, which data fields must never be included in prompts, and who can approve new automation deployments on her team"
+    },
+    "ch16-personal-automation-system": {
+      "protagonist": "Tracy",
+      "artifact": "Tracy's personal automation operating model — a portfolio plan listing 5 reusable skills, 2 recurring orchestrations, 1 browser automation, 1 SaaS automation, and 1 agent workflow, each mapped to a weekly time savings estimate"
+    }
+  },
+
+  "prior_knowledge_assumed": [
+    "Jira boards, filters, backlog management",
+    "Confluence project pages and documentation",
+    "ServiceNow ITSM, portal release, workflow automation",
+    "Slack team communication and channel management",
+    "Google Workspace (Docs, Drive, Meet, Gmail)",
+    "Project and program management (Agile, milestones, risk, stakeholder reporting)",
+    "Cross-functional stakeholder communication and executive reporting",
+    "Budget management and financial operations",
+    "Agile methodologies (Scrum, sprint planning, retrospectives)",
+    "Vendor and third-party relationship management"
+  ],
+
+  "prior_knowledge_scaffolding_rules": {
+    "assumed_no_introduction": "All items in prior_knowledge_assumed MUST be referenced as known. Never introduce or define Jira, Confluence, ServiceNow, Slack, or Google Workspace — Tracy uses these daily.",
+    "scaffold_required": [
+      "Claude Cowork skills — what they are and how to create/test them",
+      "Claude plugins and MCP tools",
+      "Browser automation with Playwright MCP",
+      "Zapier-mediated SaaS workflows",
+      "Agent workflows with human oversight checkpoints",
+      "CLAUDE.MD and persistent context files",
+      "Scheduled and recurring automations",
+      "Prompt injection and safe automation governance",
+      "Evaluation rubrics for automation outputs"
+    ],
+    "scaffold_pattern": "Concrete example from Tracy's work → analogy to known PM practice → formal definition (Concrete-Pictorial-Abstract)"
+  },
+
+  "cultural_and_locale_rules": {
+    "locale": "en-US",
+    "date_format": "YYYY-MM-DD or Month DD, YYYY",
+    "time_format": "12-hour (e.g., 7:00 AM ET)",
+    "currency": "USD",
+    "idioms": "Standard American English business register. No British spellings. No informal slang.",
+    "units": "Imperial where relevant (though unlikely in this course)"
+  }
+}

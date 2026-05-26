@@ -1,7 +1,10 @@
 # Claude Cowork Automation for Knowledge Workers
 ## Practical Automation Curriculum Specification
 
-Version: 1.0  
+Version: 1.1
+Chapters: 16
+Delivery: 30–50 minutes per chapter
+
 Audience:
 - Business professionals
 - Analysts
@@ -48,7 +51,7 @@ This course intentionally avoids:
 # COURSE STRUCTURE
 
 ## Total Chapters
-18
+16
 
 ## Recommended Delivery
 - 30–50 minutes per chapter
@@ -98,13 +101,14 @@ The course does NOT teach:
 # Chapter 1 — Introduction to Claude Cowork Automation
 
 ## Objectives
-- Understand what Claude Cowork can automate
-- Understand major concepts at a practical level
+- Identify what Claude Cowork can and cannot automate in a knowledge-work context
+- Distinguish between skills, plugins, and agents at a conceptual level
+- Recognize the types of business tasks suited to AI automation
 
 ## Topics
 - What Claude Cowork is
-- What automation means
-- Skills vs plugins vs agents
+- What automation means in a knowledge-work context
+- Skills vs. plugins vs. agents (conceptual overview)
 - Human-in-the-loop workflows
 - What types of work can be automated
 - Real business examples
@@ -129,7 +133,9 @@ The course does NOT teach:
 # Chapter 2 — The Automation Mindset
 
 ## Objectives
-- Learn how to think about automating work
+- Apply a structured framework to identify automation-suitable tasks in your own workflow
+- Distinguish between tasks that benefit from automation and tasks that require human judgment
+- Decompose a multi-step workplace process into automation-ready units
 
 ## Topics
 - Identifying repetitive work
@@ -155,7 +161,9 @@ The course does NOT teach:
 # Chapter 3 — Setting Up Claude for Daily Work
 
 ## Objectives
-- Configure an effective working environment
+- Configure a personal Claude workspace for daily professional use
+- Demonstrate basic CLI usage for running and managing automations
+- Organize automation outputs and session artifacts for reuse
 
 ## Topics
 - Workspace organization
@@ -183,7 +191,9 @@ The course does NOT teach:
 # Chapter 4 — Context Management for Better Results
 
 ## Objectives
-- Improve automation reliability through better context
+- Explain why context quality directly affects automation reliability
+- Apply context organization strategies to reduce errors and improve consistency
+- Design reusable reference documents for recurring workflows
 
 ## Topics
 - Why context matters
@@ -209,7 +219,9 @@ The course does NOT teach:
 # Chapter 5 — CLAUDE.MD for Business Users
 
 ## Objectives
-- Use CLAUDE.MD effectively without engineering complexity
+- Construct a personal or team CLAUDE.MD file that encodes reusable behavioral preferences
+- Apply persistent instructions to standardize tone, format, and output conventions
+- Load and use context files and memory files (project.md, persona.md) within sessions to extend persistent guidance
 
 ## Topics
 - What CLAUDE.MD does
@@ -219,6 +231,7 @@ The course does NOT teach:
 - Defining business preferences
 - Defining output standards
 - Creating reusable behaviors
+- Context files and memory files (loading project.md, persona.md into sessions)
 
 ## Examples
 - Email tone rules
@@ -233,19 +246,29 @@ The course does NOT teach:
 
 # PART 3 — SKILLS
 
-# Chapter 6 — Creating and Using Skills
+# Chapter 6 — Creating and Generating Skills
 
 ## Objectives
-- Build reusable automation skills
+- Design and build a reusable skill for a repetitive workplace task
+- Use the Skill Creator tool to generate, review, and refine skill instructions
+- Evaluate a generated skill for clarity, reliability, and appropriate scope before deployment
 
 ## Topics
-- What skills are
-- When to create skills
-- Skill lifecycle
-- Reusable workflows
-- Business-oriented skills
-- Input/output thinking
+
+### Creating Skills
+- What skills are and when to create them
+- Skill lifecycle (create → test → refine → reuse)
+- Reusable workflows and business-oriented skill design
+- Input/output thinking for reliable skills
 - Skill organization
+
+### Using the Skill Creator Tool
+- Using Skill Creator to generate skills quickly
+- Reviewing and refining generated instructions
+- Improving skill reliability
+- Testing skills before use
+- Avoiding vague or over-broad behavior
+- Reusable skill templates
 
 ## Examples
 - Meeting summarizer
@@ -254,40 +277,24 @@ The course does NOT teach:
 - CRM note formatter
 - Competitive analysis assistant
 
-## Deliverables
-- First reusable skill
-
----
-
-# Chapter 7 — Skill Creator Tool
-
-## Objectives
-- Generate skills quickly and safely
-
-## Topics
-- Using Skill Creator
-- Reviewing generated skills
-- Refining instructions
-- Improving reliability
-- Testing skills
-- Avoiding vague behavior
-- Reusable templates
-
 ## Best Practices
 - Clear task definition
 - Explicit outputs
-- Small focused skills
-- Human review
+- Small, focused skills
+- Human review before deployment
 
 ## Deliverables
+- First reusable skill
 - Skill generation workflow
 
 ---
 
-# Chapter 8 — Evaluating Skills
+# Chapter 7 — Evaluating Skills
 
 ## Objectives
-- Know whether automations are reliable
+- Apply a structured rubric to assess whether a skill's output is accurate, complete, and safe
+- Identify hallucinations and reliability gaps in automation outputs
+- Design an iterative refinement workflow for underperforming skills
 
 ## Topics
 - Basic evaluation principles
@@ -312,20 +319,31 @@ The course does NOT teach:
 
 # PART 4 — TOOLS, PLUGINS & MCP
 
-# Chapter 9 — Plugins and MCP Tools
+# Chapter 8 — Connecting Tools and Importing Skills
 
 ## Objectives
-- Use external tools safely and effectively
+- Connect Claude to at least one external business system using a plugin or MCP tool
+- Evaluate a community-sourced skill or plugin for safety and fitness before importing it
+- Apply a safe import checklist to adapt an external skill to a specific workplace context
+
+## Note on Agents vs. Subagents
+Plugins and MCP tools extend what a single Claude session can reach. Agents (covered in Chapter 9) are separate Claude instances that plan and act autonomously. Subagents are agents spawned by a parent agent to handle a sub-task. This chapter focuses on tools and imported skills, not agent coordination.
 
 ## Topics
-- What plugins are
-- What MCP tools are
-- Connecting Claude to systems
-- Safe tool usage
-- Permissions and trust
+
+### Plugins and MCP Tools
+- What plugins are and what MCP tools are
+- Connecting Claude to external systems
+- Safe tool usage, permissions, and trust
 - Common business integrations
 
-## Examples
+### Importing Skills and Plugins
+- Finding community skills (Anthropic repositories, GitHub)
+- Importing safely and reviewing instructions
+- Adapting existing skills to your context
+- Trust and security basics
+
+## Business Tool Examples
 - Google Workspace
 - CRM systems
 - Slack
@@ -333,15 +351,23 @@ The course does NOT teach:
 - Email systems
 - Task management tools
 
+## Safe Import Principles
+- Avoid unknown automations
+- Review permissions before enabling
+- Test in isolation before production use
+
 ## Deliverables
 - Business tool integration map
+- Safe import checklist
 
 ---
 
-# Chapter 10 — Playwright MCP & Browser Automation
+# Chapter 9 — Playwright MCP & Browser Automation
 
 ## Objectives
-- Automate browser-based workflows
+- Build a browser automation workflow for a repetitive web-based task
+- Identify fragile browser automation patterns and apply mitigation strategies
+- Insert human review checkpoints at high-risk steps in a browser workflow
 
 ## Topics
 - Browser automation basics
@@ -354,7 +380,7 @@ The course does NOT teach:
 
 ## Examples
 - Collecting competitor information
-- Updating systems
+- Updating web-based systems
 - Research workflows
 - Downloading reports
 
@@ -367,10 +393,12 @@ The course does NOT teach:
 
 ---
 
-# Chapter 11 — Zapier MCP & SaaS Automation
+# Chapter 10 — Zapier MCP & SaaS Automation
 
 ## Objectives
-- Connect business applications together
+- Design a trigger-action workflow that connects two or more business applications
+- Implement scheduled and event-triggered cross-application automations
+- Compare direct MCP integrations with Zapier-mediated workflows and select the appropriate approach
 
 ## Topics
 - Trigger-action workflows
@@ -392,45 +420,24 @@ The course does NOT teach:
 
 ---
 
-# Chapter 12 — Importing Skills & Plugins
-
-## Objectives
-- Reuse community assets safely
-
-## Topics
-- Finding community skills
-- Anthropic repositories
-- GitHub workflows
-- Importing safely
-- Reviewing instructions
-- Adapting skills
-- Trust and security basics
-
-## Important Topics
-- Avoid unknown automations
-- Review permissions
-- Test before production use
-
-## Deliverables
-- Safe import checklist
-
----
-
 # PART 5 — AGENTS & ORCHESTRATION
 
-# Chapter 13 — Practical Agents for Knowledge Work
+# Chapter 11 — Practical Agents for Knowledge Work
 
 ## Objectives
-- Understand agents without engineering complexity
+- Distinguish between a skill, a tool-enabled session, and an autonomous agent
+- Design a multi-step agent workflow that includes human oversight checkpoints
+- Evaluate a proposed agent workflow for scope, risk, and reliability before deploying it
+
+## Note on Agents vs. Subagents
+An agent is a Claude instance given a goal and allowed to plan and act across multiple steps. A subagent is an agent spawned by a parent (orchestrating) agent to handle a bounded sub-task — for example, a research agent that spawns a summarizer subagent. This chapter covers single-agent workflows. Multi-agent orchestration is introduced briefly and expanded in Chapter 12.
 
 ## Topics
-- What agents are
+- What agents are and how they differ from skills and tool-enabled sessions
 - Multi-step autonomous workflows
-- Planner agents
-- Research agents
-- Execution agents
-- Human oversight
-- Agent limitations
+- Planner agents, research agents, execution agents
+- Human oversight and escalation
+- Agent limitations in a knowledge-work context
 
 ## Examples
 - Weekly business review agent
@@ -443,10 +450,12 @@ The course does NOT teach:
 
 ---
 
-# Chapter 14 — Orchestrations & Scheduled Work
+# Chapter 12 — Orchestrations & Scheduled Work
 
 ## Objectives
-- Automate recurring workflows
+- Configure a recurring scheduled automation for a real workplace workflow
+- Implement approval and escalation checkpoints within an orchestrated workflow
+- Assess which recurring tasks deliver the highest return on automation investment
 
 ## Topics
 - Scheduled work
@@ -468,10 +477,12 @@ The course does NOT teach:
 
 ---
 
-# Chapter 15 — AskUserQuestion & Human-in-the-Loop Automation
+# Chapter 13 — AskUserQuestion & Human-in-the-Loop Automation
 
 ## Objectives
-- Build safe automations that collaborate with humans
+- Implement clarification and approval steps within an automation using AskUserQuestion
+- Design escalation patterns that stop unsafe or ambiguous actions before execution
+- Justify where human checkpoints add the most value in a given workflow
 
 ## Topics
 - Clarification questions
@@ -493,10 +504,12 @@ The course does NOT teach:
 
 # PART 6 — PRACTICAL OPERATIONS
 
-# Chapter 16 — Debugging & Improving Automations
+# Chapter 14 — Debugging & Improving Automations
 
 ## Objectives
-- Troubleshoot common automation problems
+- Diagnose the root cause of a failing automation using a structured troubleshooting approach
+- Apply iterative refinement techniques to improve automation reliability
+- Rewrite an overly broad instruction set into smaller, testable units
 
 ## Topics
 - Why automations fail
@@ -518,13 +531,15 @@ The course does NOT teach:
 
 ---
 
-# Chapter 17 — Security, Safety & Governance
+# Chapter 15 — Security, Safety & Governance
 
 ## Objectives
-- Use automation responsibly
+- Identify categories of sensitive information that require human review before automation
+- Apply safe usage principles to prevent prompt injection and unauthorized data exposure
+- Formulate a personal or team governance policy for automation permissions and output review
 
 ## Topics
-- Sensitive information
+- Sensitive information handling
 - Data privacy
 - Prompt injection basics
 - Unsafe automations
@@ -541,10 +556,12 @@ Never blindly trust automation outputs.
 
 ---
 
-# Chapter 18 — Designing Your Personal Automation System
+# Chapter 16 — Designing Your Personal Automation System
 
 ## Objectives
-- Create a sustainable automation strategy
+- Synthesize skills, plugins, agents, and orchestrations into a coherent personal automation portfolio
+- Prioritize automation opportunities by business impact and implementation effort
+- Design a sustainable plan for sharing, documenting, and continuously improving automation assets
 
 ## Topics
 - Personal automation portfolio
@@ -556,15 +573,22 @@ Never blindly trust automation outputs.
 - Building an automation habit
 
 ## Final Exercise
-Design:
+
+> **Note for course factory pipeline:** The Final Exercise below defines the scope of the
+> **capstone lab** for this course. It is NOT a chapter exercise and MUST NOT be treated as
+> a chapter-level deliverable. The `lab-generator` agent uses this specification as its
+> primary input. The chapter's own exercise is limited to the automation portfolio planning
+> activity described in the Deliverables section.
+
+Design and document a personal automation system comprising:
 - 5 reusable skills
 - 2 recurring orchestrations
-- 1 browser automation
+- 1 browser automation workflow
 - 1 SaaS automation workflow
 - 1 agent workflow
 
 ## Deliverables
-- Personal automation operating model
+- Personal automation operating model (portfolio plan)
 
 ---
 
@@ -615,7 +639,7 @@ Step-by-step practical workflow.
 Operational anti-patterns.
 
 ## 5. Practical Exercise
-Small immediately usable workflow.
+Small, immediately usable workflow.
 
 ---
 
@@ -677,11 +701,11 @@ A successful learner should be able to:
 
 By the end of this curriculum, learners should think:
 
-“I can reliably automate large portions of my knowledge work safely and effectively.”
+"I can reliably automate large portions of my knowledge work safely and effectively."
 
 —not—
 
-“I understand every technical detail of the platform.”
+"I understand every technical detail of the platform."
 
 This course optimizes for:
 - Practical leverage

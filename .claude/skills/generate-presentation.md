@@ -281,7 +281,7 @@ Pass this to the pptx skill:
 
 ## Speaker Notes Section Template
 
-Write one section per slide in `*--slides-notes.md`:
+Compose one section per slide, then invoke `anthropic-skills:docx` to produce `*--slides-notes.docx`:
 
 ```markdown
 ## Slide S{NN} — {short title}

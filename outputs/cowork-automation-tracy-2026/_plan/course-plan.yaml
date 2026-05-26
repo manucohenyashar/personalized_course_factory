@@ -1,0 +1,949 @@
+# Course Factory — Course Plan
+# Authoritative contract for all downstream agents.
+# This file is READ-ONLY for all agents downstream of the PlannerAgent.
+# Any required change triggers a full plan regeneration and a new human-review halt.
+
+plan_id:       "plan-cowork-automation-tracy-2026-v1"
+plan_version:  "1.0.0"
+created_at:    "2026-05-25T00:00:00Z"
+authored_by:   "PlannerAgent v2.0.0"
+approved_by:   null   # filled in when Step 12 human review is approved
+approved_at:   null
+master_spec_ref: "GreatCourseSpec.md"
+
+# ─────────────────────────────────────────────
+# 1. INPUT FINGERPRINTS
+# ─────────────────────────────────────────────
+inputs:
+  subject_spec:
+    path: "inputs/subject.md"
+    schema_version: "1.1"
+    normalized_from_narrative: true
+    normalized_path: "outputs/cowork-automation-tracy-2026/_plan/subject.normalized.yaml"
+    diff_path: "outputs/cowork-automation-tracy-2026/_plan/subject.normalized.diff.md"
+  problem_spec:
+    path: "inputs/problem.yaml"
+    problem_id: "pm-cowork-automation-2026"
+    schema_version: "1.0"
+  student_context_spec:
+    path: "inputs/students.yaml"
+    cohort_id: "tracy-zlatkova-senior-pm-2026"
+    schema_version: "1.0"
+  orchestration_spec:
+    path: "inputs/orchestration.yaml"
+    schema_version: "1.0"
+
+# ─────────────────────────────────────────────
+# 2. NORMALIZATION
+# ─────────────────────────────────────────────
+normalization:
+  subject_normalized_path: "outputs/cowork-automation-tracy-2026/_plan/subject.normalized.yaml"
+  diff_path: "outputs/cowork-automation-tracy-2026/_plan/subject.normalized.diff.md"
+  approved_by: "user"     # Step 2 halt approved
+  approved_at: "2026-05-25T00:00:00Z"
+
+# ─────────────────────────────────────────────
+# 3. PRECEDENCE LOG
+# ─────────────────────────────────────────────
+precedence_log_path: "outputs/cowork-automation-tracy-2026/_plan/precedence-log.md"
+
+# ─────────────────────────────────────────────
+# 4. NUMERIC OVERRIDES
+# ─────────────────────────────────────────────
+numeric_overrides:
+  source: planner_default
+  values:
+    doc:
+      word_count_min: 3000
+      word_count_max: 6000
+    quiz:
+      items: 10
+      carryforward: 2
+      pass_threshold: 0.80
+      difficulty_band: [0.40, 0.95]
+      position_cap: 0.35
+      forms: 2
+      compact_mode: false   # chapter_count=16 < 25; standard mode
+    exercises:
+      pack_minutes: 30
+    slides:
+      count_min: 12
+      count_max: 25
+    podcast:
+      word_count_min: 1200
+      word_count_max: 2300
+    capstone:
+      duration_target_minutes: 120
+
+# ─────────────────────────────────────────────
+# 5. PERSONALIZATION & RESERVED SCENARIOS
+# ─────────────────────────────────────────────
+personalization_plan_path: "outputs/cowork-automation-tracy-2026/_plan/personalization-plan.json"
+reserved_scenarios_path:   "outputs/cowork-automation-tracy-2026/_plan/reserved-scenarios.json"
+
+# ─────────────────────────────────────────────
+# 6. CHAPTER PARTITION
+# ─────────────────────────────────────────────
+chapter_partition:
+
+  - number: 1
+    slug: "intro-to-cowork-automation"
+    title: "Introduction to Claude Cowork Automation"
+    scope: >
+      Establishes what Claude Cowork automation is, how it differs from traditional software,
+      and what types of knowledge work can be automated without programming. Tracy maps her
+      own systems (Jira, Confluence, Slack, Meet, Gmail, Drive, DragonBoat, ServiceNow) to
+      automation opportunity categories and produces a personal automation opportunity list.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-01.1"
+        verb: identify
+        object: "automation-suitable tasks within a program management workflow"
+        criterion: "lists at least 5 concrete tasks from Tracy's own 10-system environment that qualify"
+        bloom_level: Remember
+      - id: "LO-01.2"
+        verb: distinguish
+        object: "skills, plugins, and agents at a conceptual level"
+        criterion: "correctly classifies 3 given examples without confusing categories"
+        bloom_level: Understand
+      - id: "LO-01.3"
+        verb: recognize
+        object: "the types of PM tasks suited to AI automation versus those requiring human judgment"
+        criterion: "correctly sorts 8 task examples into 'automatable' or 'human-judgment required'"
+        bloom_level: Remember
+    prerequisites:
+      prior_chapters: []
+      topics:
+        - "Comfortable using Jira, Confluence, Slack, Gmail, and Google Drive"
+        - "Basic familiarity with AI chat interfaces"
+    running_example_ref: "scenario-01"
+    tool_versions: {}
+
+  - number: 2
+    slug: "automation-mindset"
+    title: "The Automation Mindset"
+    scope: >
+      Teaches a structured 5-criterion framework (Repetitive, Structured, Time-consuming,
+      Rules-based, Multi-step) for identifying automation-ready work. Tracy decomposes her
+      meeting transcript → summary workflow into automation-ready units, identifying which
+      steps benefit from automation and which require her professional judgment.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-02.1"
+        verb: apply
+        object: "a 5-criterion framework to identify automation-suitable tasks in a PM workflow"
+        criterion: "correctly scores at least 4 of 5 given PM tasks using the framework"
+        bloom_level: Apply
+      - id: "LO-02.2"
+        verb: distinguish
+        object: "tasks that benefit from automation versus those requiring human judgment"
+        criterion: "classifies 6 meeting-prep and report-generation tasks with justification"
+        bloom_level: Understand
+      - id: "LO-02.3"
+        verb: decompose
+        object: "a multi-step workplace process into automation-ready units"
+        criterion: "produces a workflow decomposition for the transcript-to-summary process with ≥ 4 discrete steps"
+        bloom_level: Analyze
+    prerequisites:
+      prior_chapters: [1]
+      topics: []
+    running_example_ref: "scenario-03"
+    tool_versions: {}
+
+  - number: 3
+    slug: "setting-up-claude"
+    title: "Setting Up Claude for Daily Work"
+    scope: >
+      Configures a personal Claude workspace optimized for Tracy's daily PM workflows:
+      session organization, output filing, saved prompts for recurring tasks, and basic CLI
+      usage. Tracy sets up the folder structure and session management patterns she will use
+      for the rest of the course.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-03.1"
+        verb: configure
+        object: "a personal Claude workspace for daily professional use"
+        criterion: "produces a working workspace with organized folders, a saved-prompt library, and a session-management policy"
+        bloom_level: Apply
+      - id: "LO-03.2"
+        verb: demonstrate
+        object: "basic CLI usage for running and managing automations"
+        criterion: "successfully runs a Claude CLI command and saves the output to a named file"
+        bloom_level: Apply
+      - id: "LO-03.3"
+        verb: organize
+        object: "automation outputs and session artifacts for reuse"
+        criterion: "applies a consistent naming convention to at least 5 session artifacts"
+        bloom_level: Apply
+    prerequisites:
+      prior_chapters: [1, 2]
+      topics: []
+    running_example_ref: "scenario-04"
+    tool_versions: {}
+
+  - number: 4
+    slug: "context-management"
+    title: "Context Management for Better Results"
+    scope: >
+      Explains why context quality is the primary reliability lever in automation. Covers
+      reference documents, structured inputs, compact sessions, and avoiding overloaded
+      conversations. Tracy builds a reusable context package for her Google Drive
+      reorganization workflow.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-04.1"
+        verb: explain
+        object: "why context quality directly affects automation reliability"
+        criterion: "identifies at least 3 context failure modes and their effect on output quality"
+        bloom_level: Understand
+      - id: "LO-04.2"
+        verb: apply
+        object: "context organization strategies to reduce errors and improve consistency"
+        criterion: "rewrites an overloaded prompt into a focused, structured input and demonstrates improved output"
+        bloom_level: Apply
+      - id: "LO-04.3"
+        verb: design
+        object: "reusable reference documents for recurring workflows"
+        criterion: "produces a context reference document for the Drive reorganization workflow that a fresh Claude session can use without additional explanation"
+        bloom_level: Create
+    prerequisites:
+      prior_chapters: [1, 2, 3]
+      topics: []
+    running_example_ref: "scenario-05"
+    tool_versions: {}
+
+  - number: 5
+    slug: "claude-md"
+    title: "CLAUDE.MD for Business Users"
+    scope: >
+      Teaches how to encode persistent behavioral preferences in a CLAUDE.MD file —
+      output standards, tone rules, naming conventions, and project context. Tracy builds
+      a personal CLAUDE.MD that encodes her meeting summary standards and Advisor360°
+      project naming conventions, then extends it with project.md and persona.md context files.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-05.1"
+        verb: construct
+        object: "a personal CLAUDE.MD file encoding reusable behavioral preferences"
+        criterion: "produces a CLAUDE.MD with at least 5 operative instructions that verifiably change Claude's output format or tone"
+        bloom_level: Create
+      - id: "LO-05.2"
+        verb: apply
+        object: "persistent instructions to standardize tone, format, and output conventions"
+        criterion: "demonstrates that the same prompt yields different (compliant) output with vs. without CLAUDE.MD active"
+        bloom_level: Apply
+      - id: "LO-05.3"
+        verb: use
+        object: "context files (project.md, persona.md) within sessions to extend persistent guidance"
+        criterion: "successfully loads a project.md context file and demonstrates its effect on a session output"
+        bloom_level: Apply
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4]
+      topics: []
+    running_example_ref: "scenario-03"
+    tool_versions: {}
+
+  - number: 6
+    slug: "creating-skills"
+    title: "Creating and Generating Skills"
+    scope: >
+      Teaches the skill lifecycle (create → test → refine → reuse) and the Skill Creator
+      tool. Tracy builds her first reusable skill: the Status Report Aggregation skill that
+      accepts structured inputs from Jira, Confluence, Slack, and meeting transcripts and
+      produces an executive summary and detailed supporting notes.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-06.1"
+        verb: design
+        object: "a reusable skill for a repetitive PM task"
+        criterion: "produces a skill with a clear task definition, structured inputs, and explicit output format"
+        bloom_level: Create
+      - id: "LO-06.2"
+        verb: use
+        object: "the Skill Creator tool to generate, review, and refine skill instructions"
+        criterion: "generates a skill using Skill Creator, identifies at least 2 reliability gaps, and produces a refined version"
+        bloom_level: Apply
+      - id: "LO-06.3"
+        verb: evaluate
+        object: "a generated skill for clarity, reliability, and appropriate scope before deployment"
+        criterion: "applies a pre-deployment checklist to the Status Report Aggregation skill and resolves any identified issues"
+        bloom_level: Evaluate
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5]
+      topics: []
+    running_example_ref: "scenario-01"
+    tool_versions: {}
+
+  - number: 7
+    slug: "evaluating-skills"
+    title: "Evaluating Skills"
+    scope: >
+      Teaches structured output evaluation using a 5-question rubric (accurate, complete,
+      formatted correctly, useful, risky or fabricated). Tracy applies the rubric to her
+      transcript summarization skill, identifies a hallucination pattern in action item
+      attribution, and designs an iterative refinement workflow.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-07.1"
+        verb: apply
+        object: "a structured rubric to assess whether a skill's output is accurate, complete, and safe"
+        criterion: "evaluates a sample meeting summary output and produces a rubric scorecard with written justification for each dimension"
+        bloom_level: Apply
+      - id: "LO-07.2"
+        verb: identify
+        object: "hallucinations and reliability gaps in automation outputs"
+        criterion: "correctly flags at least 2 fabricated or inconsistent items in a provided skill output sample"
+        bloom_level: Analyze
+      - id: "LO-07.3"
+        verb: design
+        object: "an iterative refinement workflow for underperforming skills"
+        criterion: "produces a refinement loop (eval → identify gap → rewrite instruction → retest) for the transcript summarization skill"
+        bloom_level: Create
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5, 6]
+      topics: []
+    running_example_ref: "scenario-03"
+    tool_versions: {}
+
+  - number: 8
+    slug: "connecting-tools"
+    title: "Connecting Tools and Importing Skills"
+    scope: >
+      Covers plugins, MCP tools, and safe import of community skills. Tracy connects
+      Claude to Gmail, builds a business tool integration map for her 8-system environment,
+      and applies a safe import checklist to evaluate a community-sourced Gmail plugin.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-08.1"
+        verb: connect
+        object: "Claude to at least one external business system using a plugin or MCP tool"
+        criterion: "successfully connects Gmail to Claude Cowork and demonstrates a read operation (retrieve last 10 messages)"
+        bloom_level: Apply
+      - id: "LO-08.2"
+        verb: evaluate
+        object: "a community-sourced skill or plugin for safety and fitness before importing"
+        criterion: "applies a 5-point safety checklist to a provided community plugin and produces a pass/fail recommendation with justification"
+        bloom_level: Evaluate
+      - id: "LO-08.3"
+        verb: apply
+        object: "a safe import checklist to adapt an external skill to a specific workplace context"
+        criterion: "adapts the imported Gmail plugin to Tracy's project labeling conventions and tests it on 3 sample emails"
+        bloom_level: Apply
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5, 6, 7]
+      topics: []
+    running_example_ref: "scenario-04"
+    tool_versions: {}
+
+  - number: 9
+    slug: "playwright-browser-automation"
+    title: "Playwright MCP and Browser Automation"
+    scope: >
+      Teaches browser automation using Playwright MCP for repetitive web-based tasks.
+      Tracy builds a browser automation workflow that navigates Google Drive, reads folder
+      metadata, and proposes a reorganization plan — with explicit human-review checkpoints
+      before any file is moved or renamed.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-09.1"
+        verb: build
+        object: "a browser automation workflow for a repetitive web-based task"
+        criterion: "produces a working Playwright MCP workflow that navigates at least 3 Drive folder levels and reads file metadata without manual intervention"
+        bloom_level: Create
+      - id: "LO-09.2"
+        verb: identify
+        object: "fragile browser automation patterns and apply mitigation strategies"
+        criterion: "lists at least 3 common failure modes (element not found, page load timeout, stale selector) and demonstrates a mitigation for each"
+        bloom_level: Analyze
+      - id: "LO-09.3"
+        verb: insert
+        object: "human review checkpoints at high-risk steps in a browser workflow"
+        criterion: "adds at least 2 AskUserQuestion checkpoints to the Drive reorganization workflow at the rename and move steps"
+        bloom_level: Apply
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5, 6, 7, 8]
+      topics: []
+    running_example_ref: "scenario-05"
+    tool_versions:
+      playwright_mcp: "latest"
+
+  - number: 10
+    slug: "zapier-saas-automation"
+    title: "Zapier MCP and SaaS Automation"
+    scope: >
+      Teaches trigger-action workflows that connect multiple business applications via Zapier.
+      Tracy designs a cross-application automation that routes flagged emails from Gmail to
+      a Jira ticket in the appropriate project board, then extends it with a Slack notification
+      and a scheduled weekly summary trigger.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-10.1"
+        verb: design
+        object: "a trigger-action workflow connecting two or more business applications"
+        criterion: "produces a documented Zapier workflow (trigger, action, filter) that routes Gmail labels to Jira tickets"
+        bloom_level: Create
+      - id: "LO-10.2"
+        verb: implement
+        object: "scheduled and event-triggered cross-application automations"
+        criterion: "configures both an event trigger (Gmail label applied) and a scheduled trigger (weekly Monday 7 AM) for the same workflow"
+        bloom_level: Apply
+      - id: "LO-10.3"
+        verb: compare
+        object: "direct MCP integrations with Zapier-mediated workflows to select the appropriate approach"
+        criterion: "produces a decision matrix with at least 4 criteria and applies it to 2 given scenarios"
+        bloom_level: Evaluate
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      topics: []
+    running_example_ref: "scenario-04"
+    tool_versions:
+      zapier_mcp: "latest"
+
+  - number: 11
+    slug: "practical-agents"
+    title: "Practical Agents for Knowledge Work"
+    scope: >
+      Distinguishes skills, tool-enabled sessions, and autonomous agents. Tracy designs
+      a multi-step weekly report agent — a Claude instance that plans, reads Jira then
+      Confluence then Slack in sequence, drafts the report, and halts for review before
+      distribution — and evaluates its scope, risk, and reliability.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-11.1"
+        verb: distinguish
+        object: "a skill, a tool-enabled session, and an autonomous agent"
+        criterion: "correctly classifies 5 given Claude interactions as skill, tool-enabled session, or agent with written justification"
+        bloom_level: Understand
+      - id: "LO-11.2"
+        verb: design
+        object: "a multi-step agent workflow including human oversight checkpoints"
+        criterion: "produces a written agent design document with goal, sub-tasks, tool calls, escalation rules, and at least 2 AskUserQuestion checkpoints"
+        bloom_level: Create
+      - id: "LO-11.3"
+        verb: evaluate
+        object: "a proposed agent workflow for scope, risk, and reliability before deploying"
+        criterion: "applies a 4-dimension evaluation rubric (scope creep, data risk, failure modes, oversight gaps) to the weekly report agent design"
+        bloom_level: Evaluate
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5, 6, 7, 8]
+      topics: []
+    running_example_ref: "scenario-01"
+    tool_versions: {}
+
+  - number: 12
+    slug: "orchestrations-scheduled-work"
+    title: "Orchestrations and Scheduled Work"
+    scope: >
+      Teaches scheduled automations, loops, approval checkpoints, and triggered workflows.
+      Tracy configures her weekly report agent to run automatically every Monday morning,
+      with an approval gate before distribution, and extends it with a daily stand-up
+      transcript collection trigger.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-12.1"
+        verb: configure
+        object: "a recurring scheduled automation for a real workplace workflow"
+        criterion: "sets up a Monday 7:00 AM scheduled run of the weekly report agent with a documented trigger and output destination"
+        bloom_level: Apply
+      - id: "LO-12.2"
+        verb: implement
+        object: "approval and escalation checkpoints within an orchestrated workflow"
+        criterion: "adds a pre-distribution approval checkpoint that blocks sending until Tracy explicitly confirms the draft"
+        bloom_level: Apply
+      - id: "LO-12.3"
+        verb: assess
+        object: "which recurring tasks deliver the highest return on automation investment"
+        criterion: "produces a prioritized list of at least 5 weekly/daily tasks with estimated time savings per week"
+        bloom_level: Evaluate
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      topics: []
+    running_example_ref: "scenario-01"
+    tool_versions: {}
+
+  - number: 13
+    slug: "ask-user-question"
+    title: "AskUserQuestion and Human-in-the-Loop Automation"
+    scope: >
+      Teaches clarification, approval, and escalation patterns using AskUserQuestion.
+      Tracy designs three checkpoints in her ServiceNow ticket integration workflow:
+      confirming query scope, approving escalation classification, and approving the merged
+      report before distribution.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-13.1"
+        verb: implement
+        object: "clarification and approval steps within an automation using AskUserQuestion"
+        criterion: "adds 3 AskUserQuestion checkpoints to the ServiceNow integration workflow at the specified decision points"
+        bloom_level: Apply
+      - id: "LO-13.2"
+        verb: design
+        object: "escalation patterns that stop unsafe or ambiguous actions before execution"
+        criterion: "writes escalation logic that halts the automation when ticket priority is P1 or when data fields are missing"
+        bloom_level: Create
+      - id: "LO-13.3"
+        verb: justify
+        object: "where human checkpoints add the most value in a given workflow"
+        criterion: "identifies the 3 highest-risk decision points in the ServiceNow workflow and explains why automation should not proceed past each without approval"
+        bloom_level: Evaluate
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      topics: []
+    running_example_ref: "scenario-06"
+    tool_versions: {}
+
+  - number: 14
+    slug: "debugging-improving-automations"
+    title: "Debugging and Improving Automations"
+    scope: >
+      Teaches structured troubleshooting for failing automations. Tracy diagnoses a broken
+      ServiceNow ticket query (root cause: overly broad filter), applies iterative refinement,
+      and refactors the skill into smaller, testable units. Covers bad context, missing
+      information, and overly broad instructions.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-14.1"
+        verb: diagnose
+        object: "the root cause of a failing automation using a structured troubleshooting approach"
+        criterion: "correctly identifies the root cause (overly broad filter) from a provided broken ServiceNow query output within 5 minutes using the checklist"
+        bloom_level: Analyze
+      - id: "LO-14.2"
+        verb: apply
+        object: "iterative refinement techniques to improve automation reliability"
+        criterion: "demonstrates at least 2 refinement cycles (eval → fix → retest) that measurably improve the ServiceNow query output"
+        bloom_level: Apply
+      - id: "LO-14.3"
+        verb: rewrite
+        object: "an overly broad instruction set into smaller, testable units"
+        criterion: "decomposes a 3-part monolithic ServiceNow skill into 3 focused sub-skills, each independently testable"
+        bloom_level: Create
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+      topics: []
+    running_example_ref: "scenario-06"
+    tool_versions: {}
+
+  - number: 15
+    slug: "security-safety-governance"
+    title: "Security, Safety, and Governance"
+    scope: >
+      Teaches data privacy, prompt injection basics, safe permission scoping, and automation
+      governance policy. Tracy identifies categories of sensitive ServiceNow and Gmail data
+      that require human review, applies safe usage principles, and formulates a personal
+      governance policy for her automation portfolio.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-15.1"
+        verb: identify
+        object: "categories of sensitive information requiring human review before automation"
+        criterion: "classifies at least 6 data types from Tracy's systems (ServiceNow ticket content, Gmail body, Jira attachment) as sensitive or not, with justification"
+        bloom_level: Analyze
+      - id: "LO-15.2"
+        verb: apply
+        object: "safe usage principles to prevent prompt injection and unauthorized data exposure"
+        criterion: "identifies at least 2 prompt injection vectors in the ServiceNow ticket workflow and applies sanitization measures"
+        bloom_level: Apply
+      - id: "LO-15.3"
+        verb: formulate
+        object: "a personal or team governance policy for automation permissions and output review"
+        criterion: "produces a written governance policy covering data access scope, human review triggers, and team sharing rules"
+        bloom_level: Create
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+      topics: []
+    running_example_ref: "scenario-06"
+    tool_versions: {}
+
+  - number: 16
+    slug: "personal-automation-system"
+    title: "Designing Your Personal Automation System"
+    scope: >
+      Synthesizes all course skills into a coherent personal automation portfolio. Tracy
+      produces her automation operating model: 5 reusable skills, 2 recurring orchestrations,
+      1 browser automation, 1 SaaS automation, and 1 agent workflow — each mapped to a
+      weekly time savings estimate and a maintenance plan. The capstone lab (scenario-02)
+      is NOT part of this chapter's exercise.
+    est_minutes: 50
+    hands_on_minutes: 30
+    target_track: both
+    learning_outcomes:
+      - id: "LO-16.1"
+        verb: synthesize
+        object: "skills, plugins, agents, and orchestrations into a coherent personal automation portfolio"
+        criterion: "produces a portfolio plan with at least 5 skills, 2 orchestrations, 1 browser automation, 1 SaaS automation, and 1 agent, each with a time-savings estimate"
+        bloom_level: Create
+      - id: "LO-16.2"
+        verb: prioritize
+        object: "automation opportunities by business impact and implementation effort"
+        criterion: "produces a 2×2 impact/effort matrix populated with at least 8 automation candidates from Tracy's workflow"
+        bloom_level: Evaluate
+      - id: "LO-16.3"
+        verb: design
+        object: "a sustainable plan for sharing, documenting, and continuously improving automation assets"
+        criterion: "produces a team-sharing plan with versioning, documentation, and a quarterly review schedule"
+        bloom_level: Create
+    prerequisites:
+      prior_chapters: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+      topics: []
+    running_example_ref: "scenario-01"
+    tool_versions: {}
+
+# ─────────────────────────────────────────────
+# 7. PER-CHAPTER WORK ASSIGNMENTS
+# ─────────────────────────────────────────────
+per_chapter_assignments:
+
+  - &ch_template
+    chapter: 1
+    supervisor: ChapterSupervisorAgent
+    deliverables:
+      - agent: ChapterTextGenerator
+        sub_spec: "doc/GreatTextSpec.md"
+        depends_on: []
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch01-intro-to-cowork-automation/cowork-automation-tracy-2026--ch01--intro-to-cowork-automation--doc.md"
+          - "outputs/cowork-automation-tracy-2026/chapters/ch01-intro-to-cowork-automation/cowork-automation-tracy-2026--ch01--intro-to-cowork-automation--doc.handoff.json"
+        quality_gates: [16.1, 16.2, 16.3, 16.4, 16.6, 16.7]
+      - agent: ExerciseGenerator
+        sub_spec: "doc/GreatModuleExercise.md"
+        depends_on: [ChapterTextGenerator]
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch01-intro-to-cowork-automation/cowork-automation-tracy-2026--ch01--intro-to-cowork-automation--exercises/"
+        quality_gates: [16.1, 16.2, 16.3, 16.4, 16.5, 16.6]
+      - agent: PresentationGenerator
+        sub_spec: "doc/GreatPresentationSpec.md"
+        depends_on: [ChapterTextGenerator, ExerciseGenerator]
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch01-intro-to-cowork-automation/cowork-automation-tracy-2026--ch01--intro-to-cowork-automation--slides.pptx"
+          - "outputs/cowork-automation-tracy-2026/chapters/ch01-intro-to-cowork-automation/cowork-automation-tracy-2026--ch01--intro-to-cowork-automation--slides-notes.md"
+        quality_gates: [16.1, 16.3, 16.4, 16.6]
+      - agent: QuizGenerator
+        sub_spec: "doc/GreatQuizSpec.md"
+        depends_on: [ChapterTextGenerator]
+        prior_chapter_quiz_items: []
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch01-intro-to-cowork-automation/cowork-automation-tracy-2026--ch01--intro-to-cowork-automation--quiz.json"
+          - "outputs/cowork-automation-tracy-2026/chapters/ch01-intro-to-cowork-automation/cowork-automation-tracy-2026--ch01--intro-to-cowork-automation--quiz-formB.json"
+        quality_gates: [16.1, 16.3, 16.4, 16.7]
+      - agent: PodcastGenerator
+        depends_on: [ChapterTextGenerator, ExerciseGenerator]
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch01-intro-to-cowork-automation/cowork-automation-tracy-2026--ch01--intro-to-cowork-automation--podcast-script.md"
+        quality_gates: [16.3, 16.4]
+      - agent: CompanionGenerator
+        depends_on: [ChapterTextGenerator]
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch01-intro-to-cowork-automation/cowork-automation-tracy-2026--ch01--intro-to-cowork-automation--cheatsheet.md"
+          - "outputs/cowork-automation-tracy-2026/chapters/ch01-intro-to-cowork-automation/cowork-automation-tracy-2026--ch01--intro-to-cowork-automation--instructor-guide.md"
+        quality_gates: [16.3, 16.4, 16.6]
+      - agent: EvaluatorAgent
+        mode: chapter_pass
+        depends_on: [ChapterTextGenerator, ExerciseGenerator, PresentationGenerator, QuizGenerator, PodcastGenerator, CompanionGenerator]
+        quality_gates: [16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7]
+
+  - chapter: 2
+    supervisor: ChapterSupervisorAgent
+    deliverables:
+      - agent: ChapterTextGenerator
+        sub_spec: "doc/GreatTextSpec.md"
+        depends_on: []
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch02-automation-mindset/cowork-automation-tracy-2026--ch02--automation-mindset--doc.md"
+          - "outputs/cowork-automation-tracy-2026/chapters/ch02-automation-mindset/cowork-automation-tracy-2026--ch02--automation-mindset--doc.handoff.json"
+        quality_gates: [16.1, 16.2, 16.3, 16.4, 16.6, 16.7]
+      - agent: ExerciseGenerator
+        sub_spec: "doc/GreatModuleExercise.md"
+        depends_on: [ChapterTextGenerator]
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch02-automation-mindset/cowork-automation-tracy-2026--ch02--automation-mindset--exercises/"
+        quality_gates: [16.1, 16.2, 16.3, 16.4, 16.5, 16.6]
+      - agent: PresentationGenerator
+        sub_spec: "doc/GreatPresentationSpec.md"
+        depends_on: [ChapterTextGenerator, ExerciseGenerator]
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch02-automation-mindset/cowork-automation-tracy-2026--ch02--automation-mindset--slides.pptx"
+          - "outputs/cowork-automation-tracy-2026/chapters/ch02-automation-mindset/cowork-automation-tracy-2026--ch02--automation-mindset--slides-notes.md"
+        quality_gates: [16.1, 16.3, 16.4, 16.6]
+      - agent: QuizGenerator
+        sub_spec: "doc/GreatQuizSpec.md"
+        depends_on: [ChapterTextGenerator]
+        prior_chapter_quiz_items: [ch01]
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch02-automation-mindset/cowork-automation-tracy-2026--ch02--automation-mindset--quiz.json"
+          - "outputs/cowork-automation-tracy-2026/chapters/ch02-automation-mindset/cowork-automation-tracy-2026--ch02--automation-mindset--quiz-formB.json"
+        quality_gates: [16.1, 16.3, 16.4, 16.7]
+      - agent: PodcastGenerator
+        depends_on: [ChapterTextGenerator, ExerciseGenerator]
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch02-automation-mindset/cowork-automation-tracy-2026--ch02--automation-mindset--podcast-script.md"
+        quality_gates: [16.3, 16.4]
+      - agent: CompanionGenerator
+        depends_on: [ChapterTextGenerator]
+        output_paths:
+          - "outputs/cowork-automation-tracy-2026/chapters/ch02-automation-mindset/cowork-automation-tracy-2026--ch02--automation-mindset--cheatsheet.md"
+          - "outputs/cowork-automation-tracy-2026/chapters/ch02-automation-mindset/cowork-automation-tracy-2026--ch02--automation-mindset--instructor-guide.md"
+        quality_gates: [16.3, 16.4, 16.6]
+      - agent: EvaluatorAgent
+        mode: chapter_pass
+        depends_on: [ChapterTextGenerator, ExerciseGenerator, PresentationGenerator, QuizGenerator, PodcastGenerator, CompanionGenerator]
+        quality_gates: [16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7]
+
+  # Chapters 3–16 follow identical structure; paths follow §5.2 naming convention.
+  # Each chapter's slug, number, and scenario assignment are declared in chapter_partition above.
+  # Chapter-supervisor-agent resolves the full envelope at runtime by joining chapter_partition[]
+  # entries with this assignment template.
+
+  - chapter: 3
+    supervisor: ChapterSupervisorAgent
+    deliverables: &standard_deliverables
+      - { agent: ChapterTextGenerator, sub_spec: "doc/GreatTextSpec.md", depends_on: [] }
+      - { agent: ExerciseGenerator, sub_spec: "doc/GreatModuleExercise.md", depends_on: [ChapterTextGenerator] }
+      - { agent: PresentationGenerator, sub_spec: "doc/GreatPresentationSpec.md", depends_on: [ChapterTextGenerator, ExerciseGenerator] }
+      - { agent: QuizGenerator, sub_spec: "doc/GreatQuizSpec.md", depends_on: [ChapterTextGenerator], prior_chapter_quiz_items: [ch01, ch02] }
+      - { agent: PodcastGenerator, depends_on: [ChapterTextGenerator, ExerciseGenerator] }
+      - { agent: CompanionGenerator, depends_on: [ChapterTextGenerator] }
+      - { agent: EvaluatorAgent, mode: chapter_pass, depends_on: [ChapterTextGenerator, ExerciseGenerator, PresentationGenerator, QuizGenerator, PodcastGenerator, CompanionGenerator] }
+
+  - chapter: 4
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 5
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 6
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 7
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 8
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 9
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 10
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 11
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 12
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 13
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 14
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 15
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+  - chapter: 16
+    supervisor: ChapterSupervisorAgent
+    deliverables: *standard_deliverables
+
+# ─────────────────────────────────────────────
+# 8. COURSE-WIDE ASSIGNMENTS
+# ─────────────────────────────────────────────
+course_assignments:
+
+  - agent: EnvironmentScaffoldGenerator
+    depends_on: []
+    output_paths:
+      - "outputs/cowork-automation-tracy-2026/environment/devcontainer.json"
+      - "outputs/cowork-automation-tracy-2026/environment/preflight.sh"
+      - "outputs/cowork-automation-tracy-2026/environment/preflight.ps1"
+      - "outputs/cowork-automation-tracy-2026/environment/reset-env.sh"
+
+  - agent: PersonalizationPlanGenerator
+    depends_on: []
+    notes: "Completed by PlannerAgent; present for traceability."
+    output_paths:
+      - "outputs/cowork-automation-tracy-2026/_plan/personalization-plan.json"
+      - "outputs/cowork-automation-tracy-2026/_plan/reserved-scenarios.json"
+
+  - agent: QuizGenerator
+    mode: diagnostic
+    depends_on: [PersonalizationPlanGenerator]
+    config:
+      items: 8
+      routing:
+        - route: fast_track
+          condition: "score >= 0.875"
+          description: "Learner demonstrates strong prior knowledge; can skip Part 1"
+        - route: standard
+          condition: "0.50 <= score < 0.875"
+          description: "Standard entry — start at Chapter 1"
+        - route: with_prerequisites
+          condition: "score < 0.50"
+          description: "Learner should complete background reading before Chapter 1"
+    output_paths:
+      - "outputs/cowork-automation-tracy-2026/prereq-diagnostic.md"
+
+  - agent: GlossaryAggregator
+    mode: incremental
+    depends_on: []
+    notes: "Runs after every chapter; seed terms from problem.yaml domain_vocabulary"
+    seed_terms_count: 14
+    output_paths:
+      - "outputs/cowork-automation-tracy-2026/glossary.md"
+
+  - agent: LabGenerator
+    depends_on: "all chapter EvaluatorAgent passes"
+    envelope:
+      unseen_scenario: "scenario-02"
+      chapters_to_interleave: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+      chapters_to_interleave_count: 16
+      chapters_to_interleave_pct: 1.00
+      duration_target_minutes: 120
+    output_paths:
+      - "outputs/cowork-automation-tracy-2026/capstone/cowork-automation-tracy-2026--capstone-lab.md"
+      - "outputs/cowork-automation-tracy-2026/capstone/cowork-automation-tracy-2026--capstone-lab-rubric.json"
+
+  - agent: EvaluatorAgent
+    mode: course_wide
+    depends_on: [LabGenerator]
+    quality_gates: [16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7]
+    output_paths:
+      - "outputs/cowork-automation-tracy-2026/evaluator-report.md"
+
+# ─────────────────────────────────────────────
+# 9. RESERVED SCENARIOS
+# ─────────────────────────────────────────────
+reserved_scenarios:
+  capstone:
+    scenario_id: "scenario-02"
+    scenario_title: "Cross-project risk and dependency detection"
+    notes: >
+      Confirmed by user at Step 2 normalization review.
+      ChapterTextGenerator and ExerciseGenerator MUST NOT consume this entry.
+      All chapter common envelopes carry forbidden_examples: [scenario-02].
+  full_path: "outputs/cowork-automation-tracy-2026/_plan/reserved-scenarios.json"
+
+# ─────────────────────────────────────────────
+# 10. DEPENDENCY GRAPH
+# ─────────────────────────────────────────────
+dependency_graph:
+  notes: >
+    Full DAG: Stage 0 (inputs) → PlannerAgent → [EnvironmentScaffold || Diagnostic Quiz || ch01-supervisor]
+    → ch01 [Text → Exercise → (Presentation || Quiz) → Podcast → Companion → Evaluator(ch01)]
+    → ch02 ... → ch16 → LabGenerator → EvaluatorAgent(course-wide).
+    GlossaryAggregator runs incrementally after each chapter evaluator pass.
+    The graph is acyclic; single source = plan inputs; single sink = EvaluatorAgent(course-wide).
+  rendered_path: "outputs/cowork-automation-tracy-2026/_plan/dependency-graph.svg"
+  edges:
+    - { from: "PlannerAgent", to: "ch01-ChapterSupervisorAgent" }
+    - { from: "PlannerAgent", to: "EnvironmentScaffoldGenerator" }
+    - { from: "PlannerAgent", to: "QuizGenerator(diagnostic)" }
+    - { from: "ch01-ChapterTextGenerator", to: "ch01-ExerciseGenerator" }
+    - { from: "ch01-ChapterTextGenerator", to: "ch01-PresentationGenerator" }
+    - { from: "ch01-ExerciseGenerator", to: "ch01-PresentationGenerator" }
+    - { from: "ch01-ChapterTextGenerator", to: "ch01-QuizGenerator" }
+    - { from: "ch01-ChapterTextGenerator", to: "ch01-PodcastGenerator" }
+    - { from: "ch01-ExerciseGenerator", to: "ch01-PodcastGenerator" }
+    - { from: "ch01-ChapterTextGenerator", to: "ch01-CompanionGenerator" }
+    - { from: "ch01-EvaluatorAgent", to: "ch02-ChapterSupervisorAgent" }
+    - { from: "ch01-EvaluatorAgent", to: "GlossaryAggregator(after-ch01)" }
+    # Pattern repeats for ch02–ch16
+    - { from: "ch16-EvaluatorAgent", to: "LabGenerator" }
+    - { from: "LabGenerator", to: "EvaluatorAgent(course-wide)" }
+
+# ─────────────────────────────────────────────
+# 11. HUMAN REVIEW CHECKPOINTS
+# ─────────────────────────────────────────────
+human_review_points:
+  - step: subject_normalization
+    status: approved
+    approved_by: "user"
+    approved_at: "2026-05-25T00:00:00Z"
+    notes: "Step 2 halt — diff reviewed and all normalizations accepted. Course slug cowork-automation-tracy-2026 confirmed. Scenario-02 reserved for capstone confirmed."
+  - step: chapter_partition
+    status: approved
+    approved_by: "user"
+    approved_at: "2026-05-25T00:00:00Z"
+    notes: "16 chapters accepted as-is; all chapter slugs and scenario assignments confirmed at Step 2."
+  - step: personalization_plan
+    status: required
+    approved_by: null
+    approved_at: null
+    notes: "Step 12 halt — full PLAN_REVIEW.md presented for human approval before any artifact is generated."
+  - step: pre_lab_generation
+    status: optional
+    approved_by: null
+    approved_at: null
+
+# ─────────────────────────────────────────────
+# 12. QUALITY GATE SELECTION
+# ─────────────────────────────────────────────
+quality_gates:
+  per_chapter: [16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7]
+  course_wide:  [16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7]
+  enforcement: MUST
+
+# ─────────────────────────────────────────────
+# 13. REGENERATION POLICY
+# ─────────────────────────────────────────────
+regeneration_policy:
+  max_attempts: 3
+  scope: chapter
+  on_failure: halt
+  on_final_failure: halt_and_report
+
+# ─────────────────────────────────────────────
+# 14. MODE TARGETS
+# ─────────────────────────────────────────────
+mode_targets:
+  primary: self_taught
+  secondary: cohort
+  notes: "Tracy is self-directed (students.yaml mode_preference: self_taught). Cohort artifacts are produced in parallel but self_taught is the primary delivery mode."
+
+# ─────────────────────────────────────────────
+# 15. TELEMETRY
+# ─────────────────────────────────────────────
+telemetry:
+  evaluator_report_path: "outputs/cowork-automation-tracy-2026/evaluator-report.md"
+  per_chapter_metrics_path: "outputs/cowork-automation-tracy-2026/chapter-metrics.json"

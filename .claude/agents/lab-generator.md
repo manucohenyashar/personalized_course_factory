@@ -95,6 +95,33 @@ If `feedback_failures` is non-empty, address every item before regenerating:
 All files under `outputs/{course_slug}/capstone/` following the layout in `/generate-lab`.
 Filenames: `{course_slug}--capstone--{artifact}.{ext}`.
 
+### Student-facing files — produce as Word (`.docx`) documents
+
+Use `anthropic-skills:docx` to generate each student-facing file:
+
+```
+Use the Skill tool: anthropic-skills:docx
+Pass the content for each artifact.
+Output paths:
+  outputs/{course_slug}/capstone/{course_slug}--capstone--lab.docx
+  outputs/{course_slug}/capstone/{course_slug}--capstone--instructor-guide.docx
+  outputs/{course_slug}/capstone/{course_slug}--capstone--debrief.docx
+```
+
+Apply Word formatting conventions:
+- Heading 1 → lab title / guide title
+- Heading 2 → each section heading (e.g. "Section 2 — Data Ingestion")
+- Heading 3 → sub-task or step headings within sections
+- Normal style → body text, scenario narrative, instructions
+- Code blocks → Courier New or Consolas, 10pt, shaded background (never images)
+
+### Internal / machine-readable files — native formats
+
+Write directly (not via docx skill):
+- `{course_slug}--capstone--rubric.json` — 6-criterion rubric (JSON)
+- `{course_slug}--capstone--verify/` — verification scripts (code files)
+- `{course_slug}--capstone--solution/` — reference solution (code files)
+
 After writing all files, report:
 - Scenario used (ID + title)
 - Chapters integrated (list + percentage of total)

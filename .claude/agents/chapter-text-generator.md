@@ -1,6 +1,6 @@
 ---
 name: chapter-text-generator
-description: Generates the chapter document (*--doc.md) and its sibling handoff JSON (*--doc.handoff.json) following GreatTextSpec v2. Implements the 15-section structure, Bloom-tagged sections, retrieval checkpoints, worked examples, reflection prompts, and failure-first pitfalls. Accepts feedback_failures[] on retry. Invoked by chapter-supervisor-agent.
+description: Generates the chapter document (*--doc.docx) and its sibling handoff JSON (*--doc.handoff.json) following GreatTextSpec v2. Implements the 15-section structure, Bloom-tagged sections, retrieval checkpoints, worked examples, reflection prompts, and failure-first pitfalls. Accepts feedback_failures[] on retry. Invoked by chapter-supervisor-agent.
 model: claude-sonnet-4-6
 ---
 
@@ -161,8 +161,34 @@ as a badge: e.g. `## § 3 Core Concept Introduction [Apply]`.
 
 ## Output
 
-1. Write `outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--doc.md`
-2. Write `outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--doc.handoff.json`
-   using the schema in CLAUDE.md (Handoff JSON Schema section). Populate all fields.
+The chapter document MUST be a Microsoft Word file (`.docx`). Use the `anthropic-skills:docx`
+skill to generate it. Do NOT produce a Markdown file as the primary deliverable — students
+open this document directly and require a standard office format.
 
-After writing both files, report: "Chapter doc and handoff JSON written. Ready for evaluation."
+### Step 1 — Generate the Word document
+
+Compose the full chapter content following the 15-section structure above, then invoke:
+
+```
+Use the Skill tool: anthropic-skills:docx
+Pass the complete chapter content.
+Output path: outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--doc.docx
+```
+
+Apply Word formatting conventions:
+- Heading 1 → chapter title
+- Heading 2 → section headings (§ 1, § 2, …)
+- Heading 3 → subsection headings within sections
+- Body text → Normal style
+- Code blocks → Courier New or Consolas, 10pt, shaded background
+- Bloom badges → bold text in square brackets, e.g. **[Apply]**
+- LO-IDs → bold, e.g. **LO-03.1**
+- Retrieval checkpoints → bordered callout box (use a table with a coloured border)
+
+### Step 2 — Write the handoff JSON
+
+Write `outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--doc.handoff.json`
+using the schema in CLAUDE.md (Handoff JSON Schema section). Populate all fields.
+Set `output_format: "docx"` in the handoff JSON's reading_metrics block.
+
+After writing both files, report: "Chapter doc (.docx) and handoff JSON written. Ready for evaluation."

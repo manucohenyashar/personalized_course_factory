@@ -11,7 +11,7 @@ GreatLabSpec §14 checks, and problem-fidelity checks. You return a structured v
 
 You receive:
 - `capstone_dir`: path to `outputs/{course_slug}/capstone/`
-- `brief_path`: path to `{course_slug}--capstone--brief.md`
+- `brief_path`: path to `{course_slug}--capstone--lab.docx`
 - `rubric_path`: path to `{course_slug}--capstone--rubric.json`
 - `reserved_scenarios_path`: path to `_plan/reserved-scenarios.json`
 - `personalization_plan_path`: path to `_plan/personalization-plan.json`
@@ -70,7 +70,7 @@ Read `reserved-scenarios.json`. Confirm:
 
 ### Step 4 — Spawn all 7 gate sub-agents in parallel
 
-Pass each gate agent the brief, rubric, starter/, verify/, failure-modes.md, and instructor-guide.md.
+Pass each gate agent the brief (.docx), rubric, starter/, verify/, failure-modes.md, and instructor-guide.docx.
 Key checks per gate:
 
 - **§16.1 coverage**: every `problem_spec.success_criteria` item has a section + verify check;
@@ -83,8 +83,8 @@ Key checks per gate:
   Section 1 is clearly derived from `problem_spec.summary` (not generic motivation text);
   no generic placeholders ("a user", "the system", "an item") anywhere
 - **§16.4 format**: brief has all 14 sections; filenames match `{course_slug}--capstone--{artifact}.{ext}`;
-  all required files present (brief, rubric, starter/, solution/, verify/, failure-modes.md,
-  instructor-guide.md, debrief.md, README.md); section time budgets ≤ 30 min each
+  all required files present (lab.docx, rubric.json, starter/, solution/, verify/, failure-modes.md,
+  instructor-guide.docx, debrief.docx, README.md); section time budgets ≤ 30 min each
 - **§16.5 technical**: code in starter/ is syntactically valid; verify/ scripts reference
   `../capstone-solution/` not `../capstone-starter/`; all tool versions pinned; rubric has
   exactly 6 criteria with weights summing to 1.00
