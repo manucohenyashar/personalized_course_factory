@@ -31,7 +31,8 @@
       "Bash(bash \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\worked-example\\\\verify\\\\verify.sh\")",
       "Bash(bash \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-02\\\\verify\\\\verify.sh\" \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-02\\\\solution\\\\email-triage-rstrm-solution.md\")",
       "Bash(bash \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-03\\\\verify\\\\verify.sh\" \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-03\\\\solution\\\\my-task-analysis-solution.md\")",
-      "Bash(git config *)"
+      "Bash(git config *)",
+      "Bash(grep -v '^$')"
     ]
   }
 }
