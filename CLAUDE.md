@@ -100,6 +100,111 @@ Derive the appropriate register from `students.yaml.professional_context`:
 
 ---
 
+## Student-Facing Materials — General Rules
+
+These rules apply to ALL artifacts that a student will see or interact with. They take
+precedence over any conflicting instruction in individual generator or spec files.
+
+### Rule 1: Student Content Contains ONLY Training Material
+
+**Student-facing content must be concise and include ONLY training material the student
+should read to learn. All administrative, pedagogical, and pipeline references MUST NEVER
+be presented to the student.**
+
+This is the fundamental principle: if it is not something the student needs to learn from,
+it does not belong in student-facing content.
+
+#### Administrative references that are FORBIDDEN in student-facing content
+
+| Category | FORBIDDEN examples | Where they belong instead |
+|----------|-------------------|--------------------------|
+| **Bloom taxonomy** | `[Apply]`, `[Remember]`, `(Understand)`, "Bloom level", "cognitive level" | Handoff JSON, speaker notes, instructor guide |
+| **LO-IDs** | `LO-03.1`, `LO-07.2`, `LO-NN.n` | Handoff JSON, course-plan.yaml, quiz JSON, manifest JSON |
+| **Section IDs** | `§ 5`, `3.2`, section numbering in headings | Internal spec references only |
+| **Chapter slugs** | `ch02-automation-mindset`, `ch{NN}-{slug}` | File naming (internal), course-plan.yaml |
+| **Item/exercise IDs** | `ch03-q01`, `ch03-ex02`, `exercise_id` | Quiz JSON, manifest JSON, rubric JSON |
+| **Pipeline terminology** | "quality gate", "evaluator", "handoff", "spec", "feedback loop" | Internal pipeline docs |
+| **Pedagogical framework names** | "Bloom's taxonomy", "Concrete-Pictorial-Abstract", "I-do/we-do/you-do" | Instructor guide, specs |
+| **Assessment metadata** | `assessment_mode`, `estimated_difficulty`, `time_seconds`, `remediation_link` | Quiz JSON (internal) |
+| **File format references** | "see the JSON", "handoff.json", "manifest.json" | Never in student content |
+| **Time budgets / admin data** | `est_minutes: 45`, `time_box_minutes: 15` | Instructor guide, manifest |
+
+#### What students SHOULD see
+
+- **Clear, descriptive headings** without numbers, symbols, or codes
+- **Learning outcomes** stated naturally: "By the end of this chapter, you will be able to..."
+  (no LO-IDs, no Bloom labels)
+- **Exercises** with clear titles and instructions (no exercise IDs, no Bloom tags)
+- **Quiz questions** with clean numbering (no item IDs, no metadata)
+- **Content focused entirely on learning** the subject matter
+
+#### Examples
+
+| Student sees (REQUIRED) | Student NEVER sees (FORBIDDEN) |
+|------------------------|-------------------------------|
+| By the end of this chapter, you will be able to recall and define... | LO-03.1 (Remember): Recall and define... |
+| The Automation Suitability Framework | § 5 The Automation Suitability Framework [Apply] |
+| Exercise 2: Build a prompt template | Exercise ch03-ex02 [Apply]: Build a prompt template |
+| 1. What is the correct output when... | ch03-q01 [Apply, LO-03.2]: What is the correct output... |
+| Key Terms | § 14 Glossary [Remember] |
+
+#### Where administrative metadata IS retained
+
+Bloom levels, LO-IDs, and other pipeline metadata are essential for course quality. They are
+retained in **internal pipeline artifacts only**:
+- `*--doc.handoff.json` (section Bloom tags, LO refs)
+- `*--quiz.json` / `*--quiz-formB.json` (item metadata)
+- `manifest.json` (exercise pack metadata)
+- `rubric.json` (assessment criteria)
+- `course-plan.yaml` (LO definitions)
+- Slide speaker notes (LO refs, Bloom levels for instructor reference)
+- Instructor guides (may reference LO-IDs and Bloom levels since they are instructor-facing)
+
+### Rule 2: All Student Materials are Office Files
+
+Every artifact delivered to students MUST be a Microsoft Office file (`.docx` or `.pptx`).
+No student should ever receive or interact with a `.json`, `.yaml`, `.md`, or raw code file
+as a learning deliverable.
+
+**Quiz format change:** Quizzes MUST be delivered as Word documents, not JSON files:
+
+| File | Purpose | Format |
+|------|---------|--------|
+| `*--quiz-questions.docx` | Student quiz (questions only, no answers) | Word (.docx) |
+| `*--quiz-answers.docx` | Answer key with rationales | Word (.docx) |
+| `*--quiz-questions-formB.docx` | Form B questions (no answers) | Word (.docx) |
+| `*--quiz-answers-formB.docx` | Form B answer key with rationales | Word (.docx) |
+| `*--quiz.json` | Internal pipeline data (retained for evaluators) | JSON (internal) |
+| `*--quiz-formB.json` | Internal pipeline data (retained for evaluators) | JSON (internal) |
+
+The quiz generator MUST produce both the internal JSON (for pipeline evaluators and gates)
+AND the student-facing `.docx` files. The `.docx` quiz files:
+- Present questions cleanly formatted with proper numbering
+- Include no Bloom labels, LO-IDs, item IDs, or internal metadata
+- Use the same design guidelines as all other student-facing docx files
+- The questions file contains ONLY the questions (no correct answers, no rationales)
+- The answers file contains each question followed by the correct answer and rationale
+
+### Rule 3: Document Design Spec for All Student-Facing Docx
+
+All generators producing student-facing `.docx` files MUST follow `doc/DocxDesignSpec.md`.
+This spec defines typography, layout, structure, prose style, and anti-patterns for Word
+documents. Key requirements include:
+
+- **No § symbols, LO-IDs, Bloom tags, or chapter slugs** in student text
+- **No em dashes** (use periods, commas, or conjunctions instead)
+- **Bold-lead bullet pattern** (bold the initial keyword of each bullet point)
+- **Clean headings** without leading numbers or symbols
+- **Arial font family**, US Letter page size, 1-inch margins
+- **Tables with DXA widths** (never percentage), light borders, cell padding
+- **Blockquotes** for scenarios, tips, and side information
+- **Direct, factual prose** without setup phrasing or unnecessary modifiers
+
+Every generator MUST run the anti-patterns checklist in `doc/DocxDesignSpec.md` §6 before
+submitting any student-facing document.
+
+---
+
 ## Subject Specification — The Curriculum Contract
 
 `inputs/subject.md` is the **curriculum baseline**. It defines:
@@ -209,13 +314,12 @@ course-factory-agent  ← top-level entry point (invokes everything below)
   ├─ environment-scaffold-generator  [once, before any chapter]
   │
   ├─ chapter-supervisor-agent  [per chapter, sequential]
-  │    ├─ chapter-text-generator → chapter-text-evaluator
-  │    ├─ exercise-generator     → exercise-evaluator
-  │    ├─ presentation-generator → presentation-evaluator  (parallel)
-  │    ├─ quiz-generator         → quiz-evaluator          (parallel)
-  │    ├─ podcast-generator      → podcast-evaluator
-  │    ├─ companion-generator    → companion-evaluator
-  │    └─ glossary-aggregator (incremental, after each chapter)
+  │    ├─ Step 1: chapter-text-generator → chapter-text-evaluator
+  │    ├─ Step 2: [PARALLEL] exercise-generator + quiz-generator + podcast-generator
+  │    │          → exercise-evaluator + quiz-evaluator + podcast-evaluator
+  │    ├─ Step 3: [PARALLEL] presentation-generator + companion-generator + glossary-aggregator
+  │    │          → presentation-evaluator + companion-evaluator
+  │    └─ Each pair uses the 3-attempt feedback loop; subagent isolation per pair
   │
   ├─ evaluator-agent  [course-wide, after all chapters]
   │    ├─ validates cross-chapter LO coverage
@@ -269,6 +373,21 @@ Gate sub-agent output format:
   ]
 }
 ```
+
+---
+
+## Model Assignment
+
+| Role | Agent(s) | Model | Rationale |
+|------|----------|-------|-----------|
+| Master orchestrator | `course-factory-agent` | `claude-opus-4-7` | Complex multi-phase orchestration with human-review halts |
+| Planner | `planner-agent` | `claude-opus-4-7` | 12-step planning with curriculum design decisions |
+| Course-wide evaluator | `evaluator-agent` | `claude-opus-4-7` | Cross-chapter analysis requiring deep reasoning |
+| Chapter supervisor | `chapter-supervisor-agent` | `claude-sonnet-4-6` | Dispatch and feedback-loop management |
+| Content generators (9) | `chapter-text-generator`, `exercise-generator`, `presentation-generator`, `quiz-generator`, `podcast-generator`, `companion-generator`, `lab-generator`, `environment-scaffold-generator`, `glossary-aggregator` | `claude-sonnet-4-6` | Content generation; detailed instructions come from skills |
+| Artifact evaluators (7) | `chapter-text-evaluator`, `exercise-evaluator`, `presentation-evaluator`, `quiz-evaluator`, `podcast-evaluator`, `companion-evaluator`, `lab-evaluator` | `claude-sonnet-4-6` | Structured gate aggregation |
+| Gate sub-agents (7) | `coverage-gate-evaluator`, `pedagogy-gate-evaluator`, `personalization-gate-evaluator`, `format-gate-evaluator`, `technical-gate-evaluator`, `accessibility-gate-evaluator`, `calibration-gate-evaluator` | `claude-sonnet-4-6` | Focused checklist evaluation |
+| Spec builders (2) | `spec-builder-agent`, `subject-spec-builder-agent` | `claude-sonnet-4-6` | Interactive spec construction |
 
 ---
 
@@ -405,8 +524,12 @@ outputs/
         {course_slug}--ch{NN}--{chapter_slug}--doc.handoff.json   ← internal handoff
         {course_slug}--ch{NN}--{chapter_slug}--slides.pptx        ← slide deck (PowerPoint)
         {course_slug}--ch{NN}--{chapter_slug}--slides-notes.docx  ← presenter notes (Word)
-        {course_slug}--ch{NN}--{chapter_slug}--quiz.json          ← quiz data (internal)
-        {course_slug}--ch{NN}--{chapter_slug}--quiz-formB.json    ← quiz form B (internal)
+        {course_slug}--ch{NN}--{chapter_slug}--quiz-questions.docx   ← student quiz questions (Word)
+        {course_slug}--ch{NN}--{chapter_slug}--quiz-answers.docx   ← answer key + rationales (Word)
+        {course_slug}--ch{NN}--{chapter_slug}--quiz-questions-formB.docx ← Form B questions (Word)
+        {course_slug}--ch{NN}--{chapter_slug}--quiz-answers-formB.docx   ← Form B answers (Word)
+        {course_slug}--ch{NN}--{chapter_slug}--quiz.json          ← quiz data (internal pipeline)
+        {course_slug}--ch{NN}--{chapter_slug}--quiz-formB.json    ← quiz form B (internal pipeline)
         {course_slug}--ch{NN}--{chapter_slug}--podcast-script.md  ← recording script (internal)
         {course_slug}--ch{NN}--{chapter_slug}--cheatsheet.docx    ← cheatsheet (Word)
         {course_slug}--ch{NN}--{chapter_slug}--instructor-guide.docx ← instructor guide (Word)
@@ -541,6 +664,11 @@ the `.mmd` is the editable source. Every diagram MUST include alt text in the ha
   ("Functions hide complexity")
 - Worked examples placed after independent exercises
 - Lab scenarios drawn from chapter content (capstone must use reserved scenarios only)
+- **Bloom labels visible to students** (LO-IDs, `[Apply]` badges, Bloom level names in any
+  student-facing text, slide, quiz, or exercise)
+- **Em dashes** in any student-facing document (use periods, commas, or conjunctions)
+- **§ symbols, section numbers, or internal codes** in student-facing headings or prose
+- **Student materials delivered as non-Office formats** (JSON, YAML, MD) instead of `.docx`/`.pptx`
 
 ---
 
@@ -551,7 +679,8 @@ the `.mmd` is the editable source. Every diagram MUST include alt text in the ha
 - **`anthropic-skills:docx`** — generates `.docx` Word documents; invoked by ALL content
   generators that produce student-facing text artifacts: `chapter-text-generator`,
   `exercise-generator`, `companion-generator`, `lab-generator`, `presentation-generator`
-  (for speaker notes), and `glossary-aggregator`
+  (for speaker notes), `quiz-generator` (for student-facing quiz documents), and
+  `glossary-aggregator`
 
 Both skills are available globally in Claude Code; no installation or configuration required.
 Invoke them via the `Skill` tool, passing the document content as input.
@@ -566,6 +695,7 @@ Invoke them via the `Skill` tool, passing the document content as input.
 | Instructor reads presenter notes | `anthropic-skills:docx` | `presentation-generator` (slides-notes.docx) |
 | Student reads cheatsheet | `anthropic-skills:docx` | `companion-generator` |
 | Instructor reads guide | `anthropic-skills:docx` | `companion-generator` |
+| Student takes a quiz | `anthropic-skills:docx` | `quiz-generator` (quiz-questions.docx, quiz-answers.docx) |
 | Student does capstone | `anthropic-skills:docx` | `lab-generator` (capstone-lab.docx, debrief.docx) |
 | Student looks up terms | `anthropic-skills:docx` | `glossary-aggregator` |
 
@@ -582,6 +712,7 @@ Invoke them via the `Skill` tool, passing the document content as input.
 | `doc/GreatPresentationSpec.md` | `presentation-generator` — slide deck |
 | `doc/GreatQuizSpec.md` | `quiz-generator` — quiz Forms A & B |
 | `doc/GreatLabSpec.md` | `lab-generator` — capstone lab |
+| `doc/DocxDesignSpec.md` | Document design + typography for all student-facing `.docx` files |
 | `doc/MainSubjectSpec-Practical-Cowork-Automation.md` | Default subject spec (18-chapter Cowork Automation course) |
 
 ### Input Files

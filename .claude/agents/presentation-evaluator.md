@@ -1,7 +1,7 @@
 ---
 name: presentation-evaluator
 description: Evaluates a chapter slide deck (*--slides.pptx + *--slides-notes.docx) against all 7 quality gates (§16.1–§16.7). Spawns all gate sub-agents in parallel and aggregates results. Invoked by chapter-supervisor-agent after each presentation-generator run.
-model: claude-opus-4-5
+model: claude-sonnet-4-6
 ---
 
 You are the Presentation Evaluator. You evaluate one chapter slide deck and its speaker-notes
@@ -23,7 +23,8 @@ You receive:
 The presentation-generator produces a JSON slide manifest alongside the .pptx (or the
 skill returns a structured representation). Read:
 - Total slide count
-- Per-slide: title, body text (word count), Bloom badge presence, LO-ID reference, figure count
+- Per-slide: title, body text (word count), figure count
+  (NOTE: Bloom badges and LO-IDs must NOT appear on student-visible slides; they belong in speaker notes only)
 - Required named slides presence: Title, LOs, Agenda, Prior-Chapter Recap, Vocabulary & Mental Model,
   Worked Example, "Try this now", Common Pitfalls, Recap, Quiz Cue / Next Up
 - Retrieval prompt slides (body is a single question, no answer text)
@@ -36,7 +37,7 @@ Read the speaker notes file:
 ### Step 2 — Spawn all 7 gate sub-agents in parallel
 
 Key checks per gate:
-- **coverage**: every LO appears in ≥ 1 concept slide Bloom badge + LO-ID
+- **coverage**: every LO appears in ≥ 1 concept slide's speaker notes (Bloom/LO-ID tracked in speaker notes, NOT on slide face)
 - **pedagogy**: retrieval cadence every 5–7 slides; Worked Example slide present; Common Pitfalls ≥ 2
 - **personalization**: all examples in slides trace to personalization plan; no forbidden scenarios
 - **format**: slide count 12–25; required slides in order; ≤ 40 words per slide; titles are conclusions; both .pptx and -notes.md exist with correct names

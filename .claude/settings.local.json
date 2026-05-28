@@ -1,38 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(Copy-Item \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\doc\\\\MainSubjectSpec-Practical-Cowork-Automation.md\" \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\inputs\\\\subject.md\")",
-      "WebSearch",
-      "WebFetch(domain:www.graduateschool.edu)",
-      "WebFetch(domain:pasqualepillitteri.it)",
-      "WebFetch(domain:claude.com)",
-      "WebFetch(domain:findskill.ai)",
-      "Bash(pandoc \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\inputs\\\\test_scenarios\\\\Intern Job Assignment.docx\" -o - --to plain)",
-      "Read(//usr/**)",
-      "Read(//usr/local/**)",
-      "Bash(grep -nE \"^#{1,3} \" inputs/subject.md)",
-      "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\_plan\")",
-      "Bash(Out-Null)",
-      "Bash(Write-Output \"Directory ready\")",
-      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\")",
-      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\worked-example\\\\solution\")",
-      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-02\\\\starter\")",
-      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-02\\\\solution\")",
-      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-02\\\\verify\")",
-      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-03\\\\starter\")",
-      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-03\\\\solution\")",
-      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-03\\\\verify\")",
-      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\_plan\")",
-      "Bash(Write-Host \"Directories created\")",
-      "PowerShell($content = Get-Content \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md\" -Raw; \\($content -split '\\\\s+' | Where-Object { $_ -ne '' }\\).Count)",
-      "Bash(grep -c \"^\\\\\\\\*\\\\\\\\*Prompt\" \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md\")",
-      "Bash(grep -c \"^\\\\\\\\*\\\\\\\\*Claude\\\\|^\\\\\\\\*\\\\\\\\*Agent\\\\|^\\\\\\\\*\\\\\\\\*RSTRM\\\\|^\\\\\\\\*\\\\\\\\*Human\" \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--doc.md\")",
-      "Bash(grep -cv \"^#\\\\|^$\\\\|^-\" \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-02\\\\starter\\\\email-triage-rstrm.md\")",
-      "Bash(bash \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\worked-example\\\\verify\\\\verify.sh\")",
-      "Bash(bash \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-02\\\\verify\\\\verify.sh\" \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-02\\\\solution\\\\email-triage-rstrm-solution.md\")",
-      "Bash(bash \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-03\\\\verify\\\\verify.sh\" \"C:\\\\Users\\\\manuc\\\\Documents\\\\projects\\\\personalized_course_factory\\\\outputs\\\\cowork-automation-tracy-2026\\\\chapters\\\\ch01-intro-cowork-automation\\\\cowork-automation-tracy-2026--ch01--intro-cowork-automation--exercises\\\\exercise-03\\\\solution\\\\my-task-analysis-solution.md\")",
-      "Bash(git config *)",
-      "Bash(grep -v '^$')"
+      "Bash(git add *)"
     ]
   }
 }

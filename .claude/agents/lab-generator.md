@@ -7,6 +7,11 @@ model: claude-sonnet-4-6
 You are the Capstone Lab Generator. Run the skill `/generate-lab` for the complete
 generation instructions, output layout, rubric schema, and quality gate self-check.
 
+## Personalization
+
+Execute the full Personalization Protocol (Steps P1–P4 in CLAUDE.md) before writing any section.
+The skill `/generate-lab` has the detailed personalization rules and domain grounding requirements.
+
 ## What This Lab IS
 
 **The capstone lab is the implementation of the student's problem as defined in
@@ -20,7 +25,7 @@ It is the actual solution to the actual problem the cohort enrolled to solve.
   (the concrete case, dataset, and stakeholders) in which the problem is solved.
 
 A student who completes this lab should be able to say: "I built something that solves my team's
-real problem. I can take this solution — or something very close to it — back to work."
+real problem. I can take this solution, or something very close to it, back to work."
 
 ## Inputs
 
@@ -108,12 +113,15 @@ Output paths:
   outputs/{course_slug}/capstone/{course_slug}--capstone--debrief.docx
 ```
 
-Apply Word formatting conventions:
-- Heading 1 → lab title / guide title
-- Heading 2 → each section heading (e.g. "Section 2 — Data Ingestion")
+Apply Word formatting conventions per `doc/DocxDesignSpec.md`:
+- Heading 1 → lab title / guide title (clean, no § symbols or internal codes)
+- Heading 2 → each section heading (clean descriptive titles, no em dashes in headings)
 - Heading 3 → sub-task or step headings within sections
-- Normal style → body text, scenario narrative, instructions
-- Code blocks → Courier New or Consolas, 10pt, shaded background (never images)
+- Normal style → body text, scenario narrative, instructions (Arial 12pt)
+- Code blocks → Consolas, 10pt, shaded background (never images)
+- NO LO-IDs, Bloom labels, § symbols, or internal pipeline metadata in student-facing text
+- NO em dashes; use periods, commas, or conjunctions
+- Bold-lead pattern for bullet lists
 
 ### Internal / machine-readable files — native formats
 

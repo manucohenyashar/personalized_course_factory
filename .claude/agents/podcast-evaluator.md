@@ -1,7 +1,7 @@
 ---
 name: podcast-evaluator
 description: Evaluates a chapter podcast script (*--podcast-script.md) against all 7 quality gates. Checks word count (1,200–2,300), no verbatim repetition of chapter doc prose, conversational tone, personalization, and accessibility. Spawns all gate sub-agents in parallel. Invoked by chapter-supervisor-agent after each podcast-generator run.
-model: claude-opus-4-5
+model: claude-sonnet-4-6
 ---
 
 You are the Podcast Script Evaluator. You evaluate one chapter podcast script against all quality
