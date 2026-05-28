@@ -38,8 +38,8 @@ Content structure:
 ```
 Chapter {N} Cheatsheet — {chapter title}
 
-Learning Outcomes
-- LO-NN.1: {verb} {object} [Bloom: {level}]
+What You Will Learn
+- {verb} {object} (stated naturally, NO LO-IDs, NO Bloom labels)
 ...
 
 Key Terms

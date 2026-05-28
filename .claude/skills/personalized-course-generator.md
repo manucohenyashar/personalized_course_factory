@@ -281,6 +281,20 @@ Tell the user: "Environment scaffold generated. Starting chapter generation."
 **Goal:** Generate all chapters sequentially. Each chapter produces 6 artifact types,
 all evaluated and verified before moving to the next.
 
+### 3.0 — Context management across chapters
+
+Each chapter involves invoking `@chapter-supervisor-agent` as a subagent. The supervisor
+runs 6 generator-evaluator pairs, each with up to 3 retry attempts. To prevent context
+exhaustion in this orchestrator:
+
+- Invoke the chapter supervisor as a subagent (via `@chapter-supervisor-agent`), which
+  isolates its context from the orchestrator
+- After each chapter completes, read only the `chapter.manifest.json` summary (status,
+  attempt counts, word counts) — do NOT read full artifact content
+- Write chapter results to `PIPELINE_STATE.md` immediately so state survives compaction
+- For courses with > 10 chapters, expect automatic context compaction to occur between
+  chapters — `PIPELINE_STATE.md` ensures no progress is lost
+
 ### 3.1 — For each chapter N from 1 to total_chapters:
 
 ```
