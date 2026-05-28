@@ -66,6 +66,143 @@ Scan each slide's `body_text`. Replace:
 
 ---
 
+## Visual Design System — Global Rules
+
+### 1. Visual Hierarchy & Typography
+
+* **Slide Dimensions:** Force standard modern widescreen aspect ratio (16:9).
+* **Font Selection:** Use a clean, professional sans-serif pairing. Use Arial or Calibri as safe cross-platform system fonts, or specific enterprise font stacks. Never use more than two font families per deck.
+* **Color Palette Constraints:** Define a strict 4-color palette programmatically:
+  * **Primary/Background:** Light/White background for content readability.
+  * **Text/Base:** Dark Charcoal/Off-Black (`#22252A`) — avoid `#000000` for text to reduce eye strain.
+  * **Secondary/Muted:** Medium Slate Gray (`#6A737D`) for metadata, slide numbers, and labels.
+  * **Accent:** One distinct brand color (`#005A9E`) used only for focal points and active labels.
+* **Whitespace Deficit Correction:** Maintain a mandatory minimum 10% margin on all sides of the slide. Do not fill empty spaces with decorative shapes, lines, or icons. Whitespace must be treated as an intentional layout tool to drive clarity.
+
+### 2. Header and Metadata Standardization
+
+* **Structural Anchors:** Every slide must feature a consistent top layout anchor. Place the Slide Title in a prominent bold font size (24pt to 28pt) at the exact same coordinates across all content slides.
+* **Metadata Integration:** Contextual labels, learning objectives, and chapter markers must be separated from the main title text. Place them as small, muted eyebrow text (10pt to 12pt) directly above the title, or anchored uniformly in the header zone.
+* **Slide Tracking:** Include slide tracking indicators strictly in a single uniform location, such as the bottom right corner or integrated cleanly into the top metadata track.
+
+### 3. Layout Switching & Component-Driven Architectures
+
+To prevent repetitive, single-column layouts, the generation tool must programmatically choose from three structural layouts based on the content payload:
+
+**Layout A: The Split-Screen Column Layout (For Frameworks & Profiles)**
+
+* **Trigger:** Use when the slide text contains 2 to 4 distinct categories, definitions, or parallel concepts.
+* **Execution:** Divide the available horizontal slide width into equal columns based on the count. Calculate explicit bounding box coordinates mathematically, leaving a clear gap between columns. Do not use standard text boxes with bullet points; use distinct column text containers with bold titles and clean vertical text flow.
+
+**Layout B: Structured Technical Tables (For Data & Complex Comparisons)**
+
+* **Trigger:** Use when text lists alternate between concept names, rules, definitions, and short execution examples.
+* **Execution:** Abandon paragraphs or multi-level indented bullet points. Programmatically construct an explicit table element. Format the header row with a subtle background fill and bold text. Ensure all cell text has appropriate inner padding to keep the content highly scannable.
+
+**Layout C: Ordered Linear Timesteps (For Sequential Processes)**
+
+* **Trigger:** Use when the slide content represents a numbered sequence, workflow, or chronological process steps.
+* **Execution:** Create a clear left-to-right horizontal train or a top-to-bottom list using distinct content blocks. Clearly isolate the step number from the description body text by applying a distinct visual treatment to the digits.
+
+### 4. Text Formatting and ASCII Clean-up
+
+* **Clean Structural Elements:** Explicitly ban the generation of markdown code block artifacts, raw file paths, JSON extensions, raw console brackets, tree structures, or raw ASCII box-drawing characters (`┌───┐`, `│`, `└───┘`) directly inside slide text boxes.
+* **Geometric Transformations:** If the underlying text contains a workflow or tree structure, the code must parse that content and render it using clean native slide columns, tables, or structural blocks.
+* **Scannability Optimization:** Ensure all body copy uses bold styling for the first two to three critical words of a line or bullet point. This guides the user's eye immediately to the core takeaway.
+
+---
+
+## python-pptx Implementation Guide
+
+Apply this code structural logic when generating slides via the pptx skill:
+
+```python
+from pptx import Presentation
+from pptx.util import Inches, Pt
+from pptx.dml.color import RGBColor
+from pptx.enum.text import PP_ALIGN
+
+# 1. Establish strict layout constants
+SLIDE_WIDTH = Inches(13.333)
+SLIDE_HEIGHT = Inches(7.5)
+
+COLOR_PRIMARY_TEXT = RGBColor(0x22, 0x25, 0x2A)  # Charcoal
+COLOR_MUTED_TEXT = RGBColor(0x6A, 0x73, 0x7D)    # Slate Gray
+COLOR_ACCENT = RGBColor(0x00, 0x5A, 0x9E)        # Accent Blue
+
+FONT_TITLE = "Arial"
+FONT_BODY = "Calibri"
+
+def apply_text_styling(paragraph, font_name, size, color, bold=False, alignment=PP_ALIGN.LEFT):
+    paragraph.font.name = font_name
+    paragraph.font.size = Pt(size)
+    paragraph.font.color.rgb = color
+    paragraph.font.bold = bold
+    paragraph.alignment = alignment
+
+# 2. Universal Header Logic (Enforces Whitespace and Alignment)
+def add_slide_header(slide, title_text, eyebrow_text=None, tracking_text=None):
+    # Eyebrow/Metadata Tracker
+    if eyebrow_text:
+        eb_box = slide.shapes.add_textbox(Inches(1.0), Inches(0.4), Inches(9.0), Inches(0.4))
+        tf_eb = eb_box.text_frame
+        tf_eb.word_wrap = True
+        p_eb = tf_eb.paragraphs[0]
+        p_eb.text = eyebrow_text.upper()
+        apply_text_styling(p_eb, FONT_BODY, 11, COLOR_MUTED_TEXT, bold=True)
+    
+    # Standardized Title Location
+    title_box = slide.shapes.add_textbox(Inches(1.0), Inches(0.7), Inches(9.0), Inches(0.8))
+    tf_title = title_box.text_frame
+    tf_title.word_wrap = True
+    p_title = tf_title.paragraphs[0]
+    p_title.text = title_text
+    apply_text_styling(p_title, FONT_TITLE, 26, COLOR_PRIMARY_TEXT, bold=True)
+    
+    # Slide Tracking Indicator
+    if tracking_text:
+        track_box = slide.shapes.add_textbox(Inches(11.0), Inches(0.4), Inches(1.333), Inches(0.4))
+        tf_track = track_box.text_frame
+        p_track = tf_track.paragraphs[0]
+        p_track.text = tracking_text
+        apply_text_styling(p_track, FONT_BODY, 11, COLOR_MUTED_TEXT, alignment=PP_ALIGN.RIGHT)
+
+# 3. Dynamic Column Generation Logic (Layout A)
+def create_split_columns(slide, items_data):
+    """
+    items_data expected format: [{"title": "SKILL", "body_lines": ["Line 1...", ...]}, ...]
+    """
+    count = len(items_data)
+    left_margin = Inches(1.0)
+    top_margin = Inches(2.0)
+    total_width = SLIDE_WIDTH - (left_margin * 2)
+    gap = Inches(0.4)
+    
+    # Calculate uniform width dynamically based on item count
+    col_width = (total_width - (gap * (count - 1))) / count
+    
+    for i, item in enumerate(items_data):
+        col_left = left_margin + i * (col_width + gap)
+        box = slide.shapes.add_textbox(col_left, top_margin, col_width, Inches(4.5))
+        tf = box.text_frame
+        tf.word_wrap = True
+        
+        # Column Header
+        p_header = tf.paragraphs[0]
+        p_header.text = item["title"]
+        apply_text_styling(p_header, FONT_TITLE, 14, COLOR_ACCENT, bold=True)
+        p_header.space_after = Pt(12)
+        
+        # Column Body Text
+        for line in item["body_lines"]:
+            p_line = tf.add_paragraph()
+            p_line.text = line
+            apply_text_styling(p_line, FONT_BODY, 13, COLOR_PRIMARY_TEXT)
+            p_line.space_after = Pt(6)
+```
+
+---
+
 ## Slide Types and Their Rules
 
 ### Title Slide (S1)
@@ -236,16 +373,17 @@ Pass this to the pptx skill:
 {
   "template": "default",
   "color_palette": {
-    "primary": "#1A1A2E",
-    "accent": "#E94560",
+    "primary": "#FFFFFF",
+    "accent": "#005A9E",
     "background": "#FFFFFF",
-    "text": "#1A1A2E"
+    "text": "#22252A",
+    "muted": "#6A737D"
   },
   "font_config": {
-    "title_font": "Calibri",
-    "title_size_pt": 36,
+    "title_font": "Arial",
+    "title_size_pt": 26,
     "body_font": "Calibri",
-    "body_size_pt": 24
+    "body_size_pt": 13
   },
   "slides": [
     {
