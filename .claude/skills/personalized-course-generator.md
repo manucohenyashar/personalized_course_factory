@@ -295,6 +295,41 @@ exhaustion in this orchestrator:
 - For courses with > 10 chapters, expect automatic context compaction to occur between
   chapters — `PIPELINE_STATE.md` ensures no progress is lost
 
+#### Context Checkpoint Protocol (per-chapter boundary)
+
+The boundary **after** each chapter is the only safe place to compact, because state is
+fully flushed there. Treat every chapter as a checkpoint:
+
+1. **Flush before any reset.** A chapter is not "done" until `PIPELINE_STATE.md` (and the
+   chapter's `chapter.manifest.json`) is written. Never rely on in-context memory to carry
+   chapter results forward — write them to disk.
+2. **Keep the orchestrator window thin.** Hold only: `course_slug`, the chapter list with
+   statuses, and the current chapter number. The supervisor subagent owns all heavy context;
+   when it returns, that context is reclaimed. Do not re-read completed artifacts.
+3. **Re-read state after any compaction.** If the context was compacted (manually via
+   `/compact` or automatically), re-read `PIPELINE_STATE.md` before continuing so the
+   chapter loop resumes from the correct chapter. The state file — not conversation memory —
+   is the source of truth.
+4. **Compaction is optional, not required.** Because the supervisor runs as an isolated
+   subagent, the orchestrator rarely needs to compact mid-run. Prefer letting the harness
+   auto-compact; a chapter boundary is where it will land cleanly. Do not attempt to invoke
+   `/compact` programmatically — it is a user/harness action, not an agent tool.
+
+#### Loop mode (recommended for long courses)
+
+For courses with many chapters, or whenever the user wants one chapter per fresh context
+window, drive Phase 3 with the `/next-chapter` skill instead of the inline loop below:
+
+- `/next-chapter` generates exactly one pending chapter, updates `PIPELINE_STATE.md`, then
+  **halts at the checkpoint**. Run `/compact` and `/next-chapter` again to continue, or
+- `/loop /next-chapter` self-paces through every remaining chapter, ending automatically when
+  `/next-chapter` reports all chapters complete.
+- `/course-status` prints progress from state files only (no artifact loading) — run it after
+  a compaction or when resuming to confirm where the loop is.
+
+When invoked end-to-end by `@course-factory-agent`, the inline loop in §3.1 is equivalent;
+loop mode is the same work expressed one checkpoint at a time.
+
 ### 3.1 — For each chapter N from 1 to total_chapters:
 
 ```

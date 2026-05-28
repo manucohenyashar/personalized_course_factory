@@ -285,6 +285,43 @@ produces `inputs/problem.yaml` and `inputs/students.yaml` interactively. Then ru
 
 All outputs land in `outputs/` under the course slug.
 
+**Large-course / low-context flow (recommended for many chapters):**
+
+Generate one chapter per context window so the working set stays small and compaction
+lands on clean boundaries:
+
+```
+/next-chapter          ← generates the next pending chapter, updates state, then HALTS
+/compact               ← (optional) reset context at the clean checkpoint
+/next-chapter          ← continue with the next chapter
+```
+
+Or drive it hands-free:
+
+```
+/loop /next-chapter    ← self-paces through every remaining chapter; ends when all are done
+/course-status         ← lightweight progress readout (reads only PIPELINE_STATE.md)
+```
+
+`/next-chapter` and `/course-status` both rely on `_plan/PIPELINE_STATE.md` as the durable
+source of truth, so they resume correctly after any compaction or new session.
+
+### Context & Compaction Guidance
+
+The pipeline is built for bounded context: `@chapter-supervisor-agent` and every
+generator/evaluator run as **subagents**, so their heavy context is isolated and reclaimed
+when they return. The orchestrator holds only state-file summaries. Consequently:
+
+- **You do not need to `/compact` after every chapter.** With subagent isolation, the
+  orchestrator window barely grows per chapter. Compact only if a single very long session
+  is approaching the limit; the chapter boundary is where it lands cleanly.
+- **A chapter is a checkpoint only after `PIPELINE_STATE.md` is written.** State on disk —
+  not conversation memory — is authoritative. After any compaction, re-read it before continuing.
+- **`/compact` is a user/harness action, not an agent tool.** Agents must not assume they can
+  trigger it; they rely on durable state plus subagent isolation instead.
+- **Prefer the loop-and-checkpoint pattern over manual compaction** for long runs: it keeps
+  context naturally small and is fully resumable.
+
 ---
 
 ## Agent Pipeline Overview
