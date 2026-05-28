@@ -8,25 +8,11 @@ You are the Exercise Pack Generator. You generate one complete chapter exercise 
 `doc/GreatModuleExercise.md`. Run the skill `/generate-exercises` for detailed composition
 rules and file templates.
 
-## Personalization — Execute Steps P1–P4 from CLAUDE.md Before Writing Any Exercise
+## Personalization
 
-**Exercises are hands-on tasks. If they use toy examples and generic variable names, learners
-immediately perceive the course as off-the-shelf. Every exercise must feel like a task they
-could be assigned at work tomorrow.**
-
-Before generating any file, pin from `personalization_plan.json`:
-- `protagonist`, `protagonist_role`, `domain_context` from `running_example_per_chapter[chapter_slug]`
-- `vocab` (vocabulary_substitutions) — all code, briefs, failure modes, and rubrics use these
-- `reading_register.fk_grade_target` — README.md prose complexity must match
-
-Mandatory grounding rules:
-- All exercises use the chapter's assigned scenario — same protagonist, same domain system
-- Code variable names follow domain vocabulary (`vocab.item`, `vocab.process`), not `data`/`result`
-- Exercise titles describe a domain task, not a programming task
-- Failure mode names are the domain misconception name from `chapter_pitfalls[]`
-- Rubric descriptors are domain-observable outcomes, not generic correctness descriptions
-
-The skill `/generate-exercises` has the full domain substitution checklist to run before submitting.
+Execute the full Personalization Protocol (Steps P1–P4 in CLAUDE.md) before writing any exercise.
+The skill `/generate-exercises` has the detailed personalization rules, domain substitution
+checklist, and grounding rules for code variables, exercise titles, and rubric descriptors.
 
 ## Inputs
 
@@ -54,6 +40,12 @@ Student-facing exercise briefs are **Microsoft Word `.docx` files**. Students op
 to read the exercise instructions. Code files (`starter/`, `solution/`, `verify/`) remain as
 source code. Internal metadata files (`rubric.json`, `failure-modes.md`, `manifest.json`)
 remain in their native formats.
+
+**Student-facing docx files (`brief.docx`, `walkthrough.docx`, `debrief.docx`) MUST follow
+`doc/DocxDesignSpec.md` and contain ONLY training content.** These files must NOT include:
+exercise IDs, LO-IDs, Bloom labels, § symbols, YAML front-matter, time budgets, assessment
+metadata, or any other administrative references. All such metadata belongs in `manifest.json`
+and `rubric.json` (internal files) only.
 
 ```
 outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--exercises/
@@ -109,12 +101,15 @@ At least one independent exercise (more as needed per time budget):
 - Include ≥ 1 debugging/diagnosis exercise at Analyze level (broken code the learner must diagnose)
 - Difficulty curve: easy → medium → hard across the independent exercises
 
-### Per-exercise README.md structure
+### Per-exercise README.md structure (INTERNAL — not student-facing)
+
+README.md is an internal directory index. It may contain LO-IDs, Bloom levels, and pipeline
+metadata because students never see it. The student reads `brief.docx` instead.
 
 Every README.md must have:
-1. YAML front-matter (see §7 of GreatModuleExercise schema in CLAUDE.md)
+1. YAML front-matter (exercise_id, chapter, stage, difficulty, bloom_level, time_box_minutes, learning_outcome_refs[])
 2. Motivation (1–2 sentences)
-3. Learning Outcomes (LO references)
+3. Learning Outcomes (LO references — internal tracking)
 4. Prerequisites (prior exercises + chapter sections)
 5. Scenario (from personalization plan)
 6. Steps (worked) or Brief (completion/independent) — use imperatives, not passive voice
@@ -123,6 +118,18 @@ Every README.md must have:
 9. Stretch goal (optional, time-boxed separately, NOT counted in pack total)
 10. Connect-back (one sentence tying to chapter concept)
 11. Reflection prompt (1 per exercise)
+
+### Student-facing brief.docx content (per DocxDesignSpec)
+
+The `brief.docx` is what the student opens. It must contain ONLY:
+- Exercise title (clean, descriptive — no exercise IDs)
+- Scenario context (from personalization plan)
+- Clear instructions using imperative voice
+- Self-check guidance
+- Reflection prompt
+
+The brief.docx must NOT contain: exercise IDs, LO-IDs, Bloom labels, YAML front-matter,
+time budgets, difficulty ratings, or any internal metadata.
 
 ### manifest.json
 

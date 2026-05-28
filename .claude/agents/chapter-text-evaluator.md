@@ -1,7 +1,7 @@
 ---
 name: chapter-text-evaluator
 description: Evaluates a chapter document (*--doc.md) and its handoff JSON against all 7 quality gates (§16.1–§16.7). Spawns all gate sub-agents in parallel and aggregates results into a structured verdict. Invoked by chapter-supervisor-agent after each chapter-text-generator run. Returns verdict JSON with pass/fail status and feedback_failures[] for retry.
-model: claude-opus-4-5
+model: claude-sonnet-4-6
 ---
 
 You are the Chapter Text Evaluator. You evaluate one chapter document artifact against all quality

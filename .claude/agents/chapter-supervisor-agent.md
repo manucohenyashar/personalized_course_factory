@@ -77,11 +77,27 @@ If attempt 4 is reached (all 3 failed):
   Stop processing this chapter.
 ```
 
+## Context Management
+
+Each generator-evaluator pair runs as a subagent (`@agent-name`), which isolates its context
+from the supervisor's window. This is important: the supervisor dispatches up to 6 generators
+and 6 evaluators per chapter, each potentially retrying up to 3 times. Without subagent
+isolation, the supervisor's context window would fill with artifact content.
+
+Rules:
+- Pass inputs to generators by **reference** (file paths), not by value (full content)
+- Only read back the parts of evaluator verdicts needed for the feedback loop
+  (`overall_status` and `feedback_failures[]`), not the full gate details
+- After each generator-evaluator pair completes, record the result in memory
+  (status + attempt count) but do NOT retain the full artifact content in context
+
 ## Dispatch Order
 
-Execute the following pairs sequentially, except where marked PARALLEL:
+Execute generator-evaluator pairs in the order below. Steps 2 and 3 each run multiple
+generators **in parallel** to maximize throughput. Evaluate each generator's output through
+the feedback loop before proceeding to the next step.
 
-### 1. Chapter Text → Chapter Text Evaluator
+### Step 1. Chapter Text (sequential — seeds all downstream generators)
 
 Invoke `@chapter-text-generator` with:
 - `feedback_failures`: [] on first attempt
@@ -89,28 +105,20 @@ Invoke `@chapter-text-generator` with:
 - `handoff_json_path`: the output path for the handoff JSON
 
 After passing: read the handoff JSON — it seeds all downstream generators.
+Pre-compute the `quiz_filename` string (no content needed, just the path) for use in Step 3.
 
-### 2. Exercise Pack → Exercise Evaluator
+### Step 2. [PARALLEL] Exercise Pack + Quiz + Podcast
 
-Invoke `@exercise-generator` with:
+These three generators depend only on the handoff JSON from Step 1. Run all three
+simultaneously, then evaluate each through its feedback loop.
+
+**Exercise Pack** (`@exercise-generator`):
 - common_envelope + `handoff_json` (full object from Step 1)
 - `chapter_doc_outline`: from handoff_json.section_outline
 - `worked_example_seed`: from handoff_json.worked_example_seed
 - `chapter_pitfalls`: from handoff_json.chapter_pitfalls
 
-### 3. [PARALLEL] Slide Deck + Quiz
-
-Invoke `@presentation-generator` AND `@quiz-generator` simultaneously:
-
-**Presentation** inputs:
-- common_envelope + handoff_json
-- `chapter_doc_outline`: from handoff_json.section_outline
-- `running_example`: from handoff_json.running_example
-- `exercise_manifest`: path to exercise pack manifest.json
-- `quiz_filename`: the quiz output filename
-- `glossary_terms_introduced`: from handoff_json.glossary_delta
-
-**Quiz** inputs:
+**Quiz** (`@quiz-generator`):
 - common_envelope + handoff_json
 - `chapter_doc_outline`: section IDs + Bloom tags
 - `chapter_pitfalls`: from handoff_json.chapter_pitfalls
@@ -118,27 +126,38 @@ Invoke `@presentation-generator` AND `@quiz-generator` simultaneously:
 - `bloom_distribution_target`: from course_plan chapter bloom_distribution
 - `item_count_target`: 10 graded (or numeric_override)
 
-Run `@presentation-evaluator` and `@quiz-evaluator` in parallel after both generators complete.
-
-### 4. Podcast Script → Podcast Evaluator
-
-Invoke `@podcast-generator` with:
+**Podcast** (`@podcast-generator`):
 - common_envelope + handoff_json
 - `chapter_doc_path`: path to the chapter doc
 
-### 5. Companion Artifacts → Companion Evaluator
+Run all three generators in parallel. Then run `@exercise-evaluator`, `@quiz-evaluator`,
+and `@podcast-evaluator` in parallel (or as each generator completes).
 
-Invoke `@companion-generator` with:
+### Step 3. [PARALLEL] Slides + Companion + Glossary
+
+These generators depend on outputs from Steps 1 and 2. Run all three simultaneously after
+Step 2 completes.
+
+**Slides** (`@presentation-generator`):
 - common_envelope + handoff_json
-- `exercise_manifest_path`: path to exercises/manifest.json
-- `quiz_path`: path to the quiz JSON
+- `chapter_doc_outline`: from handoff_json.section_outline
+- `running_example`: from handoff_json.running_example
+- `exercise_manifest`: path to exercise pack manifest.json (from Step 2)
+- `quiz_filename`: the quiz output filename (pre-computed string)
+- `glossary_terms_introduced`: from handoff_json.glossary_delta
 
-### 6. Glossary Aggregation
+**Companion** (`@companion-generator`):
+- common_envelope + handoff_json
+- `exercise_manifest_path`: path to exercises/manifest.json (from Step 2)
+- `quiz_path`: path to the quiz JSON (from Step 2)
 
-Invoke `@glossary-aggregator` with:
+**Glossary** (`@glossary-aggregator`):
 - `glossary_delta`: from handoff_json.glossary_delta
 - `master_glossary_path`: `outputs/{course_slug}/glossary.docx`
 - `chapter_number`: integer
+
+Run `@presentation-evaluator` and `@companion-evaluator` in parallel after their generators
+complete. Glossary does not require evaluation.
 
 ## Step Final — Write chapter.manifest.json
 
