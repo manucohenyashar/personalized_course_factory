@@ -1,6 +1,6 @@
 ---
 name: podcast-evaluator
-description: Evaluates a chapter podcast script (*--podcast-script.md) against all 7 quality gates. Checks word count (1,200–2,300), no verbatim repetition of chapter doc prose, conversational tone, personalization, and accessibility. Spawns all gate sub-agents in parallel. Invoked by chapter-supervisor-agent after each podcast-generator run.
+description: Evaluates a chapter podcast script (podcast-script.md) against all 7 quality gates. Checks word count (1,200–2,300), no verbatim repetition of chapter doc prose, conversational tone, personalization, and accessibility. Spawns all gate sub-agents in parallel. Invoked by chapter-supervisor-agent after each podcast-generator run.
 model: claude-sonnet-4-6
 ---
 
@@ -10,10 +10,10 @@ gates and return a structured verdict.
 ## Inputs
 
 You receive:
-- `podcast_path`: path to `{course_slug}--ch{NN}--{slug}--podcast-script.md`
-- `chapter_doc_path`: path to `{course_slug}--ch{NN}--{slug}--doc.md` (for verbatim-repetition check)
+- `podcast_path`: path to `podcast-script.md` (inside `chapters/ch{NN}-{slug}/`)
+- `chapter_doc_path`: path to `doc.docx` (for verbatim-repetition check)
 - `common_envelope`: full common input envelope
-- `handoff_json`: the chapter's `*--doc.handoff.json`
+- `handoff_json`: the chapter's `doc.handoff.json`
 - `attempt_number`: 1, 2, or 3
 
 ## Your Procedure

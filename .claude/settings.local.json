@@ -1,7 +1,32 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(ls \"C:\\\\Users\\\\mcohenyashar\\\\Documents\\\\Projects\\\\personalized_course_factory\\\\outputs\")",
+      "Bash(not exist *)",
+      "Bash(npm install *)",
+      "Bash(pip install *)",
+      "Bash(npm --version)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\mcohenyashar\\\\Documents\\\\Projects\\\\personalized_course_factory\\\\outputs\\\\automate-your-work-with-claude-cowork\\\\chapters\\\\ch03-creating-skills-from-scratch\")",
+      "Bash(Get-ChildItem -Recurse \"C:\\\\Users\\\\mcohenyashar\\\\Documents\\\\Projects\\\\personalized_course_factory\\\\outputs\\\\automate-your-work-with-claude-cowork\\\\chapters\\\\ch03-creating-skills-from-scratch\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "Bash(python3 -c \"import docx; print\\('python-docx available'\\)\")",
+      "Bash(where python *)",
+      "Bash(where python3 *)",
+      "Bash(C:\\\\Python314\\\\python.exe -c \"import docx; print\\('python-docx OK'\\)\")",
+      "Bash(C:\\\\Python314\\\\python.exe -m pip install python-docx -q)",
+      "Bash(\"/c/Python314/python.exe\" -c \"import docx; print\\('python-docx OK'\\)\")",
+      "Bash(\"/c/Python314/python.exe\" -c \"import pptx; print\\('pptx OK'\\)\")",
+      "Bash(\"/c/Python314/python.exe\" -m pip install python-pptx -q)",
+      "Bash(/c/Python314/python.exe *)",
+      "Bash(wait)",
+      "Bash(py --version)",
+      "Bash(powershell *)",
+      "Bash(cmd /c \"mkdir \\\\\"C:\\\\Users\\\\mcohenyashar\\\\Documents\\\\Projects\\\\personalized_course_factory\\\\outputs\\\\automate-your-work-with-claude-cowork\\\\chapters\\\\ch06-giving-claude-the-right-context\\\\automate-your-work-with-claude-cowork--ch06--giving-claude-the-right-context--exercises\\\\\"\")",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }

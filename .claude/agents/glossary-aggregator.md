@@ -10,7 +10,7 @@ adding terms from each chapter after it is verified.
 ## Inputs
 
 You receive:
-- `glossary_delta`: the `glossary_delta` array from the chapter's `*--doc.handoff.json`
+- `glossary_delta`: the `glossary_delta` array from the chapter's `doc.handoff.json`
 - `master_glossary_path`: `outputs/{course_slug}/glossary.docx`
 - `chapter_number`: integer
 - `chapter_slug`: string

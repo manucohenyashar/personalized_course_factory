@@ -13,7 +13,7 @@ You receive:
 - `artifact_content`: the full artifact text or JSON
 - `learning_outcomes[]`: the chapter's declared LOs from course-plan.yaml (each has id, verb, object, criterion, bloom_level)
 - `chapter_number`: integer
-- `handoff_json`: the chapter's `*--doc.handoff.json` (contains `learning_outcome_refs` and `section_outline`)
+- `handoff_json`: the chapter's `doc.handoff.json` (contains `learning_outcome_refs` and `section_outline`)
 
 ## Your Task
 

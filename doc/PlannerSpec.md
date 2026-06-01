@@ -231,7 +231,7 @@ the upstream node; it does not generate learner-facing artifacts.
 |---|---|---|---|
 | **PlannerAgent** | 1 per course | `PlannerSpec_v2.md` (this) | The Plan |
 | **ChapterSupervisorAgent** | 1 per chapter | (this spec §11) | Per-chapter dispatch + intra-chapter dependency enforcement |
-| **ChapterTextGenerator** | 1 per chapter | `GreatTextSpec_v2.md` | Chapter doc + `*--doc.handoff.json` |
+| **ChapterTextGenerator** | 1 per chapter | `GreatTextSpec_v2.md` | Chapter doc + `doc.handoff.json` |
 | **ExerciseGenerator** | 1 per chapter | `GreatModuleExercise_v2.md` | Exercise pack |
 | **PresentationGenerator** | 1 per chapter | `GreatPresentationSpec_v2.md` | Slide deck + notes |
 | **QuizGenerator** | 1 per chapter + 1 diagnostic | `GreatQuizSpec_v2.md` | Quiz Form A + Form B + prereq diagnostic |
@@ -428,7 +428,7 @@ responsibilities are narrow:
 - Dispatch deliverables in dependency order (Text → Exercise →
   Presentation; Quiz in parallel with Presentation; Podcast after
   Text + Exercise; Companion after Text).
-- Pass `*--doc.handoff.json` to every downstream agent.
+- Pass `doc.handoff.json` to every downstream agent.
 - On any downstream agent failure, retry once with the failure detail;
   on second failure, halt and surface to the EvaluatorAgent + human.
 - Emit a `chapter.manifest.json` with paths, checksums, and the

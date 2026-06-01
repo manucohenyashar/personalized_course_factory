@@ -11,8 +11,8 @@ GreatLabSpec §14 checks, and problem-fidelity checks. You return a structured v
 
 You receive:
 - `capstone_dir`: path to `outputs/{course_slug}/capstone/`
-- `brief_path`: path to `{course_slug}--capstone--lab.docx`
-- `rubric_path`: path to `{course_slug}--capstone--rubric.json`
+- `brief_path`: path to `capstone-lab.docx`
+- `rubric_path`: path to `capstone-lab-rubric.json`
 - `reserved_scenarios_path`: path to `_plan/reserved-scenarios.json`
 - `personalization_plan_path`: path to `_plan/personalization-plan.json`
 - `problem_spec`: the full `problem.yaml` object
@@ -82,7 +82,7 @@ Key checks per gate:
   variable names, and domain terms match `personalization_plan.vocabulary_substitutions`;
   Section 1 is clearly derived from `problem_spec.summary` (not generic motivation text);
   no generic placeholders ("a user", "the system", "an item") anywhere
-- **§16.4 format**: brief has all 14 sections; filenames match `{course_slug}--capstone--{artifact}.{ext}`;
+- **§16.4 format**: brief has all 14 sections; filenames match `capstone-{artifact}.{ext}`;
   all required files present (lab.docx, rubric.json, starter/, solution/, verify/, failure-modes.md,
   instructor-guide.docx, debrief.docx, README.md); section time budgets ≤ 30 min each
 - **§16.5 technical**: code in starter/ is syntactically valid; verify/ scripts reference
@@ -103,7 +103,7 @@ After gate sub-agents complete:
 3. **Partial work gradeable**: rubric allows partial credit (a learner completing S1–S2 only
    earns a non-zero correctness score).
 4. **Environment parity**: capstone uses the same devcontainer/preflight as course exercises;
-   any capstone-specific additions are in `capstone--environment/`.
+   any capstone-specific additions are in `capstone-environment/`.
 5. **No hints in independent section**: the independent section contains only brief + acceptance
    criteria + verify link — no step-by-step guidance.
 

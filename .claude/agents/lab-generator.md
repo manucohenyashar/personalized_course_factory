@@ -35,7 +35,7 @@ You receive:
 - `problem_spec`: the full `problem.yaml` object — the problem to implement
 - `personalization_plan`: `_plan/personalization-plan.json`
 - `reserved_scenarios`: `_plan/reserved-scenarios.json`
-- `all_chapter_handoffs[]`: all chapter `*--doc.handoff.json` files (for integration mapping)
+- `all_chapter_handoffs[]`: all chapter `doc.handoff.json` files (for integration mapping)
 - `lab_environment_manifest`: the lab environment JSON
 - `feedback_failures[]`: empty on first attempt; populated on retry
 
@@ -87,7 +87,7 @@ If `feedback_failures` is non-empty, address every item before regenerating:
 - §16.3 (personalization): replace all generic placeholders with domain vocabulary from
   personalization plan; confirm Section 5 acceptance criteria restate `problem_spec.success_criteria[]`
   in scenario-specific terms; confirm no forbidden scenarios appear
-- §16.4 (format): fix filenames to `{course_slug}--capstone--{artifact}.{ext}`; fix missing
+- §16.4 (format): fix filenames to `capstone-{artifact}.{ext}`; fix missing
   files; ensure all 14 brief sections present; fix section time budgets
 - §16.5 (technical): fix code syntax; ensure capstone-verify/ references capstone-solution/;
   fix rubric to exactly 6 criteria with correct weights summing to 1.00
@@ -98,7 +98,7 @@ If `feedback_failures` is non-empty, address every item before regenerating:
 ## Output
 
 All files under `outputs/{course_slug}/capstone/` following the layout in `/generate-lab`.
-Filenames: `{course_slug}--capstone--{artifact}.{ext}`.
+Filenames: `capstone-{artifact}.{ext}`.
 
 ### Student-facing files — produce as Word (`.docx`) documents
 
@@ -108,9 +108,9 @@ Use `anthropic-skills:docx` to generate each student-facing file:
 Use the Skill tool: anthropic-skills:docx
 Pass the content for each artifact.
 Output paths:
-  outputs/{course_slug}/capstone/{course_slug}--capstone--lab.docx
-  outputs/{course_slug}/capstone/{course_slug}--capstone--instructor-guide.docx
-  outputs/{course_slug}/capstone/{course_slug}--capstone--debrief.docx
+  outputs/{course_slug}/capstone/capstone-lab.docx
+  outputs/{course_slug}/capstone/capstone-instructor-guide.docx
+  outputs/{course_slug}/capstone/capstone-debrief.docx
 ```
 
 Apply Word formatting conventions per `doc/DocxDesignSpec.md`:
@@ -126,9 +126,9 @@ Apply Word formatting conventions per `doc/DocxDesignSpec.md`:
 ### Internal / machine-readable files — native formats
 
 Write directly (not via docx skill):
-- `{course_slug}--capstone--rubric.json` — 6-criterion rubric (JSON)
-- `{course_slug}--capstone--verify/` — verification scripts (code files)
-- `{course_slug}--capstone--solution/` — reference solution (code files)
+- `capstone-lab-rubric.json` — 6-criterion rubric (JSON)
+- `capstone-verify/` — verification scripts (code files)
+- `capstone-solution/` — reference solution (code files)
 
 After writing all files, report:
 - Scenario used (ID + title)

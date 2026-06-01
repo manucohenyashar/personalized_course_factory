@@ -8,7 +8,7 @@ implements: GreatCourseSpec_v2.md §8.3, §7.7, §9.6, §16.2, §16.5
 skill_target: ExerciseGeneratorSkill
 scope: |
   Defines the contract for the per-chapter Exercise Pack
-  (`*--exercises/` folder). Exercises are the primary hands-on learning
+  (`exercises/` folder). Exercises are the primary hands-on learning
   artifact inside a chapter; they are distinct from the course-level
   Capstone Lab defined in GreatLabSpec_v2.md (which implements master §9.4).
 conformance_language: RFC 2119
@@ -76,7 +76,7 @@ SHOULD band by setting `numeric_overrides.exercises.pack_minutes`, but the
 ## 5. Required Output Layout
 
 ```
-chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--exercises/
+chapters/ch{NN}-{slug}/exercises/
   manifest.json                 # see §9
   README.md                     # pack motivation, LOs, prereqs, total time
   worked-example/               # stage 1 — fully solved
@@ -104,8 +104,9 @@ chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--exercises/
 
 ### 5.1 Naming
 
-All filenames MUST follow master §5.2. The pack root directory is named
-`{course_slug}--ch{NN}--{slug}--exercises/`.
+All filenames MUST follow master §5.2. The pack root directory is named by
+role only: `exercises/`, inside `chapters/ch{NN}-{slug}/`, with no course-slug
+or chapter-slug prefix. This keeps paths within the Windows 260-char limit.
 
 ## 6. Composition Rules
 
@@ -219,7 +220,7 @@ track: novice | practiced | universal       # if track variants emitted
 ## 9. `manifest.json` Schema
 
 ```yaml
-pack_id: <course_slug>--ch{NN}--exercises
+pack_id: ch{NN}-exercises
 chapter: <int>
 total_time_box_minutes: <int 20..40>
 target_track: novice | practiced | both

@@ -1,6 +1,6 @@
 ---
 name: chapter-text-evaluator
-description: Evaluates a chapter document (*--doc.md) and its handoff JSON against all 7 quality gates (§16.1–§16.7). Spawns all gate sub-agents in parallel and aggregates results into a structured verdict. Invoked by chapter-supervisor-agent after each chapter-text-generator run. Returns verdict JSON with pass/fail status and feedback_failures[] for retry.
+description: Evaluates a chapter document (doc.docx) and its handoff JSON against all 7 quality gates (§16.1–§16.7). Spawns all gate sub-agents in parallel and aggregates results into a structured verdict. Invoked by chapter-supervisor-agent after each chapter-text-generator run. Returns verdict JSON with pass/fail status and feedback_failures[] for retry.
 model: claude-sonnet-4-6
 ---
 
@@ -10,8 +10,8 @@ gates and return a structured verdict to the chapter-supervisor-agent.
 ## Inputs
 
 You receive:
-- `chapter_doc_path`: path to `{course_slug}--ch{NN}--{slug}--doc.md`
-- `handoff_json_path`: path to `{course_slug}--ch{NN}--{slug}--doc.handoff.json`
+- `chapter_doc_path`: path to `doc.docx` (inside `chapters/ch{NN}-{slug}/`)
+- `handoff_json_path`: path to `doc.handoff.json` (inside `chapters/ch{NN}-{slug}/`)
 - `common_envelope`: the full common input envelope (contains all required context)
 - `attempt_number`: 1, 2, or 3
 

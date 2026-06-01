@@ -12,7 +12,7 @@ You receive:
 - `artifact_type`: doc | exercises | slides | quiz | podcast | companion | lab
 - `artifact_content`: full artifact text or JSON
 - `chapter`: `{number, slug, title, est_minutes}`
-- `handoff_json`: the chapter's `*--doc.handoff.json`
+- `handoff_json`: the chapter's `doc.handoff.json`
 - `learning_outcomes[]`: declared LOs with bloom_level
 
 ## Your Task

@@ -14,7 +14,7 @@ You receive:
 - `chapter`: `{number, slug, est_minutes}`
 - `student_context`: contains `reading_level_target` (Flesch-Kincaid grade)
 - `numeric_overrides`: active overrides from orchestration.yaml
-- `handoff_json`: chapter's `*--doc.handoff.json` (contains `reading_metrics`)
+- `handoff_json`: chapter's `doc.handoff.json` (contains `reading_metrics`)
 
 ## Your Task
 

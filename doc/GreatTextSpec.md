@@ -31,7 +31,7 @@ canonical_term_note: |
 ## 1. Purpose
 
 Generate one Chapter Text per chapter
-(`{course_slug}--ch{NN}--{chapter_slug}--doc.md` or `.docx`) that:
+(`doc.docx`, inside `chapters/ch{NN}-{chapter_slug}/`) that:
 
 - Carries the chapter's full conceptual content and worked example.
 - Is sufficient on its own for self-taught learners (master §1, mode
@@ -79,10 +79,9 @@ so would burn the capstone's unseen scenario (master §9.4).
 
 ```
 chapters/ch{NN}-{chapter_slug}/
-  {course_slug}--ch{NN}--{chapter_slug}--doc.md           # primary
-  {course_slug}--ch{NN}--{chapter_slug}--doc.docx         # OPTIONAL parallel export
-  {course_slug}--ch{NN}--{chapter_slug}--doc.handoff.json # see §5
-  {course_slug}--ch{NN}--{chapter_slug}--diagrams/
+  doc.docx           # primary chapter document
+  doc.handoff.json   # see §5
+  diagrams/
     <name>.mmd   |   <name>.drawio       # diagram source (master §12.2)
     <name>.svg                            # exported visual
 ```
@@ -98,9 +97,12 @@ chapters/ch{NN}-{chapter_slug}/
 
 ### 4.2 Naming
 
-Filenames MUST follow master §5.2: `{course_slug}--ch{NN}--{chapter_slug}--doc.{ext}`.
+Filenames MUST follow master §5.2: chapter artifacts are named by role only
+(`doc.docx`, `doc.handoff.json`) inside `chapters/ch{NN}-{chapter_slug}/`, with
+no course-slug or chapter-slug prefix. This keeps paths within the Windows
+260-char limit.
 
-## 5. Handoff Manifest (`*--doc.handoff.json`)
+## 5. Handoff Manifest (`doc.handoff.json`)
 
 The ChapterTextGeneratorSkill MUST emit a sibling JSON file that
 downstream generators consume. This handoff is the explicit interface
@@ -380,7 +382,7 @@ the generator regenerates and logs the reason in `CHANGELOG.md`.
 - [ ] WCAG 2.2 AA: alt text, color-independence, code-as-text, valid
       heading outline.
 - [ ] Filename and folder layout match master §5.2.
-- [ ] `*--doc.handoff.json` exists and is internally consistent with the
+- [ ] `doc.handoff.json` exists and is internally consistent with the
       doc body.
 - [ ] Reading level ≤ `flesch_kincaid_cap`.
 - [ ] Doc prose is NOT a verbatim copy of any slide-deck or podcast text

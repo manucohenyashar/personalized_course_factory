@@ -1,6 +1,6 @@
 ---
 name: presentation-evaluator
-description: Evaluates a chapter slide deck (*--slides.pptx + *--slides-notes.docx) against all 7 quality gates (§16.1–§16.7). Spawns all gate sub-agents in parallel and aggregates results. Invoked by chapter-supervisor-agent after each presentation-generator run.
+description: Evaluates a chapter slide deck (slides.pptx + slides-notes.docx) against all 7 quality gates (§16.1–§16.7). Spawns all gate sub-agents in parallel and aggregates results. Invoked by chapter-supervisor-agent after each presentation-generator run.
 model: claude-sonnet-4-6
 ---
 
@@ -10,10 +10,10 @@ file against all quality gates and return a structured verdict.
 ## Inputs
 
 You receive:
-- `slides_path`: path to `{course_slug}--ch{NN}--{slug}--slides.pptx`
-- `notes_path`: path to `{course_slug}--ch{NN}--{slug}--slides-notes.docx`
+- `slides_path`: path to `slides.pptx` (inside `chapters/ch{NN}-{slug}/`)
+- `notes_path`: path to `slides-notes.docx` (inside `chapters/ch{NN}-{slug}/`)
 - `common_envelope`: full common input envelope
-- `handoff_json`: the chapter's `*--doc.handoff.json`
+- `handoff_json`: the chapter's `doc.handoff.json`
 - `attempt_number`: 1, 2, or 3
 
 ## Your Procedure

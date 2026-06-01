@@ -230,29 +230,37 @@ MUST be discarded.
     reset.sh
   chapters/
     ch01-<slug>/
-      ch01-<slug>--doc.md         # or .docx (§8.1)
-      ch01-<slug>--slides.pptx    # or .gslides
-      ch01-<slug>--slides-notes.md
-      ch01-<slug>--exercises/
+      doc.docx                    # chapter doc (§8.1)
+      slides.pptx                 # or .gslides
+      slides-notes.md
+      exercises/
         starter/                  # learner-facing
         solution/                 # answer key
         verify/                   # auto-graders
         rubric.json
-      ch01-<slug>--podcast-script.md
-      ch01-<slug>--quiz.json      # §9.7
-      ch01-<slug>--cheatsheet.pdf
-      ch01-<slug>--instructor-guide.md
-      ch01-<slug>--troubleshooting.md
+      podcast-script.md
+      quiz.json                   # §9.7
+      cheatsheet.pdf
+      instructor-guide.md
+      troubleshooting.md
 ```
 
 ### 5.2 Naming Convention (STRICT)
 
-Pattern: `{course_slug}/ch{NN}-{chapter_slug}/{course_slug}--ch{NN}--{chapter_slug}--{artifact}.{ext}`
+Pattern: `{course_slug}/chapters/ch{NN}-{chapter_slug}/{artifact}.{ext}`
 
-- `course_slug` and `chapter_slug` are kebab-case ASCII, ≤40 chars.
+- Chapter-level artifacts are named by **artifact role only**, with NO course-slug
+  and NO chapter-slug prefix. They are identified by the chapter folder they live in
+  (`chapters/ch{NN}-{chapter_slug}/`). This keeps paths within the Windows 260-char limit.
+- `course_slug` and `chapter_slug` are kebab-case ASCII, ≤40 chars (used only for the
+  chapter folder name, not the artifact filenames).
 - `NN` is zero-padded chapter order (`01`, `02`, …).
 - `artifact` ∈ {`doc`, `slides`, `slides-notes`, `exercises`, `podcast-script`,
   `quiz`, `cheatsheet`, `instructor-guide`, `troubleshooting`}.
+- Capstone files are named by role only too (`capstone-lab.docx`, `capstone-lab-rubric.json`,
+  `capstone-instructor-guide.docx`, `capstone-debrief.docx`, and the `capstone-starter/`,
+  `capstone-solution/`, `capstone-verify/` folders), inside `capstone/`, with no `course_slug`
+  prefix. Course-root files (`glossary.docx`, `README`, `prereq-diagnostic.md`) are also bare.
 
 ### 5.3 Course Metadata (REQUIRED in `README.md` front-matter)
 
@@ -417,7 +425,7 @@ quality gates can verify.
 Each artifact MUST conform to its schema below. The generator emits a chapter
 manifest fragment in `course.manifest.json`.
 
-### 8.1 Chapter Document (`*--doc.md` / `*--doc.docx`)
+### 8.1 Chapter Document (`doc.docx`)
 
 Length: **2,500–4,500 words**. Required sections, in this order:
 
@@ -442,7 +450,7 @@ Length: **2,500–4,500 words**. Required sections, in this order:
 The chapter doc MUST embed (or link) all diagrams as both source (Mermaid /
 draw.io) and exported SVG.
 
-### 8.2 Slide Deck (`*--slides.pptx`)
+### 8.2 Slide Deck (`slides.pptx`)
 
 Slide count: **12–25**, ≈1 slide per 3 minutes of chapter time. Required
 structure:
@@ -459,10 +467,10 @@ S    Recap (retrieval cue, not summary)
 S    Quiz Cue / Next Up
 ```
 
-Speaker notes (`*--slides-notes.md`) MUST be emitted alongside, including
+Speaker notes (`slides-notes.md`) MUST be emitted alongside, including
 demo timing markers (`[demo: 4 min]`) and "if cohort vs. solo" sidebars.
 
-### 8.3 Exercises / Labs (`*--exercises/`)
+### 8.3 Exercises / Labs (`exercises/`)
 
 Per chapter, **≥ 3 exercises**, difficulty curve: 1 easy → ≥1 medium → ≥1
 hard. Each exercise directory contains:
@@ -480,7 +488,7 @@ exercise-NN/
 Every lab MUST be runnable in the course-wide environment (§14) and MUST pass
 its own `verify/` suite when run against `solution/`.
 
-### 8.4 Podcast Script (`*--podcast-script.md`)
+### 8.4 Podcast Script (`podcast-script.md`)
 
 Length: **1,200–2,300 words**, ≈ 8–15 min audio. Structure:
 
@@ -497,16 +505,16 @@ Length: **1,200–2,300 words**, ≈ 8–15 min audio. Structure:
 The podcast MUST NOT read the chapter doc verbatim (Mayer redundancy
 principle). It MUST stand alone for listen-only learners.
 
-### 8.5 Quiz (`*--quiz.json`)
+### 8.5 Quiz (`quiz.json`)
 
 See **§9 Assessment Framework** for full schema and rules.
 
 ### 8.6 Companion Artifacts (REQUIRED per chapter)
 
-- `*--cheatsheet.pdf` — one page, A4 portrait, ≥ 4.5:1 contrast.
-- `*--instructor-guide.md` — timing, demo script, common mistakes, discussion
+- `cheatsheet.pdf` — one page, A4 portrait, ≥ 4.5:1 contrast.
+- `instructor-guide.md` — timing, demo script, common mistakes, discussion
   prompts, answer key references.
-- `*--troubleshooting.md` — known failure modes and fixes.
+- `troubleshooting.md` — known failure modes and fixes.
 
 ### 8.7 Course-Wide Artifacts (REQUIRED per course)
 
@@ -629,7 +637,7 @@ prerequisite topic, that routes learners to one of:
 }
 ```
 
-### 9.7 Quiz Item Schema (REQUIRED `*--quiz.json` entries)
+### 9.7 Quiz Item Schema (REQUIRED `quiz.json` entries)
 
 ```yaml
 - item_id: ch03-q07
@@ -799,7 +807,7 @@ The Student Context Spec drives content shape, not just labels.
 - Every image / diagram MUST have alt text describing structure and meaning.
 - Code samples MUST be real text (never images).
 - No information MUST be conveyed by color alone.
-- Podcast MUST ship with a transcript (`*--podcast-script.md` serves).
+- Podcast MUST ship with a transcript (`podcast-script.md` serves).
 - Slide decks MUST have readable fonts at the back of a room: body ≥ 24pt,
   titles ≥ 36pt.
 
@@ -999,13 +1007,13 @@ full hierarchy.
 | **PlannerAgent** | upstream (1 per course) | `course-plan.yaml`, `personalization-plan.json` (§10), `subject.normalized.yaml` (§3.1, if narrative), `reserved-scenarios.json`, `chapter-partition-rationale.md`, `precedence-log.md`, `dependency-graph.svg`, `PLAN_REVIEW.md` | `PlannerSpec_v2.md` | §3, §3.1, §3.5, §6, §9.5, §10, §14, §19 |
 | **ChapterSupervisorAgent** | per-chapter coordinator | `chapter.manifest.json`; dispatches deliverables in dependency order | `PlannerSpec_v2.md §11` | §19.3, §19.4 |
 | **EvaluatorAgent** | quality-gate runner | `evaluator-report.md` per chapter + course-wide + capstone | `PlannerSpec_v2.md §12` | §16 |
-| **ChapterTextGenerator** | per-chapter | `*--doc.md`, `*--doc.docx` (optional parallel), `*--doc.handoff.json`, `*--diagrams/` | `GreatTextSpec_v2.md` | §7.3, §7.4, §7.5, §7.6, §7.7, §7.10, §7.11, §7.15, §8.1, §10, §12.3, §13, §15, §16 |
-| **QuizGenerator** | per-chapter (+ 1 diagnostic per course) | `*--quiz.json` (Form A), `*--quiz-formB.json`, `prereq-diagnostic.md` (in `diagnostic` mode) | `GreatQuizSpec_v2.md` | §9 |
-| **ExerciseGenerator** | per-chapter | `*--exercises/` folder (worked example + completion + ≥ 1 independent), per-exercise `rubric.json`, `verify/`, `failure-modes.md`, `manifest.json`, `debrief.md` | `GreatModuleExercise_v2.md` | §7.7, §7.10, §7.12, §7.14, §8.3, §9.6, §16.2, §16.5 |
-| **PresentationGenerator** | per-chapter | `*--slides.pptx`, `*--slides-notes.md` | `GreatPresentationSpec_v2.md` | §7.3, §7.4, §7.5, §7.11, §8.2, §10, §12.1, §12.2, §13.1, §16.4 |
+| **ChapterTextGenerator** | per-chapter | `doc.docx`, `doc.handoff.json`, `diagrams/` | `GreatTextSpec_v2.md` | §7.3, §7.4, §7.5, §7.6, §7.7, §7.10, §7.11, §7.15, §8.1, §10, §12.3, §13, §15, §16 |
+| **QuizGenerator** | per-chapter (+ 1 diagnostic per course) | `quiz.json` (Form A), `quiz-formB.json`, `prereq-diagnostic.md` (in `diagnostic` mode) | `GreatQuizSpec_v2.md` | §9 |
+| **ExerciseGenerator** | per-chapter | `exercises/` folder (worked example + completion + ≥ 1 independent), per-exercise `rubric.json`, `verify/`, `failure-modes.md`, `manifest.json`, `debrief.md` | `GreatModuleExercise_v2.md` | §7.7, §7.10, §7.12, §7.14, §8.3, §9.6, §16.2, §16.5 |
+| **PresentationGenerator** | per-chapter | `slides.pptx`, `slides-notes.md` | `GreatPresentationSpec_v2.md` | §7.3, §7.4, §7.5, §7.11, §8.2, §10, §12.1, §12.2, §13.1, §16.4 |
 | **LabGenerator** | course-level (1 per course) | `capstone/` folder (brief, rubric, starter, solution, verify, failure-modes, instructor guide, debrief, environment delta) | `GreatLabSpec_v2.md` | §7.6, §7.7, §7.10, §7.11, §9.4, §14, §16 |
-| **PodcastGenerator** | per-chapter | `*--podcast-script.md` (and audio when TTS is available) | *(future PodcastSpec; currently inlined under master §8.4)* | §7.4, §7.6, §7.15, §8.4 |
-| **CompanionGenerator** | per-chapter | `*--cheatsheet.pdf`, `*--instructor-guide.md`, `*--troubleshooting.md` | *(future CompanionSpec; currently inlined under master §8.6)* | §8.6 |
+| **PodcastGenerator** | per-chapter | `podcast-script.md` (and audio when TTS is available) | *(future PodcastSpec; currently inlined under master §8.4)* | §7.4, §7.6, §7.15, §8.4 |
+| **CompanionGenerator** | per-chapter | `cheatsheet.pdf`, `instructor-guide.md`, `troubleshooting.md` | *(future CompanionSpec; currently inlined under master §8.6)* | §8.6 |
 | **GlossaryAggregator** | course-wide (incremental) | `glossary.md` | *(currently master §5.1, §8.7)* | §5.1, §8.7 |
 | **ReferenceArchitectureGenerator** | course-wide (incremental) | `reference-architecture.svg` (+ source) | *(currently master §5.1, §8.7)* | §5.1, §8.7 |
 | **EnvironmentScaffoldGenerator** | course-wide (1 per course) | `environment/` (devcontainer / Dockerfile / Nix flake, `preflight.sh`, `reset.sh`) | *(currently master §14)* | §14 |
@@ -1071,7 +1079,7 @@ Stage 2  — COURSE-WIDE PRE-WORK (dispatched by the Plan)
 
 Stage 3  — PER CHAPTER (ChapterSupervisorAgent per chapter, in order ch01 → chNN)
 3.1  ChapterTextGenerator → chapter doc + handoff (§8.1, GreatTextSpec_v2)
-                                                   [seeds 3.2–3.6 via *--doc.handoff.json]
+                                                   [seeds 3.2–3.6 via doc.handoff.json]
 3.2  ExerciseGenerator → exercises pack            [needs 3.1]
 3.3  PresentationGenerator → slides + notes        [needs 3.1, 3.2 for "Try this now" slide]
 3.4  QuizGenerator → quiz Form A + Form B          [needs 3.1; needs prior chapters' quizzes for carry-forward (§7.5)]
@@ -1092,7 +1100,7 @@ Stage 4  — COURSE-WIDE POST-WORK (after every chapter passes)
 ### 19.4 Cross-Skill Invariants
 
 - **Single Running Example per Chapter (§7.15).** The ChapterTextGenerator
-  seeds the running example in `*--doc.handoff.json`; exercise pack,
+  seeds the running example in `doc.handoff.json`; exercise pack,
   slide deck, quiz, and podcast MUST reuse it via that handoff. The
   orchestrator MUST pass the handoff as an explicit input to every
   downstream per-chapter generator.
@@ -1158,7 +1166,7 @@ PlannerAgent  (1 per course, upstream)
    │
    ├── for each chapter:
    │      ChapterSupervisorAgent
-   │         ├── ChapterTextGenerator             ─┐ produces *--doc.handoff.json
+   │         ├── ChapterTextGenerator             ─┐ produces doc.handoff.json
    │         ├── ExerciseGenerator                 │ consume handoff
    │         ├── PresentationGenerator             │
    │         ├── QuizGenerator (chapter, A+B)      │

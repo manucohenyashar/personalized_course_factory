@@ -10,14 +10,14 @@ gates and return a structured verdict.
 ## Inputs
 
 You receive:
-- `quiz_a_path`: path to `{course_slug}--ch{NN}--{slug}--quiz.json` (internal pipeline JSON)
-- `quiz_b_path`: path to `{course_slug}--ch{NN}--{slug}--quiz-formB.json` (internal pipeline JSON)
-- `quiz_questions_docx_a`: path to `*--quiz-questions.docx` (student-facing Form A questions)
-- `quiz_answers_docx_a`: path to `*--quiz-answers.docx` (student-facing Form A answers)
-- `quiz_questions_docx_b`: path to `*--quiz-questions-formB.docx` (student-facing Form B questions)
-- `quiz_answers_docx_b`: path to `*--quiz-answers-formB.docx` (student-facing Form B answers)
+- `quiz_a_path`: path to `quiz.json` (internal pipeline JSON, inside `chapters/ch{NN}-{slug}/`)
+- `quiz_b_path`: path to `quiz-formB.json` (internal pipeline JSON, inside `chapters/ch{NN}-{slug}/`)
+- `quiz_questions_docx_a`: path to `quiz-questions.docx` (student-facing Form A questions)
+- `quiz_answers_docx_a`: path to `quiz-answers.docx` (student-facing Form A answers)
+- `quiz_questions_docx_b`: path to `quiz-questions-formB.docx` (student-facing Form B questions)
+- `quiz_answers_docx_b`: path to `quiz-answers-formB.docx` (student-facing Form B answers)
 - `common_envelope`: full common input envelope
-- `handoff_json`: the chapter's `*--doc.handoff.json`
+- `handoff_json`: the chapter's `doc.handoff.json`
 - `attempt_number`: 1, 2, or 3
 
 ## Your Procedure

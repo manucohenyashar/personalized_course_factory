@@ -238,6 +238,7 @@ After the planner succeeds, read `course-plan.yaml` to get the chapter list. Wri
 | chapters | pending | |
 | evaluation | pending | |
 | capstone | pending | |
+| readme | pending | |
 
 ---
 
@@ -429,7 +430,7 @@ Invoke `@lab-generator` with:
 - `problem_spec`: full `inputs/problem.yaml` content
 - `personalization_plan`: `_plan/personalization-plan.json`
 - `reserved_scenarios`: `_plan/reserved-scenarios.json`
-- `all_chapter_handoffs[]`: all `*--doc.handoff.json` files from `outputs/{course_slug}/chapters/`
+- `all_chapter_handoffs[]`: all `doc.handoff.json` files from `outputs/{course_slug}/chapters/`
 - `lab_environment_manifest`: `outputs/{course_slug}/environment/lab-environment.json`
 
 After completion, read the lab-evaluator verdict. If the lab fails evaluation:
@@ -440,7 +441,65 @@ After the lab passes, update `PIPELINE_STATE.md`: set `capstone` → `complete`.
 
 ---
 
-## PHASE 6 — Completion Report
+## PHASE 6 — Course README (Student Onboarding Guide)
+
+**Goal:** Produce `outputs/{course_slug}/README.docx` — a student-facing guide that explains how to
+use the course materials effectively. This runs for EVERY course; it is the learner's first stop.
+
+Run this phase only after all chapters and the capstone are complete, because the README describes
+the full course structure.
+
+**Inputs to read:**
+- `_plan/course-plan.yaml` — course title, the chapter list (titles + what each builds), capstone scope
+- `inputs/students.yaml` — cohort, `reading_level_target` (FK grade), professional context, motivation
+- `_plan/personalization-plan.json` — protagonist + domain systems (to personalize the guide)
+- `outputs/{course_slug}/environment/` — which preflight script the learner runs (OS-aware)
+
+**How to generate:** dispatch a docx-capable generation subagent (the `companion-generator`, or a
+general generation agent) to write `README.docx` via the docx tooling, following `doc/DocxDesignSpec.md`.
+Personalize it to the cohort, calibrated to `reading_level_target`, addressing the learner directly
+as "you" and tying examples to their real work.
+
+**Student-facing rules (binding — this is a student deliverable):**
+- Obey CLAUDE.md Rule 1 & Rule 2: NO Bloom labels, LO-IDs, section numbers, `§`, chapter slugs,
+  or pipeline terms (quality gate, evaluator, handoff, rubric ID, "Form A/B" metadata). Refer to
+  materials by plain names (the chapter reading, the practice exercises, the slides, the knowledge
+  check, the quick reference, the glossary).
+- NO em dashes and NO double-hyphens `--` (use commas, periods, or conjunctions).
+- Do NOT reference the podcast script (internal production file).
+- Frame instructor materials (teaching guide, presenter notes) only as "for when you teach your team."
+
+**Required sections (clear heading titles, not these literal labels):**
+1. A short welcome: what the course helps the learner do, that it is hands-on and self-paced, and
+   that the skills build on each other in order.
+2. How the course is organized: a table (Part / Chapter / what you will build or learn), derived
+   from `course-plan.yaml`, ending with the capstone.
+3. What is inside each chapter folder and how to use each item: the chapter reading (read first),
+   the practice exercises (do the worked example first, then your own), the slides (optional visual
+   summary), the knowledge check (take it after the chapter, re-test about a week later), the quick
+   reference (keep open while working), and the team materials (for teaching the team).
+4. A recommended study rhythm: read → worked example → practice on real work → keep the quick
+   reference open → knowledge check → re-test a week later; suggest a sustainable pace.
+5. Setting up the practice space: the one-time setup check (name the correct preflight script for
+   the learner's OS), with offline practice mode noted.
+6. The capstone project (do last): what it brings together, about how long it takes, and where the
+   brief, self-check, and worked solution live, with a plain-language "what good looks like" checklist.
+7. Looking things up: the course glossary (`glossary.docx`).
+8. Tips for getting the most from the course: apply each skill to a live task immediately, keep a
+   growing personal toolkit, always keep a human review step, use the roadmap from the final chapter.
+9. Finding your files: a plain-language map of the course folder layout (glossary, this guide,
+   environment, chapters, capstone), noting that chapter files are named by role (`doc.docx`,
+   `slides.pptx`, `quiz-questions.docx`, `cheatsheet.docx`) inside each chapter folder.
+
+End with one encouraging sentence.
+
+**Verify, then record:** confirm `README.docx` exists; scan its text for zero em dashes, zero
+double-hyphens, and zero forbidden internal terms. Then update `PIPELINE_STATE.md`: set `readme`
+→ `complete`.
+
+---
+
+## PHASE 7 — Completion Report
 
 **Goal:** Deliver a clear, scannable summary of everything that was generated.
 
@@ -476,6 +535,7 @@ Present the following completion report to the user:
 - **Acceptance criteria:** {N} criteria, all implemented and verified
 
 ### Supporting Artifacts
+- Student onboarding guide: `outputs/{course_slug}/README.docx`
 - Course glossary: `outputs/{course_slug}/glossary.docx` ({term_count} terms)
 - Prerequisite diagnostic: `outputs/{course_slug}/prereq-diagnostic.md`
 - Lab environment: `outputs/{course_slug}/environment/`
@@ -504,10 +564,11 @@ All files are in: `outputs/{course_slug}/`
 ---
 
 ## Next Steps
-1. **Review** `outputs/{course_slug}/_plan/PLAN_REVIEW.md` for the course structure overview
-2. **Run preflight** on the environment: `bash outputs/{course_slug}/environment/preflight.sh`
-3. **Try the capstone**: open `outputs/{course_slug}/capstone/README.md`
-4. **Distribute** chapter content from `outputs/{course_slug}/chapters/`
+1. **Give the learner** `outputs/{course_slug}/README.docx` first — it explains how to use everything
+2. **Review** `outputs/{course_slug}/_plan/PLAN_REVIEW.md` for the course structure overview
+3. **Run preflight** on the environment: `bash outputs/{course_slug}/environment/preflight.sh`
+4. **Try the capstone**: open `outputs/{course_slug}/capstone/capstone-lab.docx`
+5. **Distribute** chapter content from `outputs/{course_slug}/chapters/`
 ```
 
 ---
@@ -528,6 +589,7 @@ A previous pipeline run was found for course **{course_slug}**:
 | chapters | {N_complete}/{N_total} complete |
 | evaluation | {status} |
 | capstone | {status} |
+| readme | {status} |
 
 **Failed chapters (if any):** {list or "none"}
 

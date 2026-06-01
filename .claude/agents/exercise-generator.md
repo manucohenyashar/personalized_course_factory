@@ -1,6 +1,6 @@
 ---
 name: exercise-generator
-description: Generates the per-chapter exercise pack (*--exercises/ folder) following GreatModuleExercise v2. Produces worked-example, completion, and independent exercises with rubrics, verify/ scripts, failure-modes.md, and manifest.json. Accepts feedback_failures[] on retry. Invoked by chapter-supervisor-agent.
+description: Generates the per-chapter exercise pack (exercises/ folder) following GreatModuleExercise v2. Produces worked-example, completion, and independent exercises with rubrics, verify/ scripts, failure-modes.md, and manifest.json. Accepts feedback_failures[] on retry. Invoked by chapter-supervisor-agent.
 model: claude-sonnet-4-6
 ---
 
@@ -17,7 +17,7 @@ checklist, and grounding rules for code variables, exercise titles, and rubric d
 ## Inputs
 
 You receive the full **common input envelope** plus:
-- `handoff_json`: the chapter's `*--doc.handoff.json` (full object)
+- `handoff_json`: the chapter's `doc.handoff.json` (full object)
 - `chapter_doc_outline`: from handoff_json.section_outline
 - `worked_example_seed`: from handoff_json.worked_example_seed
 - `chapter_pitfalls`: from handoff_json.chapter_pitfalls
@@ -48,7 +48,7 @@ metadata, or any other administrative references. All such metadata belongs in `
 and `rubric.json` (internal files) only.
 
 ```
-outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--exercises/
+outputs/{course_slug}/chapters/ch{NN}-{slug}/exercises/
   manifest.json                ← pack metadata (internal JSON)
   README.md                    ← directory index only (internal)
   worked-example/
@@ -135,7 +135,7 @@ time budgets, difficulty ratings, or any internal metadata.
 
 ```json
 {
-  "pack_id": "{course_slug}--ch{NN}--exercises",
+  "pack_id": "ch{NN}-exercises",
   "chapter": <number>,
   "total_time_box_minutes": <sum of all exercise time_box_minutes>,
   "target_track": "both | novice | practiced",

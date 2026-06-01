@@ -7,7 +7,7 @@ supersedes: GreatQuizSpec.md
 implements: GreatCourseSpec_v2.md §9 (Assessment Framework)
 skill_target: QuizGeneratorSkill
 scope: |
-  Defines the contract for the per-chapter Quiz artifact (`*--quiz.json`).
+  Defines the contract for the per-chapter Quiz artifact (`quiz.json`).
   This document is subordinate to GreatCourseSpec_v2.md (the master).
   On any conflict, the master spec wins; numeric defaults may be overridden
   only via the Orchestration Spec's `numeric_overrides.quiz` block, which MUST
@@ -19,7 +19,7 @@ conformance_language: RFC 2119
 
 ## 1. Purpose
 
-Generate one chapter quiz per chapter (`{course_slug}--ch{NN}--{chapter_slug}--quiz.json`)
+Generate one chapter quiz per chapter (`quiz.json`, inside `chapters/ch{NN}-{chapter_slug}/`)
 that:
 
 - Verifies the chapter's learning outcomes through retrieval and transfer.
@@ -77,8 +77,8 @@ The skill MUST emit **two parallel forms per chapter**:
 
 ```
 chapters/ch{NN}-{slug}/
-  {course_slug}--ch{NN}--{slug}--quiz.json       # Form A (default form)
-  {course_slug}--ch{NN}--{slug}--quiz-formB.json # Form B (used by retry policy, §9.3 master)
+  quiz.json       # Form A (default form)
+  quiz-formB.json # Form B (used by retry policy, §9.3 master)
 ```
 
 The two forms MUST:
@@ -192,7 +192,7 @@ whose computed value falls outside **0.40 – 0.95**.
 ## 8. Item Schema (REQUIRED — implements master §9.7)
 
 ```yaml
-quiz_id: <course_slug>--ch{NN}--quiz                # or quiz-formB
+quiz_id: ch{NN}-quiz                                # or ch{NN}-quiz-formB
 form: A | B
 chapter: <int>
 items:
@@ -222,7 +222,7 @@ items:
     grading_rubric_ref: "<rubric.json#criterion>"   # required for short_answer
     estimated_difficulty: <0.40..0.95>              # via master §9.10 heuristic
     time_seconds: <int, typically 30..120>
-    remediation_link: "<doc anchor>"                # e.g. ch{NN}--doc.md#sec-3.2
+    remediation_link: "<doc anchor>"                # e.g. doc.docx#sec-3.2
     accessibility:
       alt_text_for_figures: "<string|null>"
       screen_reader_safe: true

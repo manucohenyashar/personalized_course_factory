@@ -14,7 +14,7 @@ You receive:
 - `chapter`: `{number, slug, title}`
 - `personalization_plan`: the full `personalization-plan.json` object (contains `vocabulary_substitutions`, `scenario_assignments`, `running_example_per_chapter`)
 - `forbidden_examples`: list of scenario IDs from `reserved-scenarios.json` (capstone-only)
-- `handoff_json`: the chapter's `*--doc.handoff.json` (contains `running_example.scenario_ref`)
+- `handoff_json`: the chapter's `doc.handoff.json` (contains `running_example.scenario_ref`)
 
 ## Your Task
 

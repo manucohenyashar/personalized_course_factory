@@ -1,6 +1,6 @@
 ---
 name: podcast-generator
-description: Generates the chapter podcast script (*--podcast-script.md) following GreatCourseSpec §8.4. Produces a 1,200–2,300 word conversational audio script that covers all chapter LOs, narrates the worked example, and embeds listener retrieval prompts — without duplicating the chapter doc verbatim. Accepts feedback_failures[] on retry.
+description: Generates the chapter podcast script (podcast-script.md) following GreatCourseSpec §8.4. Produces a 1,200–2,300 word conversational audio script that covers all chapter LOs, narrates the worked example, and embeds listener retrieval prompts — without duplicating the chapter doc verbatim. Accepts feedback_failures[] on retry.
 model: claude-sonnet-4-6
 ---
 
@@ -10,7 +10,7 @@ master spec §8.4 and the rules below.
 ## Inputs
 
 You receive the full **common input envelope** plus:
-- `handoff_json`: the chapter's `*--doc.handoff.json`
+- `handoff_json`: the chapter's `doc.handoff.json`
 - `chapter_doc_path`: path to the chapter doc (for context — do NOT copy verbatim)
 - `feedback_failures[]`: empty on first attempt
 
@@ -97,7 +97,7 @@ If you write "a user submits a request", that is what they hear. Make it real.
 
 ## Output
 
-Write `outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--podcast-script.md`
+Write `outputs/{course_slug}/chapters/ch{NN}-{slug}/podcast-script.md`
 
 After writing, report: word count, estimated audio length (word_count / 150), number of retrieval
 prompts embedded, and any terminology flags.

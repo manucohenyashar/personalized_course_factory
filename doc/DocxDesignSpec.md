@@ -200,12 +200,54 @@ Override Word's built-in styles using exact IDs. Include `outlineLevel` for TOC 
 
 ### 5.2 Tables
 
-Always set:
-- `width` with `WidthType.DXA` (never `WidthType.PERCENTAGE`)
-- Both `columnWidths` on the table AND `width` on each cell
-- Cell `margins` for readable padding
+**Every table MUST fill the full content width of 9,360 DXA** (US Letter, 1-inch margins), so
+columns are readable and the table is not bunched on the left.
+
+The single most common defect is a `columnWidths` / `tblGrid` that does not match the cells.
+With fixed layout, Word lays the table out from `columnWidths` (the `tblGrid`), NOT from the
+cell widths, so wrong values there collapse the whole table even when the table width and the
+cell widths are correct. Never emit placeholder grid values such as `100`.
+
+Always set ALL of the following, and keep them mutually consistent:
+- `layout: TableLayoutType.FIXED` (column widths are honored exactly)
+- Table `width`: `{ size: 9360, type: WidthType.DXA }` (never `WidthType.PERCENTAGE`)
+- `columnWidths`: an array of DXA integers, one entry per column, that **sums to exactly 9360**
+  and whose entries **equal the per-column cell widths**. `columnWidths.length` MUST equal the
+  number of columns.
+- Each cell `width`: `{ size: <that column's width>, type: WidthType.DXA }`, matching the
+  corresponding `columnWidths` entry
+- Cell `margins` for readable padding (top/bottom ≥ 80 DXA, left/right ≥ 120 DXA)
 - `ShadingType.CLEAR` for any cell shading
 - Light borders (`#C4C7C5`, size 1)
+
+Choose column proportions that sum to 9,360. Examples: 2 cols `[4680, 4680]`; 3 equal
+`[3120, 3120, 3120]`; 3 with a narrow first column `[2160, 3600, 3600]`; 4 equal
+`[2340, 2340, 2340, 2340]`. For N equal columns use `floor(9360 / N)` and add the remainder to
+the last column so the total is exactly 9,360.
+
+Minimal correct shape (docx-js):
+```javascript
+new Table({
+  layout: TableLayoutType.FIXED,
+  width: { size: 9360, type: WidthType.DXA },
+  columnWidths: [2160, 3600, 3600],                 // one entry per column; sums to 9360
+  rows: rows.map(cells => new TableRow({
+    children: cells.map((c, i) => new TableCell({
+      width: { size: [2160, 3600, 3600][i], type: WidthType.DXA },  // == columnWidths[i]
+      margins: { top: 80, bottom: 80, left: 120, right: 120 },
+      children: [ /* paragraphs */ ],
+    })),
+  })),
+})
+```
+
+python-docx equivalent: set `table.autofit = False`, force fixed layout, and set the SAME twips
+value on `table.columns[i].width` AND every `cell.width` in that column, with the per-column
+values summing to 9,360 twips.
+
+**Self-check before saving any docx that contains a table:** for every table, the `tblGrid`
+column widths MUST sum to the table width (9,360) and equal the cell widths. A table whose grid
+sums to materially less than 9,360 will render narrow and left-aligned. Reject and rebuild it.
 
 ### 5.3 Lists
 
@@ -250,6 +292,9 @@ Before submitting any student-facing docx, verify NONE of these appear:
 
 **Technical formatting (MUST be zero):**
 - [ ] `WidthType.PERCENTAGE` on any table
+- [ ] Any table whose `columnWidths` / `tblGrid` does not sum to 9,360 DXA, or does not match the
+      cell widths (renders narrow and left-aligned instead of filling the page)
+- [ ] Placeholder grid values (e.g. `columnWidths: [100, 100, ...]`)
 - [ ] `ShadingType.SOLID` on any table cell
 - [ ] Tables used as dividers or in headers/footers
 - [ ] Missing alt text on any image

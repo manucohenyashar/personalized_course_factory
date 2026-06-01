@@ -152,8 +152,8 @@ it does not belong in student-facing content.
 
 Bloom levels, LO-IDs, and other pipeline metadata are essential for course quality. They are
 retained in **internal pipeline artifacts only**:
-- `*--doc.handoff.json` (section Bloom tags, LO refs)
-- `*--quiz.json` / `*--quiz-formB.json` (item metadata)
+- `doc.handoff.json` (section Bloom tags, LO refs)
+- `quiz.json` / `quiz-formB.json` (item metadata)
 - `manifest.json` (exercise pack metadata)
 - `rubric.json` (assessment criteria)
 - `course-plan.yaml` (LO definitions)
@@ -170,12 +170,12 @@ as a learning deliverable.
 
 | File | Purpose | Format |
 |------|---------|--------|
-| `*--quiz-questions.docx` | Student quiz (questions only, no answers) | Word (.docx) |
-| `*--quiz-answers.docx` | Answer key with rationales | Word (.docx) |
-| `*--quiz-questions-formB.docx` | Form B questions (no answers) | Word (.docx) |
-| `*--quiz-answers-formB.docx` | Form B answer key with rationales | Word (.docx) |
-| `*--quiz.json` | Internal pipeline data (retained for evaluators) | JSON (internal) |
-| `*--quiz-formB.json` | Internal pipeline data (retained for evaluators) | JSON (internal) |
+| `quiz-questions.docx` | Student quiz (questions only, no answers) | Word (.docx) |
+| `quiz-answers.docx` | Answer key with rationales | Word (.docx) |
+| `quiz-questions-formB.docx` | Form B questions (no answers) | Word (.docx) |
+| `quiz-answers-formB.docx` | Form B answer key with rationales | Word (.docx) |
+| `quiz.json` | Internal pipeline data (retained for evaluators) | JSON (internal) |
+| `quiz-formB.json` | Internal pipeline data (retained for evaluators) | JSON (internal) |
 
 The quiz generator MUST produce both the internal JSON (for pipeline evaluators and gates)
 AND the student-facing `.docx` files. The `.docx` quiz files:
@@ -363,7 +363,10 @@ course-factory-agent  ← top-level entry point (invokes everything below)
   │    ├─ validates running-example coherence
   │    └─ validates lab against reserved-scenarios.json
   │
-  └─ lab-generator → lab-evaluator  [course-level capstone]
+  ├─ lab-generator → lab-evaluator  [course-level capstone]
+  │
+  └─ Course README  [course-level, after capstone] → outputs/{course_slug}/README.docx
+       student onboarding guide (how to use the materials); generated for every course
 ```
 
 Each generator-evaluator pair operates under the Feedback Loop Protocol (see below).
@@ -479,7 +482,7 @@ common_inputs:
 
 ---
 
-## Handoff JSON Schema (`*--doc.handoff.json`)
+## Handoff JSON Schema (`doc.handoff.json`)
 
 Produced by `chapter-text-generator`. Passed explicitly to every downstream chapter generator.
 
@@ -554,23 +557,25 @@ outputs/
       PLAN_REVIEW.md
       CHANGELOG.md
     glossary.docx                                         ← student-facing reference (Word)
+    README.docx                                           ← student onboarding guide (Word)
     prereq-diagnostic.md                                  ← internal planning artifact
     chapters/
       ch{NN}-{chapter_slug}/
-        {course_slug}--ch{NN}--{chapter_slug}--doc.docx          ← chapter doc (Word)
-        {course_slug}--ch{NN}--{chapter_slug}--doc.handoff.json   ← internal handoff
-        {course_slug}--ch{NN}--{chapter_slug}--slides.pptx        ← slide deck (PowerPoint)
-        {course_slug}--ch{NN}--{chapter_slug}--slides-notes.docx  ← presenter notes (Word)
-        {course_slug}--ch{NN}--{chapter_slug}--quiz-questions.docx   ← student quiz questions (Word)
-        {course_slug}--ch{NN}--{chapter_slug}--quiz-answers.docx   ← answer key + rationales (Word)
-        {course_slug}--ch{NN}--{chapter_slug}--quiz-questions-formB.docx ← Form B questions (Word)
-        {course_slug}--ch{NN}--{chapter_slug}--quiz-answers-formB.docx   ← Form B answers (Word)
-        {course_slug}--ch{NN}--{chapter_slug}--quiz.json          ← quiz data (internal pipeline)
-        {course_slug}--ch{NN}--{chapter_slug}--quiz-formB.json    ← quiz form B (internal pipeline)
-        {course_slug}--ch{NN}--{chapter_slug}--podcast-script.md  ← recording script (internal)
-        {course_slug}--ch{NN}--{chapter_slug}--cheatsheet.docx    ← cheatsheet (Word)
-        {course_slug}--ch{NN}--{chapter_slug}--instructor-guide.docx ← instructor guide (Word)
-        {course_slug}--ch{NN}--{chapter_slug}--exercises/
+        doc.docx                          ← chapter doc (Word)
+        doc.handoff.json                  ← internal handoff
+        slides.pptx                       ← slide deck (PowerPoint)
+        slides-notes.docx                 ← presenter notes (Word)
+        quiz-questions.docx               ← student quiz questions (Word)
+        quiz-answers.docx                 ← answer key + rationales (Word)
+        quiz-questions-formB.docx         ← Form B questions (Word)
+        quiz-answers-formB.docx           ← Form B answers (Word)
+        quiz.json                         ← quiz data (internal pipeline)
+        quiz-formB.json                   ← quiz form B (internal pipeline)
+        podcast-script.md                 ← recording script (internal)
+        cheatsheet.docx                   ← cheatsheet (Word)
+        instructor-guide.docx             ← instructor guide (Word)
+        chapter.manifest.json             ← per-chapter manifest (internal)
+        exercises/
           manifest.json                                   ← pack metadata (internal)
           README.md                                       ← directory index (internal)
           worked-example/
@@ -590,23 +595,34 @@ outputs/
             rubric.json | failure-modes.md
           debrief.docx                                    ← pack debrief (Word)
     capstone/
-      {course_slug}--capstone-lab.docx                   ← capstone brief (Word)
-      {course_slug}--capstone-lab-rubric.json             ← rubric data (internal)
-      {course_slug}--capstone-instructor-guide.docx       ← instructor guide (Word)
-      {course_slug}--capstone-debrief.docx                ← debrief & reflection (Word)
+      capstone-lab.docx                                 ← capstone brief (Word)
+      capstone-lab-rubric.json                          ← rubric data (internal)
+      capstone-instructor-guide.docx                    ← instructor guide (Word)
+      capstone-debrief.docx                             ← debrief & reflection (Word)
       capstone-starter/ | capstone-solution/ | capstone-verify/  ← code
     environment/
       devcontainer.json
       preflight.sh
       preflight.ps1
       reset-env.sh
-    chapter.manifest.json   [per chapter, written by chapter-supervisor]
 ```
 
 Naming rules:
 - Slugs are lowercase, hyphen-separated, no underscores
 - Chapter numbers are zero-padded to 2 digits: `ch01`, `ch02`, …
-- All artifact filenames include the `{course_slug}` prefix
+- **Chapter artifact files are named by artifact role only** — `doc.docx`, `doc.handoff.json`,
+  `slides.pptx`, `slides-notes.docx`, `quiz-questions.docx`, `quiz-answers.docx`,
+  `quiz-questions-formB.docx`, `quiz-answers-formB.docx`, `quiz.json`, `quiz-formB.json`,
+  `podcast-script.md`, `cheatsheet.docx`, `instructor-guide.docx`, `chapter.manifest.json`.
+  They carry NO `{course_slug}` or chapter-slug prefix. The containing chapter folder
+  (`chapters/ch{NN}-{chapter_slug}/`) is what identifies them. This keeps every path within
+  the Windows 260-character limit.
+- The per-chapter exercises folder is named exactly `exercises/` (no prefix)
+- **Capstone files are likewise named by role only** — `capstone-lab.docx`,
+  `capstone-lab-rubric.json`, `capstone-instructor-guide.docx`, `capstone-debrief.docx`, and the
+  `capstone-starter/`, `capstone-solution/`, `capstone-verify/` folders — inside `capstone/`,
+  with NO `{course_slug}` prefix. Course-root files (`glossary.docx`, `README.docx`,
+  `prereq-diagnostic.md`) also carry no prefix.
 - **Student-facing deliverables are `.docx` (Word) or `.pptx` (PowerPoint)**
 - Internal pipeline files (JSON, YAML, `.md` plan files, code) stay in their native format
 - The podcast script stays `.md` — it is a recording production script, not a student deliverable

@@ -28,7 +28,7 @@ You receive:
    § 11 Practice Problems, § 12 Reflection Prompts, § 13 Further Reading, § 14 Glossary,
    § 15 Chapter Summary.
 3. **Front-matter completeness** — YAML front-matter must include: `chapter`, `title`, `learning_outcomes[]`, `prerequisites[]`, `est_minutes`, `bloom_distribution`, `validated_against`.
-4. **Filename** — must match `{course_slug}--ch{NN}--{chapter_slug}--doc.md`.
+4. **Filename** — chapter doc is named by role only: `doc.docx` (with sidecar `doc.handoff.json`), inside `chapters/ch{NN}-{chapter_slug}/`. No course-slug or chapter-slug prefix on the filename.
 
 ### MUST checks — Slide Deck (`artifact_type: slides`)
 
@@ -36,19 +36,19 @@ You receive:
 6. **Required slide order** — S1 Title, S2 LOs, S3 Agenda, S4 Prior-Chapter Recap (omit ch01), S5 Vocabulary & Mental Model, then concept slides, Worked Example, "Try this now", Common Pitfalls, Recap, SN+1 Quiz Cue / Next Up.
 7. **Word budget per slide** — ≤ 40 words per slide (exclude slide title).
 8. **Slide titles are conclusions** — no slide title may be phrased as a topic noun phrase. Each must assert something (check for verb presence).
-9. **Filename** — primary `.pptx` and sidecar `-notes.md` must match §5.2 naming.
+9. **Filename** — primary deck is `slides.pptx` and sidecar notes are `slides-notes.docx`, named by role only inside the chapter folder (no course-slug or chapter-slug prefix), per §5.2.
 
 ### MUST checks — Quiz (`artifact_type: quiz`)
 
 10. **Item count** — 10 graded + 2 carry-forward (or overridden values). Both Form A and Form B must exist.
 11. **Required fields per item** (in JSON) — every item must have: `item_id`, `learning_outcome_ref`, `section_ref`, `bloom_level`, `item_type`, `assessment_mode`, `estimated_difficulty`, `time_seconds`, `remediation_link`.
-12. **Form B exists** — `*--quiz-formB.json` must be present alongside `*--quiz.json`.
-13. **Student-facing docx files** — all four must exist: `*--quiz-questions.docx`, `*--quiz-answers.docx`, `*--quiz-questions-formB.docx`, `*--quiz-answers-formB.docx`. The questions docx must contain NO answers. The docx files must contain NO Bloom labels, LO-IDs, item IDs, or internal pipeline metadata. All must follow `doc/DocxDesignSpec.md`.
-14. **Filenames** — match §5.2.
+12. **Form B exists** — `quiz-formB.json` must be present alongside `quiz.json`.
+13. **Student-facing docx files** — all four must exist: `quiz-questions.docx`, `quiz-answers.docx`, `quiz-questions-formB.docx`, `quiz-answers-formB.docx`. The questions docx must contain NO answers. The docx files must contain NO Bloom labels, LO-IDs, item IDs, or internal pipeline metadata. All must follow `doc/DocxDesignSpec.md`.
+14. **Filenames** — chapter quiz artifacts are named by role only (`quiz.json`, `quiz-formB.json`, `quiz-questions.docx`, `quiz-answers.docx`, `quiz-questions-formB.docx`, `quiz-answers-formB.docx`) inside the chapter folder, with no course-slug or chapter-slug prefix, per §5.2.
 
 ### MUST checks — Exercise Pack (`artifact_type: exercises`)
 
-14. **Pack directory name** — `{course_slug}--ch{NN}--{slug}--exercises/`.
+14. **Pack directory name** — `exercises/` (named by role only, inside the chapter folder; no course-slug or chapter-slug prefix).
 15. **manifest.json present** — must exist and contain `pack_id`, `chapter`, `total_time_box_minutes`, `exercises[]`.
 16. **Per-exercise required files** — each exercise directory (except worked-example) must contain: `README.md`, `starter/`, `solution/`, `verify/`, `rubric.json`, `failure-modes.md`. Worked-example uses `solution/` + `walkthrough.md` instead of `starter/`.
 17. **Exercise front-matter** — every `README.md` must have YAML front-matter with: `exercise_id`, `chapter`, `stage`, `difficulty`, `bloom_level`, `time_box_minutes`, `learning_outcome_refs[]`.
@@ -56,12 +56,22 @@ You receive:
 ### MUST checks — Podcast Script (`artifact_type: podcast`)
 
 18. **Word count** — 1,200–2,300 words (or overridden range).
-19. **Filename** — `{course_slug}--ch{NN}--{slug}--podcast-script.md`.
+19. **Filename** — `podcast-script.md` (named by role only, inside the chapter folder; no course-slug or chapter-slug prefix).
 
 ### MUST checks — Companion (`artifact_type: companion`)
 
-20. **Cheatsheet present** — `{course_slug}--ch{NN}--{slug}--cheatsheet.docx`.
-21. **Instructor guide present** — `{course_slug}--ch{NN}--{slug}--instructor-guide.docx`.
+20. **Cheatsheet present** — `cheatsheet.docx` (named by role only, inside the chapter folder; no course-slug or chapter-slug prefix).
+21. **Instructor guide present** — `instructor-guide.docx` (named by role only, inside the chapter folder; no course-slug or chapter-slug prefix).
+
+### MUST checks — Table width (ALL Word `.docx` artifacts: doc, exercises, quiz, companion, lab)
+
+22. **Tables fill the page** — every table must occupy the full content width of **9,360 DXA**
+    (US Letter, 1-inch margins). For each table, inspect `word/document.xml` inside the `.docx`
+    (it is a zip): the `<w:tblGrid>` column widths (`<w:gridCol w:w="...">`) MUST sum to 9,360
+    (±40 for rounding) AND match the per-row cell widths (`<w:tcW>`). FAIL if any table's grid
+    sums to materially less than 9,360 (e.g., placeholder `100` values), because it renders narrow
+    and left-aligned and is hard to read. Report the offending file, table index, and grid sum.
+    See `doc/DocxDesignSpec.md` §5.2 for the required shape.
 
 ### SHOULD checks
 - Section headings match the exact names in the GreatTextSpec §4.1 table.

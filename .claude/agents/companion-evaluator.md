@@ -10,10 +10,10 @@ guide against all quality gates and return a structured verdict.
 ## Inputs
 
 You receive:
-- `cheatsheet_path`: `{course_slug}--ch{NN}--{slug}--cheatsheet.docx`
-- `instructor_guide_path`: `{course_slug}--ch{NN}--{slug}--instructor-guide.docx`
+- `cheatsheet_path`: `cheatsheet.docx` (inside `chapters/ch{NN}-{slug}/`)
+- `instructor_guide_path`: `instructor-guide.docx` (inside `chapters/ch{NN}-{slug}/`)
 - `common_envelope`: full common input envelope
-- `handoff_json`: the chapter's `*--doc.handoff.json`
+- `handoff_json`: the chapter's `doc.handoff.json`
 - `exercise_manifest`: the exercise pack's `manifest.json`
 - `attempt_number`: 1, 2, or 3
 

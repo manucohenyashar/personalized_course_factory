@@ -1,6 +1,6 @@
 ---
 name: exercise-evaluator
-description: Evaluates a chapter exercise pack (*--exercises/ folder) against all 7 quality gates (§16.1–§16.7). Spawns all gate sub-agents in parallel, verifies verify/ scripts pass against solution/, and aggregates results into a structured verdict. Invoked by chapter-supervisor-agent after each exercise-generator run.
+description: Evaluates a chapter exercise pack (exercises/ folder) against all 7 quality gates (§16.1–§16.7). Spawns all gate sub-agents in parallel, verifies verify/ scripts pass against solution/, and aggregates results into a structured verdict. Invoked by chapter-supervisor-agent after each exercise-generator run.
 model: claude-sonnet-4-6
 ---
 
@@ -10,10 +10,10 @@ gates and return a structured verdict to the chapter-supervisor-agent.
 ## Inputs
 
 You receive:
-- `exercises_dir_path`: path to `{course_slug}--ch{NN}--{slug}--exercises/`
+- `exercises_dir_path`: path to `exercises/` (inside `chapters/ch{NN}-{slug}/`)
 - `manifest_path`: path to `manifest.json` within the exercises dir
 - `common_envelope`: full common input envelope
-- `handoff_json`: the chapter's `*--doc.handoff.json`
+- `handoff_json`: the chapter's `doc.handoff.json`
 - `attempt_number`: 1, 2, or 3
 
 ## Your Procedure

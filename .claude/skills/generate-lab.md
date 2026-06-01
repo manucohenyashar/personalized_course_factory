@@ -89,20 +89,20 @@ Map this explicitly before writing the brief:
 
 ## 3. Output Layout
 
-All filenames follow `{course_slug}--capstone--{artifact}.{ext}` (master §5.2).
+All filenames follow `capstone-{artifact}.{ext}` (master §5.2).
 
 ```
 outputs/{course_slug}/capstone/
   README.md                                         ← entry point + navigation
-  {course_slug}--capstone--lab.docx                 ← 14-section lab document (Word — student-facing)
-  {course_slug}--capstone--rubric.json              ← 6-criterion rubric (internal)
-  {course_slug}--capstone--starter/                 ← TODO-marked scaffold files (code)
-  {course_slug}--capstone--solution/                ← instructor-only canonical solution (code)
-  {course_slug}--capstone--verify/                  ← public + hidden tests + expected outputs (code)
-  {course_slug}--capstone--failure-modes.md         ← ≥ 3 documented failure modes (internal)
-  {course_slug}--capstone--instructor-guide.docx    ← timing, demo notes, common mistakes (Word — instructor-facing)
-  {course_slug}--capstone--debrief.docx             ← reflection prompts + self-scoring sheet (Word — student-facing)
-  {course_slug}--capstone--environment/             ← delta from course environment (if any)
+  capstone-lab.docx                 ← 14-section lab document (Word — student-facing)
+  capstone-lab-rubric.json              ← 6-criterion rubric (internal)
+  capstone-starter/                 ← TODO-marked scaffold files (code)
+  capstone-solution/                ← instructor-only canonical solution (code)
+  capstone-verify/                  ← public + hidden tests + expected outputs (code)
+  capstone-failure-modes.md         ← ≥ 3 documented failure modes (internal)
+  capstone-instructor-guide.docx    ← timing, demo notes, common mistakes (Word — instructor-facing)
+  capstone-debrief.docx             ← reflection prompts + self-scoring sheet (Word — student-facing)
+  capstone-environment/             ← delta from course environment (if any)
     preflight.sh / preflight.ps1
     reset.sh
 ```
@@ -119,15 +119,15 @@ outputs/{course_slug}/capstone/
 
 | File | Purpose |
 |------|---------|
-| `{course_slug}--capstone--lab.docx` | Lab instructions — start here |
-| `{course_slug}--capstone--rubric.json` | Assessment rubric |
-| `{course_slug}--capstone--starter/` | Your starting files |
-| `{course_slug}--capstone--verify/` | Run `verify.sh` to check your work |
-| `{course_slug}--capstone--debrief.docx` | Reflection + self-scoring |
+| `capstone-lab.docx` | Lab instructions — start here |
+| `capstone-lab-rubric.json` | Assessment rubric |
+| `capstone-starter/` | Your starting files |
+| `capstone-verify/` | Run `verify.sh` to check your work |
+| `capstone-debrief.docx` | Reflection + self-scoring |
 
 ## Setup
 
-Run `{course_slug}--capstone--environment/preflight.sh` before starting.
+Run `capstone-environment/preflight.sh` before starting.
 ```
 
 ---
@@ -238,7 +238,7 @@ Format:
 
 **Environment setup:**
 1. Open a terminal in the capstone directory.
-2. Run: `bash {course_slug}--capstone--environment/preflight.sh`
+2. Run: `bash capstone-environment/preflight.sh`
 3. Confirm output: "All checks passed."
 
 **Activate environment:** `{activation command}`
@@ -303,7 +303,7 @@ Your solution is complete when ALL of the following are true:
       `expected-output.json` within the tolerance defined in `verify/s3.sh`."
 - [ ] {criterion 3...}
 
-The verify suite (`{course_slug}--capstone--verify/all.sh`) checks each criterion programmatically.
+The verify suite (`capstone-verify/all.sh`) checks each criterion programmatically.
 ```
 
 ### Section 6 — Architecture Overview
@@ -388,7 +388,7 @@ For each section, follow this template exactly:
 {exact expected output or description of the correct state}
 ```
 
-**Verification:** run `bash {course_slug}--capstone--verify/s{N}-step1.sh`
+**Verification:** run `bash capstone-verify/s{N}-step1.sh`
 
 > **Failure Mode:** If you see `{error}`, that means {cause}. Fix: {specific fix}.
 
@@ -398,7 +398,7 @@ For each section, follow this template exactly:
 - [ ] {criterion 1}
 - [ ] {criterion 2}
 
-**Link to verify:** `bash {course_slug}--capstone--verify/s{N}.sh`
+**Link to verify:** `bash capstone-verify/s{N}.sh`
 ```
 
 Rules for steps:
@@ -410,7 +410,7 @@ Rules for steps:
 ### Section 9 — Failure Modes & Debugging
 
 (The ≥ 3 failure modes may appear inline per step AND be aggregated here from
-`{course_slug}--capstone--failure-modes.md`.)
+`capstone-failure-modes.md`.)
 
 Each entry:
 ```markdown
@@ -437,7 +437,7 @@ Each entry:
 
 Run the full verify suite:
 ```bash
-bash {course_slug}--capstone--verify/all.sh
+bash capstone-verify/all.sh
 ```
 
 **Pass criteria:** all N checks pass with exit code 0.
@@ -469,7 +469,7 @@ Before submitting, score yourself honestly.
 **Weighted score:** sum(score × weight) / sum(weights)
 ```
 
-### Section 12 — Debrief (`{course_slug}--capstone--debrief.docx`)
+### Section 12 — Debrief (`capstone-debrief.docx`)
 
 Write as a separate file. Must contain:
 
@@ -520,7 +520,7 @@ This question has no right answer — it is about your ability to think beyond t
 - **{goal title}** (≈ {N} min): {description}
 ```
 
-### Section 14 — Instructor Guide (`{course_slug}--capstone--instructor-guide.docx`)
+### Section 14 — Instructor Guide (`capstone-instructor-guide.docx`)
 
 ```markdown
 # Instructor Guide — Capstone Lab
@@ -630,7 +630,7 @@ Weights: 0.25 + 0.20 + 0.20 + 0.15 + 0.10 + 0.10 = 1.00 ✓
 
 ## 8. Verify Script Pattern
 
-`{course_slug}--capstone--verify/all.sh`:
+`capstone-verify/all.sh`:
 
 ```bash
 #!/usr/bin/env bash
@@ -660,7 +660,7 @@ Per-section verify scripts reference `../capstone-solution/` (same pattern as ex
 When `target_level ∈ {intermediate, advanced}` in `student_context`, emit two parallel tracks:
 
 ```
-{course_slug}--capstone--starter/
+capstone-starter/
   novice-track/      ← more scaffolding: worked-example section is narrated, more TODO contracts
   practiced-track/   ← less scaffolding: worked-example converted to brief, tighter TODO contracts
 ```
@@ -682,7 +682,7 @@ The tracks MUST be meaningfully different — not just cosmetically different in
 
 ## 11. Starter/ Files
 
-`{course_slug}--capstone--starter/` contains:
+`capstone-starter/` contains:
 - All input data files referenced in the scenario
 - Skeleton code/config with TODO blocks (≥ 30 % of lines for completion sections)
 - The independent section's starter has only imports and function signatures
@@ -717,4 +717,4 @@ The tracks MUST be meaningfully different — not just cosmetically different in
 - [ ] capstone-verify/ passes against capstone-solution/ (logical check)
 - [ ] All entity names from personalization plan; no generic placeholders
 - [ ] All figures have alt text; code is plain text; no color-only information
-- [ ] Filenames match {course_slug}--capstone--{artifact}.{ext}
+- [ ] Filenames match capstone-{artifact}.{ext}

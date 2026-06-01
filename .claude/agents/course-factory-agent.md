@@ -99,6 +99,8 @@ For a course of N chapters, you will receive:
 - Master glossary
 - Prerequisite diagnostic
 - Lab environment scaffold
+- Student onboarding guide (`README.docx`) — explains how to use the course materials; generated
+  for every course as a pipeline phase (see the skill's "Course README" phase), after the capstone
 
 ## Pipeline State
 

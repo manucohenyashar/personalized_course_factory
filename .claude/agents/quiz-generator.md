@@ -1,6 +1,6 @@
 ---
 name: quiz-generator
-description: Generates chapter quiz Form A and Form B as both internal JSON (*--quiz.json + *--quiz-formB.json) and student-facing Word documents (*--quiz-questions.docx, *--quiz-answers.docx, *--quiz-questions-formB.docx, *--quiz-answers-formB.docx) following GreatQuizSpec v2 and DocxDesignSpec. Implements Bloom distribution, carry-forward items, scenario_mcq, distractor rules, difficulty heuristic, and answer-position balance. Student-facing docx files contain NO Bloom labels, LO-IDs, or internal metadata. Also supports diagnostic mode (prereq-diagnostic.md). Accepts feedback_failures[] on retry.
+description: Generates chapter quiz Form A and Form B as both internal JSON (quiz.json + quiz-formB.json) and student-facing Word documents (quiz-questions.docx, quiz-answers.docx, quiz-questions-formB.docx, quiz-answers-formB.docx) following GreatQuizSpec v2 and DocxDesignSpec. Implements Bloom distribution, carry-forward items, scenario_mcq, distractor rules, difficulty heuristic, and answer-position balance. Student-facing docx files contain NO Bloom labels, LO-IDs, or internal metadata. Also supports diagnostic mode (prereq-diagnostic.md). Accepts feedback_failures[] on retry.
 model: claude-sonnet-4-6
 ---
 
@@ -17,7 +17,7 @@ recipe guide, and the domain substitution checklist.
 ## Inputs
 
 You receive the full **common input envelope** plus:
-- `handoff_json`: the chapter's `*--doc.handoff.json`
+- `handoff_json`: the chapter's `doc.handoff.json`
 - `chapter_doc_outline`: section IDs + Bloom tags from handoff_json.section_outline
 - `chapter_pitfalls`: from handoff_json.chapter_pitfalls (seed for distractor misconceptions)
 - `prior_chapter_quiz_items`: items from chapters N−1 and N−3 for carry-forward sourcing
@@ -113,7 +113,7 @@ Every item in the JSON must conform to GreatQuizSpec §8:
   ],
   "estimated_difficulty": 0.60,
   "time_seconds": 90,
-  "remediation_link": "ch{NN}--doc.md#sec-3.2",
+  "remediation_link": "doc.docx#sec-3.2",
   "accessibility": {
     "alt_text_for_figures": null,
     "screen_reader_safe": true
@@ -139,26 +139,26 @@ Set `parallel_form_ref` in Form A to the Form B filename and vice versa.
 These are retained for evaluators and quality gates. They contain Bloom levels, LO-IDs, item IDs,
 and other pipeline metadata.
 
-1. `{course_slug}--ch{NN}--{slug}--quiz.json`:
+1. `quiz.json`:
 ```json
 {
-  "quiz_id": "{course_slug}--ch{NN}--quiz",
+  "quiz_id": "ch{NN}-quiz",
   "form": "A",
   "chapter": <int>,
   "passing_threshold": 0.80,
-  "parallel_form_ref": "{course_slug}--ch{NN}--{slug}--quiz-formB.json",
+  "parallel_form_ref": "quiz-formB.json",
   "items": [ ... ]
 }
 ```
 
-2. `{course_slug}--ch{NN}--{slug}--quiz-formB.json` (same schema, `"form": "B"`)
+2. `quiz-formB.json` (same schema, `"form": "B"`)
 
 ### Student-Facing Files (Word .docx)
 
 After generating the JSON files, produce four Word documents using `anthropic-skills:docx`.
 These are the files students actually see. They MUST follow `doc/DocxDesignSpec.md`.
 
-3. `{course_slug}--ch{NN}--{slug}--quiz-questions.docx` (Form A questions only):
+3. `quiz-questions.docx` (Form A questions only):
    - Chapter title and "Quiz" heading (clean, no internal codes)
    - Questions numbered sequentially (1, 2, 3...)
    - For MCQ/multi-select: options labeled A, B, C, D
@@ -167,14 +167,14 @@ These are the files students actually see. They MUST follow `doc/DocxDesignSpec.
    - NO correct answers, NO rationales, NO Bloom labels, NO LO-IDs, NO item IDs
    - NO internal metadata of any kind
 
-4. `{course_slug}--ch{NN}--{slug}--quiz-answers.docx` (Form A answer key):
+4. `quiz-answers.docx` (Form A answer key):
    - Each question restated, followed by the correct answer
    - Rationale for the correct answer
    - For MCQ: explain why each distractor is wrong (using the rationale field)
    - NO Bloom labels, NO LO-IDs, NO item IDs
 
-5. `{course_slug}--ch{NN}--{slug}--quiz-questions-formB.docx` (Form B questions)
-6. `{course_slug}--ch{NN}--{slug}--quiz-answers-formB.docx` (Form B answer key)
+5. `quiz-questions-formB.docx` (Form B questions)
+6. `quiz-answers-formB.docx` (Form B answer key)
 
 All four docx files must use:
 - Arial font, clean headings, bold-lead bullets per DocxDesignSpec

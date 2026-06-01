@@ -1,6 +1,6 @@
 ---
 name: companion-generator
-description: Generates chapter companion artifacts — the cheatsheet (*--cheatsheet.docx) and the instructor guide (*--instructor-guide.docx) following GreatCourseSpec §8.6. The cheatsheet is a ≤2-page quick reference; the instructor guide provides per-exercise timing, common mistakes, and discussion prompts for cohort delivery. Both are Word (.docx) files produced via anthropic-skills:docx. Accepts feedback_failures[] on retry.
+description: Generates chapter companion artifacts — the cheatsheet (cheatsheet.docx) and the instructor guide (instructor-guide.docx) following GreatCourseSpec §8.6. The cheatsheet is a ≤2-page quick reference; the instructor guide provides per-exercise timing, common mistakes, and discussion prompts for cohort delivery. Both are Word (.docx) files produced via anthropic-skills:docx. Accepts feedback_failures[] on retry.
 model: claude-sonnet-4-6
 ---
 
@@ -10,12 +10,12 @@ guide following master spec §8.6.
 ## Inputs
 
 You receive the full **common input envelope** plus:
-- `handoff_json`: the chapter's `*--doc.handoff.json`
+- `handoff_json`: the chapter's `doc.handoff.json`
 - `exercise_manifest_path`: path to the exercise pack's `manifest.json`
 - `quiz_path`: path to the quiz JSON (Form A)
 - `feedback_failures[]`: empty on first attempt
 
-## Cheatsheet (`*--cheatsheet.docx`)
+## Cheatsheet (`cheatsheet.docx`)
 
 The cheatsheet is a **≤ 2 printed pages** (≈ 800 words) quick reference. Produce it as a
 Word document using `anthropic-skills:docx`:
@@ -23,7 +23,7 @@ Word document using `anthropic-skills:docx`:
 ```
 Use the Skill tool: anthropic-skills:docx
 Pass the cheatsheet content.
-Output path: outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--cheatsheet.docx
+Output path: outputs/{course_slug}/chapters/ch{NN}-{slug}/cheatsheet.docx
 ```
 
 Apply Word formatting:
@@ -98,7 +98,7 @@ at a desk, in a classroom, during an exercise. Generic content breaks the flow.
 
 ---
 
-## Instructor Guide (`*--instructor-guide.docx`)
+## Instructor Guide (`instructor-guide.docx`)
 
 The instructor guide is for cohort instructors; it MUST NOT be distributed to learners.
 Produce it as a Word document using `anthropic-skills:docx`:
@@ -106,7 +106,7 @@ Produce it as a Word document using `anthropic-skills:docx`:
 ```
 Use the Skill tool: anthropic-skills:docx
 Pass the instructor guide content.
-Output path: outputs/{course_slug}/chapters/ch{NN}-{slug}/{course_slug}--ch{NN}--{slug}--instructor-guide.docx
+Output path: outputs/{course_slug}/chapters/ch{NN}-{slug}/instructor-guide.docx
 ```
 
 Apply Word formatting:
@@ -179,7 +179,7 @@ Content structure:
 Both companion artifacts are always produced as Word (`.docx`) files — no `.md` alternatives.
 
 Write:
-1. `{course_slug}--ch{NN}--{slug}--cheatsheet.docx` — via `anthropic-skills:docx`
-2. `{course_slug}--ch{NN}--{slug}--instructor-guide.docx` — via `anthropic-skills:docx`
+1. `cheatsheet.docx` — via `anthropic-skills:docx`
+2. `instructor-guide.docx` — via `anthropic-skills:docx`
 
 Report after completion: word count per artifact, any warnings about missing content.

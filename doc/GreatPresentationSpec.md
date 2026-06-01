@@ -8,8 +8,8 @@ implements: GreatCourseSpec_v2.md §8.2, §12.1, §12.2, §13.1, §7.3, §7.4, �
 skill_target: PresentationGeneratorSkill
 scope: |
   Defines the contract for the per-chapter Slide Deck artifact
-  (`*--slides.pptx`) and its sibling Speaker Notes file
-  (`*--slides-notes.md`). The deck serves cohort mode primarily, but MUST
+  (`slides.pptx`) and its sibling Speaker Notes file
+  (`slides-notes.md`). The deck serves cohort mode primarily, but MUST
   remain useful as a standalone reference for self-taught learners when
   read alongside the speaker notes.
 conformance_language: RFC 2119
@@ -58,8 +58,8 @@ Per chapter, the skill MUST emit **two paired artifacts**:
 
 ```
 chapters/ch{NN}-{slug}/
-  {course_slug}--ch{NN}--{slug}--slides.pptx           # the deck
-  {course_slug}--ch{NN}--{slug}--slides-notes.md       # speaker notes (master §8.2)
+  slides.pptx           # the deck
+  slides-notes.md       # speaker notes (master §8.2)
 ```
 
 Both files are first-class deliverables. Neither MAY be omitted.
@@ -140,7 +140,7 @@ Every 5–7 concept slides, insert a slide whose body is a single retrieval
 or self-explanation prompt (no answer on the slide; answer in the speaker
 notes).
 
-## 8. Speaker Notes (`*--slides-notes.md`) — REQUIRED
+## 8. Speaker Notes (`slides-notes.md`) — REQUIRED
 
 The speaker-notes file MUST contain one section per slide:
 
@@ -222,7 +222,7 @@ regenerates and logs the reason in `CHANGELOG.md`.
       slides (§7.8).
 - [ ] No single slide or diagram introduces > 4 novel elements (§7.3).
 - [ ] Every concept slide bears a Bloom badge and LO-ID (§7.6).
-- [ ] `*--slides-notes.md` exists; every slide has a notes section with
+- [ ] `slides-notes.md` exists; every slide has a notes section with
       `Timing`, `Bloom`, `LO ref`, `Cohort sidebar`, `Solo sidebar`,
       `Speaker script`.
 - [ ] All examples and visuals trace to `personalization-plan.json`

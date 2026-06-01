@@ -88,7 +88,7 @@ capstone/
 
 ### 4.1 Naming
 All filenames MUST follow master §5.2:
-`{course_slug}--capstone--{artifact}.{ext}`.
+`capstone-{artifact}.{ext}`.
 
 ## 5. Time Budget
 

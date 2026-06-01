@@ -366,7 +366,7 @@ Rules:
 
 ```json
 {
-  "pack_id": "{course_slug}--ch{NN}--exercises",
+  "pack_id": "ch{NN}-exercises",
   "chapter": <int>,
   "total_time_box_minutes": <sum>,
   "target_track": "both",
