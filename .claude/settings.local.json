@@ -26,7 +26,23 @@
       "Bash(py --version)",
       "Bash(powershell *)",
       "Bash(cmd /c \"mkdir \\\\\"C:\\\\Users\\\\mcohenyashar\\\\Documents\\\\Projects\\\\personalized_course_factory\\\\outputs\\\\automate-your-work-with-claude-cowork\\\\chapters\\\\ch06-giving-claude-the-right-context\\\\automate-your-work-with-claude-cowork--ch06--giving-claude-the-right-context--exercises\\\\\"\")",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "mcp__notebooklm-mcp__server_info",
+      "mcp__notebooklm-mcp__refresh_auth",
+      "mcp__notebooklm-mcp__notebook_list",
+      "Bash(command -v soffice)",
+      "Read(//c/Program Files/LibreOffice/program/**)",
+      "Read(//c/Program Files \\(x86\\)/LibreOffice/program/**)",
+      "mcp__notebooklm-mcp__notebook_create",
+      "mcp__notebooklm-mcp__source_add",
+      "mcp__notebooklm-mcp__studio_create",
+      "Bash(nlm auth *)",
+      "Bash(nlm status *)",
+      "Bash(nlm version *)",
+      "Bash(nlm --version)",
+      "Bash(nlm login *)",
+      "Read(//c/Users/mcohenyashar/.notebooklm-mcp-cli/**)",
+      "Read(//c/Users/mcohenyashar/.notebooklm-mcp-cli/profiles/default/**)"
     ]
   }
 }

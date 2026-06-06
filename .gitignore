@@ -1,6 +1,7 @@
 # Course inputs and outputs (generated/user-specific content)
 inputs/
 outputs/
+scripts/
 
 # Claude Code worktrees
 .claude/worktrees/
