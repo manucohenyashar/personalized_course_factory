@@ -10,7 +10,7 @@ guide following master spec §8.6.
 ## Inputs
 
 You receive the full **common input envelope** plus:
-- `handoff_json`: the chapter's `doc.handoff.json`
+- `handoff_json`: the chapter's `tutorial.handoff.json`
 - `exercise_manifest_path`: path to the exercise pack's `manifest.json`
 - `quiz_path`: path to the quiz JSON (Form A)
 - `feedback_failures[]`: empty on first attempt

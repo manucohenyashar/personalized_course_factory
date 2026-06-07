@@ -1,0 +1,25 @@
+{
+  "name": "course-factory-marketplace",
+  "owner": {
+    "name": "Manu Cohen Yashar",
+    "url": "https://github.com/manucohenyashar/personalized_course_factory"
+  },
+  "description": "Personalized Course Factory \u2014 install the full multi-agent course-generation pipeline as one plugin.",
+  "plugins": [
+    {
+      "name": "personalized-course-factory",
+      "source": "./course-factory-plugin",
+      "description": "Multi-agent pipeline for generating complete, personalized technical training courses (chapters, exercises, slides, quizzes, capstone lab, NotebookLM podcasts) grounded in learning science.",
+      "version": "1.0.0",
+      "license": "MIT",
+      "homepage": "https://github.com/manucohenyashar/personalized_course_factory",
+      "keywords": [
+        "course",
+        "education",
+        "training",
+        "agents",
+        "learning-science"
+      ]
+    }
+  ]
+}

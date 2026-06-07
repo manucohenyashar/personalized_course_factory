@@ -11,7 +11,7 @@ For each chapter, the pipeline generates six artifacts:
 
 | Artifact | File | Purpose |
 |----------|------|---------|
-| Chapter doc | `doc.docx` | 3,500–6,000 word structured learning text (Word) |
+| Chapter doc | `tutorial.docx` | 3,500–6,000 word structured learning text (Word) |
 | Exercise pack | `exercises/` | Worked example + completion + independent exercises (Word briefs + code) |
 | Slide deck | `slides.pptx` + `slides-notes.docx` | 12–25 slide deck (PowerPoint) + presenter notes (Word) |
 | Quiz | `quiz.json` + `quiz-formB.json` | 10-item assessment, Form A + Form B |
@@ -26,6 +26,31 @@ environment scaffold.
 All content is grounded in evidence-based learning science: Bloom's Taxonomy, retrieval
 practice (Roediger & Karpicke), cognitive load theory (Sweller), Mayer's multimedia
 principles, and the 4C/ID model.
+
+---
+
+## Install as a Claude Code plugin
+
+The entire factory — all agents, commands, specs, the podcast tool, and the project rules — is
+packaged as a single Claude Code plugin, so you can install it into any project as one unit:
+
+```
+/plugin marketplace add manucohenyashar/personalized_course_factory
+/plugin install personalized-course-factory@course-factory-marketplace
+```
+
+Then generate a course from any project with `@course-factory-agent` (see
+[Quick Start](#quick-start)). The bundled slash commands are namespaced under the plugin, e.g.
+`/personalized-course-factory:plan-course`, `/personalized-course-factory:next-chapter`,
+`/personalized-course-factory:course-status`. Starter input templates ship under the plugin's
+`templates/inputs/`. For NotebookLM podcasts, also install the CLI and log in (see
+[Setting up NotebookLM podcasts](#setting-up-notebooklm-podcasts-optional)).
+
+> **Maintainers:** the plugin under `course-factory-plugin/` is **generated** from the canonical
+> sources (`.claude/`, `doc/`, `tools/`, `CLAUDE.md`) by `python tools/build_plugin.py`, which
+> rewrites bundled-file paths to `${CLAUDE_PLUGIN_ROOT}`. Edit the sources, re-run the build, and
+> commit the regenerated `course-factory-plugin/`. The repo doubles as the install marketplace via
+> `.claude-plugin/marketplace.json`.
 
 ---
 
@@ -487,12 +512,122 @@ input — they are non-negotiable.
 
 ## Requirements
 
-- Claude Code (latest)
-- Node.js (for `npx mmdc` — Mermaid diagram export)
+- **Claude Code (required — install this first).** This entire pipeline *is* a set of Claude
+  Code agents and skills; nothing here runs without it. If you don't already have it:
+
+  ```bash
+  npm install -g @anthropic-ai/claude-code      # requires Node.js 18+
+  ```
+
+  Then verify and launch it from the repo root:
+
+  ```bash
+  claude --version
+  claude            # starts Claude Code in the current directory
+  ```
+
+  (Full install options — native installer, updates, troubleshooting — are at
+  <https://docs.claude.com/en/docs/claude-code>.) Once Claude Code is running, invoke the agents
+  below with `@agent-name` and skills with `/skill-name`.
+- Node.js 18+ (for Claude Code itself, and for `npx mmdc` — Mermaid diagram export)
 - Lab environment tools as declared in your subject spec (Python, etc.)
 - The `anthropic-skills:pptx` and `anthropic-skills:docx` skills (available globally in Claude Code)
-- **For chapter podcasts (optional):** the NotebookLM CLI (`uv tool install notebooklm-mcp-cli`
-  or `pip install notebooklm-mcp-cli`), authenticated via `nlm login`. Without it, the podcast
-  phase is skipped and the rest of the course still generates. LibreOffice (`soffice`) or
-  PowerPoint is used to convert slide decks to PDF for upload; if neither is present, podcasts
-  are generated from the chapter doc and script alone.
+- **For chapter podcasts (optional):** the NotebookLM CLI / MCP server and a NotebookLM login.
+  See [Setting up NotebookLM podcasts](#setting-up-notebooklm-podcasts-optional) below for the
+  full install, authentication, and Claude Code registration steps. Without it, the podcast
+  phase is skipped and the rest of the course still generates.
+
+---
+
+## Setting up NotebookLM podcasts (optional)
+
+The pipeline's chapter-podcast phase (and the `@generate-course-podcasts` agent) uses
+[NotebookLM](https://notebooklm.google.com) via the **`notebooklm-mcp-cli`** package, which
+provides two things from one install: the **`nlm`** command-line tool and the **`notebooklm-mcp`**
+MCP server. Setup is three steps. If you skip it, course generation still works — the podcast
+phase simply records itself as skipped.
+
+### 1. Install `notebooklm-mcp` (and the `nlm` CLI)
+
+One package installs both the `nlm` CLI and the `notebooklm-mcp` server:
+
+```bash
+uv tool install notebooklm-mcp-cli      # recommended
+# or:
+pip install notebooklm-mcp-cli
+```
+
+Verify both commands are on your `PATH`:
+
+```bash
+nlm --version
+notebooklm-mcp --help        # the MCP server entry point
+```
+
+(Project home: <https://github.com/sirmews/notebooklm-mcp>.)
+
+### 2. Authenticate to NotebookLM (`nlm login`)
+
+Log in once; the tool stores credentials under `~/.notebooklm-mcp-cli/`:
+
+```bash
+nlm login                    # opens a browser for Google sign-in
+nlm login --check            # confirms: "✓ Authentication valid! ... Account: ..."
+```
+
+- Multiple Google accounts: `nlm login switch <profile>` selects the active one.
+- Re-auth when the session expires: just run `nlm login` again.
+- **Trust `nlm login --check`** as the source of truth. The MCP server's own health report
+  (`server_info` / `refresh_auth`) sometimes shows a *false* "auth expired" because its probe
+  hits the NotebookLM web homepage, which redirects to Google sign-in even when the API works.
+  The pipeline is built to trust the CLI check, not that probe.
+
+### 3. Register the MCP server with Claude Code
+
+So Claude Code agents can call NotebookLM tools, register the `notebooklm-mcp` server:
+
+```bash
+claude mcp add notebooklm-mcp --scope user -- notebooklm-mcp
+```
+
+Or add it manually to your Claude config (`~/.claude.json`, or a project-level `.mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "notebooklm-mcp": {
+      "type": "stdio",
+      "command": "notebooklm-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+> **Behind a corporate proxy / custom CA?** Add the cert bundle to the server's `env` block so
+> its HTTPS calls succeed:
+> ```json
+> "env": {
+>   "SSL_CERT_FILE": "C:\\path\\to\\corp-ca-bundle.pem",
+>   "REQUESTS_CA_BUNDLE": "C:\\path\\to\\corp-ca-bundle.pem"
+> }
+> ```
+
+Restart Claude Code, then confirm the server is connected:
+
+```bash
+claude mcp list              # notebooklm-mcp should appear
+```
+
+…or run `/mcp` inside Claude Code.
+
+> **Note:** the batch tool `tools/notebooklm_podcast_gen.py` drives NotebookLM through the
+> package directly and only needs step 2 (`nlm login`) — not the MCP server. Step 3 is what lets
+> the interactive agents/skills call NotebookLM MCP tools. Installing all three is recommended so
+> both paths work.
+
+### Slide conversion (optional, for richer podcasts)
+
+Each chapter's `slides.pptx` is converted to `slides.pdf` before upload using **LibreOffice**
+(`soffice`) or **PowerPoint** (COM automation on Windows). If neither is available, slides are
+dropped and the podcast is generated from the chapter doc and script alone.

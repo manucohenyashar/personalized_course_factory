@@ -17,7 +17,7 @@ checklist, and grounding rules for code variables, exercise titles, and rubric d
 ## Inputs
 
 You receive the full **common input envelope** plus:
-- `handoff_json`: the chapter's `doc.handoff.json` (full object)
+- `handoff_json`: the chapter's `tutorial.handoff.json` (full object)
 - `chapter_doc_outline`: from handoff_json.section_outline
 - `worked_example_seed`: from handoff_json.worked_example_seed
 - `chapter_pitfalls`: from handoff_json.chapter_pitfalls

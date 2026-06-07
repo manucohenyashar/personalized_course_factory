@@ -1,6 +1,6 @@
 ---
 name: generate-course-podcasts
-description: Orchestrates creation of one NotebookLM podcast per chapter across an entire course. Uses a single shared NotebookLM notebook for the whole course, discovers chapter folders under a course root, and drives the batch podcast tool (tools/notebooklm_podcast_gen.py) which uploads each chapter's doc.docx + slides.pdf + podcast-script.md, generates a scoped Audio Overview, and renames it. Continues past individual chapter failures and returns a summary report. Invoke after a course has been generated to batch-produce chapter podcasts.
+description: Orchestrates creation of one NotebookLM podcast per chapter across an entire course. Uses a single shared NotebookLM notebook for the whole course, discovers chapter folders under a course root, and drives the batch podcast tool (tools/notebooklm_podcast_gen.py) which uploads each chapter's tutorial.docx + slides.pdf + podcast-script.md, generates a scoped Audio Overview, and renames it. Continues past individual chapter failures and returns a summary report. Invoke after a course has been generated to batch-produce chapter podcasts.
 model: claude-sonnet-4-6
 ---
 
@@ -30,8 +30,8 @@ guess a course name or root path. `course_title` is optional.
 
 ```
 <course_root>/chapters/
-  ch01-<slug>/   doc.docx   slides.pptx (or slides.pdf)   podcast-script.md
-  ch02-<slug>/   doc.docx   slides.pptx (or slides.pdf)   podcast-script.md
+  ch01-<slug>/   tutorial.docx   slides.pptx (or slides.pdf)   podcast-script.md
+  ch02-<slug>/   tutorial.docx   slides.pptx (or slides.pdf)   podcast-script.md
   ...
 ```
 
@@ -117,9 +117,9 @@ What the tool does per chapter (so you can describe it accurately):
    reuse it).
 2. Ensure `slides.pdf` exists, converting from `slides.pptx` when a converter is available
    (LibreOffice `soffice`, else PowerPoint COM); if conversion is impossible it drops slides
-   and still generates the podcast from `doc.docx` + `podcast-script.md`.
+   and still generates the podcast from `tutorial.docx` + `podcast-script.md`.
 3. Upload the chapter's files (with retry/backoff) and capture their `source_id`s. Each source
-   is titled with a **chapter prefix** — `chapter_{NN}_doc.docx`, `chapter_{NN}_slides.pdf`,
+   is titled with a **chapter prefix** — `chapter_{NN}_tutorial.docx`, `chapter_{NN}_slides.pdf`,
    `chapter_{NN}_podcast-script.md` — so that, in the single shared notebook, a person can tell
    which chapter each file belongs to (the on-disk files all share the same names).
 4. Generate an Audio Overview **scoped to that chapter's source_ids** (so podcasts don't bleed
@@ -173,7 +173,7 @@ Total: X succeeded, Y failed
 - **Per-chapter source scoping.** All chapters share one notebook; each podcast is generated
   with `source_ids` limited to its own chapter, so content never bleeds across chapters (the
   unique internal `source_id` per upload guarantees correct scoping regardless of titles).
-- **Distinguishable source names.** The on-disk files are all named `doc.docx` / `slides.pdf` /
+- **Distinguishable source names.** The on-disk files are all named `tutorial.docx` / `slides.pdf` /
   `podcast-script.md`, which is unreadable in one shared notebook. The tool titles each uploaded
   source with a chapter prefix (`chapter_{NN}_…`) so a person browsing the notebook can tell
   which chapter each file belongs to.

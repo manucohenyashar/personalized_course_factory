@@ -151,7 +151,7 @@ The per-phase table:
 | 0 — Spec intake | parse inline specs or read pre-filled files; validate | `inputs/*` complete | **HALT:** spec summary confirmation |
 | 1 — Planning | `planner-agent` (12-step algorithm) | `course-plan.yaml`, `personalization-plan.json`, `reserved-scenarios.json` | **HALT ×2:** normalization diff (Step 2) + plan review (Step 12) |
 | 2 — Environment | `environment-scaffold-generator` | devcontainer, preflight, lab-environment manifest | — |
-| 3 — Chapters (loop) | `chapter-supervisor-agent` per chapter → 6 generators + 6 evaluators | `doc.docx`, `exercises/`, `slides.pptx`, quiz, `podcast-script.md`, companion | 7 gates per artifact; 3-attempt loop |
+| 3 — Chapters (loop) | `chapter-supervisor-agent` per chapter → 6 generators + 6 evaluators | `tutorial.docx`, `exercises/`, `slides.pptx`, quiz, `podcast-script.md`, companion | 7 gates per artifact; 3-attempt loop |
 | 4 — Course evaluation | `evaluator-agent` | `COURSE_VERDICT.md` | cross-chapter coverage, running-example coherence, subject coverage |
 | 5 — Capstone | `lab-generator` → `lab-evaluator` | `capstone/` | 7 gates + GreatLabSpec gates + problem fidelity |
 | 6 — Podcasts | `generate-course-podcasts` → `tools/notebooklm_podcast_gen.py` | one NotebookLM Audio Overview per chapter | **best-effort, non-blocking** |
@@ -240,7 +240,7 @@ retry attempts) lives and dies inside the subagent.
   personalization, format, technical, accessibility, calibration are independent checks, so they
   run at once and the evaluator aggregates the verdicts.
 - Within a chapter, **independent generators run in parallel** (e.g. presentation + quiz +
-  podcast), while dependent ones run after the chapter text (its `doc.handoff.json` seeds them).
+  podcast), while dependent ones run after the chapter text (its `tutorial.handoff.json` seeds them).
 
 This compresses wall-clock time without sacrificing the independence that makes the checks
 trustworthy.
@@ -428,7 +428,7 @@ Two data contracts make loose coupling between subagents possible:
   personalization-plan path, output paths, the gate list to satisfy, `feedback_failures[]`, and
   `forbidden_examples[]`. Every generator receives the same shape, so the supervisor can dispatch
   any of them uniformly.
-- **Handoff JSON (`doc.handoff.json`)** — produced by the chapter-text generator and passed to
+- **Handoff JSON (`tutorial.handoff.json`)** — produced by the chapter-text generator and passed to
   every downstream chapter generator. It carries the section outline (with Bloom tags), the
   running example, the worked-example seed, glossary deltas, pitfalls, retrieval checkpoints,
   reflection prompts, diagram references, the quiz seed, and reading metrics. This is how the
@@ -443,7 +443,7 @@ the whole course state — the same property that keeps context bounded.
 
 ## 10. Naming, formats, and the student/internal split
 
-- **Role-based file naming (§5.2):** chapter artifacts are named by *role* (`doc.docx`,
+- **Role-based file naming (§5.2):** chapter artifacts are named by *role* (`tutorial.docx`,
   `slides.pptx`, `quiz-questions.docx`, …) inside `chapters/ch{NN}-{slug}/`, with no course or
   chapter prefix, which keeps every path within the Windows 260-character limit.
 - **Office formats for students:** every student deliverable is `.docx` or `.pptx` (CLAUDE.md
@@ -459,9 +459,9 @@ the whole course state — the same property that keeps context bounded.
 ```
 chapter-supervisor-agent (subagent — isolated context)
   1. build Common Input Envelope from course-plan + personalization-plan + students
-  2. chapter-text-generator → doc.docx + doc.handoff.json
+  2. chapter-text-generator → tutorial.docx + tutorial.handoff.json
         └─ chapter-text-evaluator → [7 gates ∥] → pass? else feedback ↺ (≤3)
-  3. in parallel, seeded by doc.handoff.json:
+  3. in parallel, seeded by tutorial.handoff.json:
         presentation-generator → slides           quiz-generator → Form A/B
         podcast-generator → podcast-script.md
         companion-generator → cheatsheet + instructor guide
@@ -484,12 +484,12 @@ sequenceDiagram
     participant St as PIPELINE_STATE.md
 
     O->>S: dispatch chapter N (Common Input Envelope)
-    S->>Gt: generate doc.docx + doc.handoff.json
+    S->>Gt: generate tutorial.docx + tutorial.handoff.json
     Gt-->>S: doc + handoff
     S->>Et: evaluate (7 gates in parallel)
     Et-->>S: verdict (pass / feedback_failures[])
     Note over S,Et: retry up to 3x on failure
-    S->>Gx: generate in parallel, seeded by doc.handoff.json
+    S->>Gx: generate in parallel, seeded by tutorial.handoff.json
     Gx-->>S: artifacts (each gated + retried)
     S->>St: write chapter.manifest.json
     S-->>O: summary only (status, counts)

@@ -1,6 +1,6 @@
 ---
 name: chapter-text-generator
-description: Generates the chapter document (doc.docx) and its sibling handoff JSON (doc.handoff.json) following GreatTextSpec v2. Implements the 15-section structure, Bloom-tagged sections, retrieval checkpoints, worked examples, reflection prompts, and failure-first pitfalls. Accepts feedback_failures[] on retry. Invoked by chapter-supervisor-agent.
+description: Generates the chapter document (tutorial.docx) and its sibling handoff JSON (tutorial.handoff.json) following GreatTextSpec v2. Implements the 15-section structure, Bloom-tagged sections, retrieval checkpoints, worked examples, reflection prompts, and failure-first pitfalls. Accepts feedback_failures[] on retry. Invoked by chapter-supervisor-agent.
 model: claude-sonnet-4-6
 ---
 
@@ -163,7 +163,7 @@ Compose the full chapter content following the 15-section structure above, then 
 ```
 Use the Skill tool: anthropic-skills:docx
 Pass the complete chapter content.
-Output path: outputs/{course_slug}/chapters/ch{NN}-{slug}/doc.docx
+Output path: outputs/{course_slug}/chapters/ch{NN}-{slug}/tutorial.docx
 ```
 
 Apply Word formatting conventions per `doc/DocxDesignSpec.md`:
@@ -179,7 +179,7 @@ Apply Word formatting conventions per `doc/DocxDesignSpec.md`:
 
 ### Step 2 — Write the handoff JSON
 
-Write `outputs/{course_slug}/chapters/ch{NN}-{slug}/doc.handoff.json`
+Write `outputs/{course_slug}/chapters/ch{NN}-{slug}/tutorial.handoff.json`
 using the schema in CLAUDE.md (Handoff JSON Schema section). Populate all fields.
 Set `output_format: "docx"` in the handoff JSON's reading_metrics block.
 

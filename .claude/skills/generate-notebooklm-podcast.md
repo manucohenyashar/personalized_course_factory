@@ -80,10 +80,10 @@ Track the returned source ID for each file. Behavior on failure:
 > **Setting a distinct display name (`display_title`).** The file-upload RPC ignores any
 > title and shows the on-disk filename, so when entries provide a `display_title` (or when you
 > otherwise need unique names — e.g. several chapters of one course share a notebook and all
-> have files literally named `doc.docx` / `slides.pdf`), apply the name with a follow-up
+> have files literally named `tutorial.docx` / `slides.pdf`), apply the name with a follow-up
 > `mcp__notebooklm-mcp__source_rename` (`notebook_id`, the returned `source_id`, and the
 > desired title) right after the upload of that file. This is what lets sources be uploaded as,
-> e.g., `chapter_03_doc.docx` so a person browsing the notebook can tell which chapter each
+> e.g., `chapter_03_tutorial.docx` so a person browsing the notebook can tell which chapter each
 > file belongs to.
 
 

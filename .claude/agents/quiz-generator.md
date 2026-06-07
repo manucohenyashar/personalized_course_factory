@@ -17,7 +17,7 @@ recipe guide, and the domain substitution checklist.
 ## Inputs
 
 You receive the full **common input envelope** plus:
-- `handoff_json`: the chapter's `doc.handoff.json`
+- `handoff_json`: the chapter's `tutorial.handoff.json`
 - `chapter_doc_outline`: section IDs + Bloom tags from handoff_json.section_outline
 - `chapter_pitfalls`: from handoff_json.chapter_pitfalls (seed for distractor misconceptions)
 - `prior_chapter_quiz_items`: items from chapters N−1 and N−3 for carry-forward sourcing
@@ -113,7 +113,7 @@ Every item in the JSON must conform to GreatQuizSpec §8:
   ],
   "estimated_difficulty": 0.60,
   "time_seconds": 90,
-  "remediation_link": "doc.docx#sec-3.2",
+  "remediation_link": "tutorial.docx#sec-3.2",
   "accessibility": {
     "alt_text_for_figures": null,
     "screen_reader_safe": true

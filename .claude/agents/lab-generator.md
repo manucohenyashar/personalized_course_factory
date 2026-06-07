@@ -35,7 +35,7 @@ You receive:
 - `problem_spec`: the full `problem.yaml` object — the problem to implement
 - `personalization_plan`: `_plan/personalization-plan.json`
 - `reserved_scenarios`: `_plan/reserved-scenarios.json`
-- `all_chapter_handoffs[]`: all chapter `doc.handoff.json` files (for integration mapping)
+- `all_chapter_handoffs[]`: all chapter `tutorial.handoff.json` files (for integration mapping)
 - `lab_environment_manifest`: the lab environment JSON
 - `feedback_failures[]`: empty on first attempt; populated on retry
 

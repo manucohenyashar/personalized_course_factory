@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "personalized-course-factory",
+  "displayName": "Personalized Course Factory",
+  "version": "1.0.0",
+  "description": "Multi-agent pipeline that generates complete, personalized technical training courses \u2014 chapter docs, exercises, slide decks, quizzes, a capstone lab, NotebookLM podcasts, and a student onboarding guide \u2014 all grounded in learning-science best practices and personalized to the learner's domain and reading level.",
+  "author": {
+    "name": "Manu Cohen Yashar"
+  },
+  "homepage": "https://github.com/manucohenyashar/personalized_course_factory",
+  "repository": "https://github.com/manucohenyashar/personalized_course_factory",
+  "license": "MIT",
+  "keywords": [
+    "course",
+    "education",
+    "training",
+    "curriculum",
+    "instructional-design",
+    "learning-science",
+    "agents",
+    "notebooklm",
+    "podcast"
+  ]
+}

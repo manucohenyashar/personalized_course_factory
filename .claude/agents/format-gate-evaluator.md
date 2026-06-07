@@ -28,7 +28,7 @@ You receive:
    § 11 Practice Problems, § 12 Reflection Prompts, § 13 Further Reading, § 14 Glossary,
    § 15 Chapter Summary.
 3. **Front-matter completeness** — YAML front-matter must include: `chapter`, `title`, `learning_outcomes[]`, `prerequisites[]`, `est_minutes`, `bloom_distribution`, `validated_against`.
-4. **Filename** — chapter doc is named by role only: `doc.docx` (with sidecar `doc.handoff.json`), inside `chapters/ch{NN}-{chapter_slug}/`. No course-slug or chapter-slug prefix on the filename.
+4. **Filename** — chapter doc is named by role only: `tutorial.docx` (with sidecar `tutorial.handoff.json`), inside `chapters/ch{NN}-{chapter_slug}/`. No course-slug or chapter-slug prefix on the filename.
 
 ### MUST checks — Slide Deck (`artifact_type: slides`)
 

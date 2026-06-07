@@ -17,7 +17,7 @@ node-label requirements, and the slide vocabulary checklist.
 ## Inputs
 
 You receive the full **common input envelope** plus:
-- `handoff_json`: the chapter's `doc.handoff.json`
+- `handoff_json`: the chapter's `tutorial.handoff.json`
 - `chapter_doc_outline`: from handoff_json.section_outline (ordered section IDs + headings + Bloom tags)
 - `running_example`: from handoff_json.running_example
 - `exercise_manifest`: path to exercise pack manifest.json

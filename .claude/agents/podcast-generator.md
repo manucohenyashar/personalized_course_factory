@@ -10,7 +10,7 @@ master spec §8.4 and the rules below.
 ## Inputs
 
 You receive the full **common input envelope** plus:
-- `handoff_json`: the chapter's `doc.handoff.json`
+- `handoff_json`: the chapter's `tutorial.handoff.json`
 - `chapter_doc_path`: path to the chapter doc (for context — do NOT copy verbatim)
 - `feedback_failures[]`: empty on first attempt
 

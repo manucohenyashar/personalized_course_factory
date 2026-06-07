@@ -431,7 +431,7 @@ Invoke `@lab-generator` with:
 - `problem_spec`: full `inputs/problem.yaml` content
 - `personalization_plan`: `_plan/personalization-plan.json`
 - `reserved_scenarios`: `_plan/reserved-scenarios.json`
-- `all_chapter_handoffs[]`: all `doc.handoff.json` files from `outputs/{course_slug}/chapters/`
+- `all_chapter_handoffs[]`: all `tutorial.handoff.json` files from `outputs/{course_slug}/chapters/`
 - `lab_environment_manifest`: `outputs/{course_slug}/environment/lab-environment.json`
 
 After completion, read the lab-evaluator verdict. If the lab fails evaluation:
@@ -448,7 +448,7 @@ Tell the user: "Capstone lab complete. Generating chapter podcasts in NotebookLM
 
 **Goal:** Produce one NotebookLM Audio Overview (podcast) per chapter for the whole course,
 in a single shared notebook, so **every course ships with audio**. This runs after the capstone
-because it consumes the finished chapter materials (`doc.docx`, `slides.pptx`/`slides.pdf`,
+because it consumes the finished chapter materials (`tutorial.docx`, `slides.pptx`/`slides.pdf`,
 `podcast-script.md`).
 
 This phase is **best-effort and non-blocking**: it depends on an external service (NotebookLM)
@@ -481,7 +481,7 @@ Invoke `@generate-course-podcasts` with:
 - `course_title` = `{course_title from course-plan.yaml}`  (human title for the series framing)
 
 The agent drives `tools/notebooklm_podcast_gen.py`, which creates the shared notebook, uploads
-each chapter's files with **chapter-prefixed titles** (`chapter_{NN}_doc.docx`, …) so the
+each chapter's files with **chapter-prefixed titles** (`chapter_{NN}_tutorial.docx`, …) so the
 notebook is browsable, generates an Audio Overview **scoped to that chapter's sources** and
 **framed as "Chapter N of M" of the course** (so episodes reference the series and don't re-tell
 the scenario from scratch), then renames each podcast to its chapter. It is resumable and
@@ -547,7 +547,7 @@ as "you" and tying examples to their real work.
 8. Tips for getting the most from the course: apply each skill to a live task immediately, keep a
    growing personal toolkit, always keep a human review step, use the roadmap from the final chapter.
 9. Finding your files: a plain-language map of the course folder layout (glossary, this guide,
-   environment, chapters, capstone), noting that chapter files are named by role (`doc.docx`,
+   environment, chapters, capstone), noting that chapter files are named by role (`tutorial.docx`,
    `slides.pptx`, `quiz-questions.docx`, `cheatsheet.docx`) inside each chapter folder.
 
 End with one encouraging sentence.
