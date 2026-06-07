@@ -94,8 +94,28 @@ Call `mcp__notebooklm-mcp__studio_create` with:
 
 Record the returned artifact ID as `podcast_id`.
 
-If `studio_create` fails, surface a descriptive error ("Podcast generation failed") with
-the reason and stop.
+> **Known false positive — "auth expired" / "reason: expired".** On some accounts
+> `studio_create` refuses with an `auth expired` error **even when auth is valid** (verify
+> with `nlm login --check`). Its pre-flight guard fetches the NotebookLM HTML homepage, which
+> redirects to the Google sign-in page, so the guard reports `expired` before ever attempting
+> the real call. `notebook_list` / `source_add` have no such guard and work fine. **Do not
+> tell the user to re-login if `nlm login --check` is already valid.** Instead, bypass the
+> guard by driving the package service layer directly with the working client:
+>
+> ```python
+> # run with the notebooklm-mcp-cli venv python (next to the `nlm` executable)
+> from notebooklm_tools.mcp.tools._utils import get_client
+> from notebooklm_tools.services import studio as st
+> res = st.create_artifact(get_client(), notebook_id, "audio", source_ids=[...])
+> # res["artifact_id"] is the podcast id
+> ```
+>
+> For the whole-course batch case, prefer the committed tool
+> `tools/notebooklm_podcast_gen.py`, which encodes this and the other workarounds (upload
+> retries, orphan cleanup, rename-after-completion, per-chapter source scoping).
+
+If `studio_create` fails for a reason other than the false-positive above, surface a
+descriptive error ("Podcast generation failed") with the reason and stop.
 
 ## Step 4 — Name the podcast
 
@@ -103,6 +123,11 @@ The audio artifact is created without the requested title, so rename it: call
 `mcp__notebooklm-mcp__studio_status` with `action = "rename"`,
 `notebook_id = <notebook_id>`, `artifact_id = <podcast_id>`, and
 `new_title = podcast_name`.
+
+> **Rename only sticks after completion.** NotebookLM overwrites an audio artifact's title
+> with its own auto-generated title **when generation finishes**. A rename applied while the
+> artifact is still `in_progress` (the RPC often returns falsy) will be lost. If you need the
+> title to persist, run the rename in Step 5 **after** the artifact reports `completed`.
 
 If rename fails, it is non-fatal: report that the podcast was generated but could not be
 renamed, and include the default title.
