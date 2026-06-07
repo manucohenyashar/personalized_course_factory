@@ -161,7 +161,12 @@ def _ensure_notebooklm_tools() -> None:
                 continue
         except Exception:
             pass
-        os.execv(str(cand), [str(cand), here, *sys.argv[1:]])  # replaces process
+        # Use subprocess, NOT os.execv: on Windows os.execv re-joins argv into a
+        # single command-line string and loses the quoting around arguments that
+        # contain spaces (e.g. --course-title "A B C"), corrupting them. subprocess
+        # quotes each argument correctly via list2cmdline.
+        rc = subprocess.call([str(cand), here, *sys.argv[1:]])
+        sys.exit(rc)
 
     # Last resort: run inside the uv tool environment.
     uv = shutil.which("uv")
