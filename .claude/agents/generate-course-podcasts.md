@@ -21,9 +21,10 @@ MCP server's bogus "auth expired" reports.
 |-------|---------|
 | `course_name` | The NotebookLM **notebook name**, shared across every chapter of this course. |
 | `course_root` | Path to the root directory of the course (chapters live under `<course_root>/chapters/`). Course materials live in `outputs/{course_slug}/`. |
+| `course_title` | *Optional.* Human course title for the series framing (e.g. "Automate Your Work with Claude"). Forwarded to the tool as `--course-title`. If omitted, the tool prettifies `course_name`. |
 
-If either input is missing, ask for it before doing anything else. Do not guess a course
-name or root path.
+If `course_name` or `course_root` is missing, ask for it before doing anything else. Do not
+guess a course name or root path. `course_title` is optional.
 
 ## Assumed folder structure (CLAUDE.md §5.2)
 

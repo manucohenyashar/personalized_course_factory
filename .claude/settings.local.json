@@ -42,7 +42,9 @@
       "Bash(nlm --version)",
       "Bash(nlm login *)",
       "Read(//c/Users/mcohenyashar/.notebooklm-mcp-cli/**)",
-      "Read(//c/Users/mcohenyashar/.notebooklm-mcp-cli/profiles/default/**)"
+      "Read(//c/Users/mcohenyashar/.notebooklm-mcp-cli/profiles/default/**)",
+      "Bash(git check-ignore *)",
+      "Bash(git checkout *)"
     ]
   }
 }

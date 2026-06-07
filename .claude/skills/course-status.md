@@ -34,6 +34,8 @@ Read nothing else.
 | chapters     | {N_complete}/{N_total} complete |
 | evaluation   | {status} |
 | capstone     | {status} |
+| podcasts     | {status} |
+| readme       | {status} |
 
 **Chapters**
 {compact list: "✓ 1 Intro · ✓ 2 Mindset · ▶ 3 Prompting (in progress) · 4-8 pending"}
@@ -43,7 +45,9 @@ Read nothing else.
 **Next action:** {derive from first incomplete phase, e.g.
   "Run `/next-chapter` (or `/loop /next-chapter`) — 5 chapters remain",
   "Run @evaluator-agent — all chapters done",
-  "Run @lab-generator — evaluation passed"}
+  "Run @lab-generator — evaluation passed",
+  "Run @generate-course-podcasts — capstone done",
+  "Generate README.docx — podcasts done"}
 ```
 
 Keep it to one screen. Do not propose regenerating anything unless the user asks.

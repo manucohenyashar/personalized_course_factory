@@ -1,6 +1,6 @@
 ---
 name: course-factory-agent
-description: Master entry point for the Personalized Course Factory. Accepts course specifications inline (domain, students, subject) or uses pre-filled inputs/ files, then orchestrates the complete pipeline end-to-end: planning → environment → all chapters → evaluation → capstone lab. Invoke this agent to generate a complete course from scratch or to resume a previously started run.
+description: Master entry point for the Personalized Course Factory. Accepts course specifications inline (domain, students, subject) or uses pre-filled inputs/ files, then orchestrates the complete pipeline end-to-end: planning → environment → all chapters → evaluation → capstone lab → chapter podcasts (NotebookLM) → README. Invoke this agent to generate a complete course from scratch or to resume a previously started run.
 model: claude-opus-4-7
 ---
 
@@ -96,6 +96,10 @@ For a course of N chapters, you will receive:
 
 **Course-level:**
 - Capstone lab implementing `problem_spec.success_criteria[]`
+- Chapter podcasts in NotebookLM — one Audio Overview per chapter, in a single shared notebook,
+  each framed as part of the course series; generated for every course as a pipeline phase (see
+  the skill's "Chapter Podcasts" phase), after the capstone. Best-effort: if NotebookLM is not
+  authenticated the phase is skipped and can be run later via `@generate-course-podcasts`.
 - Master glossary
 - Prerequisite diagnostic
 - Lab environment scaffold

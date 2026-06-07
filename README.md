@@ -18,8 +18,10 @@ For each chapter, the pipeline generates six artifacts:
 | Podcast script | `podcast-script.md` | 1,200–2,300 word recording production script |
 | Companion | `cheatsheet.docx` + `instructor-guide.docx` | Quick reference + facilitation guide (Word) |
 
-Plus course-level artifacts: capstone lab (`capstone-lab.docx`), master glossary
-(`glossary.docx`), prerequisite diagnostic, and lab environment scaffold.
+Plus course-level artifacts: capstone lab (`capstone-lab.docx`), **chapter podcasts in
+NotebookLM** (one Audio Overview per chapter, generated after the capstone), master glossary
+(`glossary.docx`), prerequisite diagnostic, student onboarding guide (`README.docx`), and lab
+environment scaffold.
 
 All content is grounded in evidence-based learning science: Bloom's Taxonomy, retrieval
 practice (Roediger & Karpicke), cognitive load theory (Sweller), Mayer's multimedia
@@ -91,7 +93,9 @@ The factory agent will:
 3. Run the planner and show a **normalization diff** → requires your approval
 4. Show the **course plan** (chapters, LOs, scenarios) → requires your approval
 5. Generate the environment, all chapters, evaluator, and capstone lab automatically
-6. Deliver a completion report with links to all outputs
+6. Generate one **NotebookLM podcast per chapter** (after the capstone) — best-effort; skipped
+   with instructions if NotebookLM is not authenticated
+7. Deliver a completion report with links to all outputs
 
 Two mandatory human-review halts occur during planning. All chapter generation runs
 automatically after your approvals.
@@ -135,7 +139,12 @@ Run each agent individually for full control:
 @chapter-supervisor-agent chapter_number: 1 ← Step 3: repeat for each chapter
 @evaluator-agent                            ← Step 4: course-wide evaluation
 @lab-generator                              ← Step 5: capstone lab
+@generate-course-podcasts                   ← Step 6: one NotebookLM podcast per chapter (after the lab)
 ```
+
+Step 6 requires the NotebookLM CLI (`nlm login` must be valid). It is best-effort: if
+NotebookLM is unavailable, the end-to-end pipeline skips it and you can run
+`@generate-course-podcasts` for the course later.
 
 ### Resuming after interruption
 
@@ -373,6 +382,12 @@ chapter-supervisor-agent (sonnet)  [per chapter, max 3 retries per artifact]
 evaluator-agent (opus)  [after all chapters]
 
 lab-generator (sonnet)   → lab-evaluator (opus)
+
+generate-course-podcasts (sonnet)  [after the capstone; best-effort]
+  └─ drives tools/notebooklm_podcast_gen.py → one NotebookLM Audio Overview per chapter,
+     in a shared notebook, each framed as part of the course series
+
+course README (README.docx)  [student onboarding guide]
 ```
 
 Every evaluator spawns all 7 quality gate sub-agents in parallel.
@@ -414,9 +429,14 @@ automation for knowledge workers (Cowork Automation).
 
 ```
 .claude/
-  agents/           ← 27 agent files (generators, evaluators, gate sub-agents, spec builder)
-  skills/           ← 7 skill files (detailed generation instructions)
+  agents/           ← agent files (generators, evaluators, gate sub-agents, spec builders,
+                       course-factory-agent, generate-course-podcasts)
+  skills/           ← skill files (detailed generation + orchestration instructions)
   settings.json     ← project permissions
+
+tools/              ← reusable helper scripts
+  notebooklm_podcast_gen.py  ← batch NotebookLM podcast generator (used by generate-course-podcasts)
+  README.md
 
 doc/                ← specification documents (read-only)
   GreatCourseSpec.md         ← master spec
@@ -442,7 +462,9 @@ outputs/            ← generated course content (created at runtime)
     capstone/
     environment/
     glossary.docx
+    README.docx                  ← student onboarding guide
     COURSE_VERDICT.md
+    _podcast_gen.results.json    ← podcast generation state (chapter podcasts live in NotebookLM)
 
 CLAUDE.md           ← project guide + shared schemas (always loaded by Claude Code)
 ```
@@ -469,3 +491,8 @@ input — they are non-negotiable.
 - Node.js (for `npx mmdc` — Mermaid diagram export)
 - Lab environment tools as declared in your subject spec (Python, etc.)
 - The `anthropic-skills:pptx` and `anthropic-skills:docx` skills (available globally in Claude Code)
+- **For chapter podcasts (optional):** the NotebookLM CLI (`uv tool install notebooklm-mcp-cli`
+  or `pip install notebooklm-mcp-cli`), authenticated via `nlm login`. Without it, the podcast
+  phase is skipped and the rest of the course still generates. LibreOffice (`soffice`) or
+  PowerPoint is used to convert slide decks to PDF for upload; if neither is present, podcasts
+  are generated from the chapter doc and script alone.

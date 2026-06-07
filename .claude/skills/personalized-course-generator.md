@@ -238,6 +238,7 @@ After the planner succeeds, read `course-plan.yaml` to get the chapter list. Wri
 | chapters | pending | |
 | evaluation | pending | |
 | capstone | pending | |
+| podcasts | pending | |
 | readme | pending | |
 
 ---
@@ -439,9 +440,67 @@ After completion, read the lab-evaluator verdict. If the lab fails evaluation:
 
 After the lab passes, update `PIPELINE_STATE.md`: set `capstone` → `complete`.
 
+Tell the user: "Capstone lab complete. Generating chapter podcasts in NotebookLM."
+
 ---
 
-## PHASE 6 — Course README (Student Onboarding Guide)
+## PHASE 6 — Chapter Podcasts (NotebookLM)
+
+**Goal:** Produce one NotebookLM Audio Overview (podcast) per chapter for the whole course,
+in a single shared notebook, so **every course ships with audio**. This runs after the capstone
+because it consumes the finished chapter materials (`doc.docx`, `slides.pptx`/`slides.pdf`,
+`podcast-script.md`).
+
+This phase is **best-effort and non-blocking**: it depends on an external service (NotebookLM)
+and consumes quota. A podcast failure must NOT fail the course — the course content is already
+complete. If podcasts cannot be generated, record it and continue to the README and completion
+report with a clear note so the user can generate them later.
+
+### 6.1 — Skip conditions
+
+Skip this phase (set `podcasts` → `skipped`) and tell the user why, if any of these hold:
+- `inputs/general-requirements.yaml` sets `artifact_types` and it does **not** include `podcast`
+  (the user opted out of podcasts), OR
+- No chapter has a `podcast-script.md` (nothing to narrate), OR
+- NotebookLM is unavailable — `nlm login --check` reports the CLI is not installed or not
+  authenticated. In that case tell the user how to add podcasts later:
+  > "Podcasts were skipped because NotebookLM is not authenticated. To add them later, run
+  > `nlm login`, then invoke `@generate-course-podcasts` for this course."
+
+### 6.2 — Verify NotebookLM auth (the trustworthy check)
+
+Run `nlm login --check`. **Trust this over the MCP `server_info` / `refresh_auth` health
+tools**, which report false "auth expired" on some accounts. If it reports invalid, apply the
+skip in 6.1.
+
+### 6.3 — Generate the podcasts
+
+Invoke `@generate-course-podcasts` with:
+- `course_name` = `{course_slug}`  (the shared NotebookLM notebook name for the whole course)
+- `course_root` = `outputs/{course_slug}`
+- `course_title` = `{course_title from course-plan.yaml}`  (human title for the series framing)
+
+The agent drives `tools/notebooklm_podcast_gen.py`, which creates the shared notebook, uploads
+each chapter's files with **chapter-prefixed titles** (`chapter_{NN}_doc.docx`, …) so the
+notebook is browsable, generates an Audio Overview **scoped to that chapter's sources** and
+**framed as "Chapter N of M" of the course** (so episodes reference the series and don't re-tell
+the scenario from scratch), then renames each podcast to its chapter. It is resumable and
+retries transient failures.
+
+### 6.4 — Record results
+
+Read `outputs/{course_slug}/_podcast_gen.results.json` and update `PIPELINE_STATE.md`:
+- all chapters ok → `podcasts` → `complete`
+- some failed → `podcasts` → `partial ⚠` (note which chapters; the user can re-invoke
+  `@generate-course-podcasts` for this course to retry only the failures — the tool is resumable)
+- phase skipped → `podcasts` → `skipped`
+
+Do **not** halt on partial or failed podcasts — continue to the README and completion report,
+surfacing the podcast status there.
+
+---
+
+## PHASE 7 — Course README (Student Onboarding Guide)
 
 **Goal:** Produce `outputs/{course_slug}/README.docx` — a student-facing guide that explains how to
 use the course materials effectively. This runs for EVERY course; it is the learner's first stop.
@@ -499,7 +558,7 @@ double-hyphens, and zero forbidden internal terms. Then update `PIPELINE_STATE.m
 
 ---
 
-## PHASE 7 — Completion Report
+## PHASE 8 — Completion Report
 
 **Goal:** Deliver a clear, scannable summary of everything that was generated.
 
@@ -533,6 +592,10 @@ Present the following completion report to the user:
 - **Duration:** {est_minutes} min
 - **Problem solved:** {problem_spec.summary (1 sentence)}
 - **Acceptance criteria:** {N} criteria, all implemented and verified
+
+### Chapter Podcasts (NotebookLM)
+- **Notebook:** `{course_slug}` (shared; one Audio Overview per chapter, framed as a series)
+- **Status:** {one of: "{N}/{total} generated" · "partial — {N}/{total}; re-run `@generate-course-podcasts` to retry the rest" · "skipped — run `nlm login`, then `@generate-course-podcasts` for this course"}
 
 ### Supporting Artifacts
 - Student onboarding guide: `outputs/{course_slug}/README.docx`
@@ -569,6 +632,7 @@ All files are in: `outputs/{course_slug}/`
 3. **Run preflight** on the environment: `bash outputs/{course_slug}/environment/preflight.sh`
 4. **Try the capstone**: open `outputs/{course_slug}/capstone/capstone-lab.docx`
 5. **Distribute** chapter content from `outputs/{course_slug}/chapters/`
+6. **Listen** to the chapter podcasts in NotebookLM (notebook `{course_slug}`) {if skipped: "— run `nlm login` then `@generate-course-podcasts` to create them"}
 ```
 
 ---
@@ -589,6 +653,7 @@ A previous pipeline run was found for course **{course_slug}**:
 | chapters | {N_complete}/{N_total} complete |
 | evaluation | {status} |
 | capstone | {status} |
+| podcasts | {status} |
 | readme | {status} |
 
 **Failed chapters (if any):** {list or "none"}
@@ -618,6 +683,8 @@ After user responds:
 | Course evaluation fails | HALT Phase 4; show failures; offer re-generation options |
 | Lab fails 3 attempts | HALT Phase 5; show lab failures; ask for user decision |
 | No reserved scenario available | HALT Phase 5; ask user to add a scenario to problem.yaml and re-plan |
+| NotebookLM unavailable / not authed | Do NOT halt; set `podcasts` → `skipped` in Phase 6; tell the user to run `nlm login` then `@generate-course-podcasts` later |
+| Some chapter podcasts fail | Do NOT halt; set `podcasts` → `partial ⚠`; note failures; user re-runs `@generate-course-podcasts` (resumable) |
 | User says "stop" or "pause" | Write current state to PIPELINE_STATE.md; confirm state is saved |
 
 ---
