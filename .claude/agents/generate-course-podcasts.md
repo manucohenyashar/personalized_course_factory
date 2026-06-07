@@ -1,5 +1,5 @@
 ---
-name: orchestrate--generation-course-podcasts
+name: generate-course-podcasts
 description: Orchestrates creation of one NotebookLM podcast per chapter across an entire course. Uses a single shared NotebookLM notebook for the whole course, discovers chapter folders under a course root, and drives the batch podcast tool (tools/notebooklm_podcast_gen.py) which uploads each chapter's doc.docx + slides.pdf + podcast-script.md, generates a scoped Audio Overview, and renames it. Continues past individual chapter failures and returns a summary report. Invoke after a course has been generated to batch-produce chapter podcasts.
 model: claude-sonnet-4-6
 ---
@@ -87,8 +87,15 @@ Python, so you may launch it with any `python` on PATH:
 ```
 python <repo_root>/tools/notebooklm_podcast_gen.py \
   --notebook-name "<course_name>" \
-  --course-root   "<course_root>"
+  --course-root   "<course_root>" \
+  --course-title  "<human course title>"
 ```
+
+`--course-title` is optional (defaults to a prettified `--notebook-name`); pass the course's
+real display title so the series framing reads naturally. You normally do NOT need to author
+the series instructions yourself — the tool builds a per-chapter series focus prompt
+automatically (see below). Use `--general-instructions "<text>"` only to append extra steering
+that should apply to every episode (tone, length, a recurring disclaimer, etc.).
 
 Guidance:
 - **Generation is slow** (uploads + paced, rate-limited audio generation; minutes per chapter).
@@ -99,8 +106,10 @@ Guidance:
   re-run, skips chapters already marked `ok` and retries the rest. If some chapters fail
   (transient upload errors do happen), simply **run the same command again** to retry only the
   failures — no cleanup needed (the tool removes its own partial uploads on failure).
-- Useful flags: `--rename-only` (skip generation; only run the post-completion rename pass),
-  `--no-rename` (generate without waiting to rename), `--no-slides` (skip slides upload).
+- Useful flags: `--course-title` / `--general-instructions` (series framing, above),
+  `--rename-only` (skip generation; only run the post-completion rename pass), `--no-rename`
+  (generate without waiting to rename), `--no-series-prompt` (disable the series framing),
+  `--no-slides` (skip slides upload).
 
 What the tool does per chapter (so you can describe it accurately):
 1. Find-or-create the shared notebook named `course_name` (first chapter creates it, the rest
@@ -108,11 +117,19 @@ What the tool does per chapter (so you can describe it accurately):
 2. Ensure `slides.pdf` exists, converting from `slides.pptx` when a converter is available
    (LibreOffice `soffice`, else PowerPoint COM); if conversion is impossible it drops slides
    and still generates the podcast from `doc.docx` + `podcast-script.md`.
-3. Upload the chapter's files (with retry/backoff) and capture their `source_id`s.
+3. Upload the chapter's files (with retry/backoff) and capture their `source_id`s. Each source
+   is titled with a **chapter prefix** — `chapter_{NN}_doc.docx`, `chapter_{NN}_slides.pdf`,
+   `chapter_{NN}_podcast-script.md` — so that, in the single shared notebook, a person can tell
+   which chapter each file belongs to (the on-disk files all share the same names).
 4. Generate an Audio Overview **scoped to that chapter's source_ids** (so podcasts don't bleed
-   across chapters even though all share one notebook).
+   across chapters even though all share one notebook), with a **course-series focus prompt**:
+   it tells NotebookLM the episode is Chapter N of M of the course, so the podcast opens by
+   stating its place in the series (e.g. "This is the podcast for Chapter 3 of 9 of <course>:
+   <title>. In this chapter we will discuss …") and does NOT re-tell the overall scenario from
+   scratch — it assumes prior chapters were heard and connects to adjacent ones.
 5. After all chapters, poll until each artifact completes and rename it to its chapter folder
-   name (renames only stick after completion).
+   name (renames only stick after completion — NotebookLM auto-titles the audio when generation
+   finishes, so a rename applied earlier would be overwritten).
 
 ## Step 3 — Summary report
 
@@ -152,10 +169,17 @@ Total: X succeeded, Y failed
 - **Rename only sticks after completion.** NotebookLM overwrites an audio artifact's title with
   its own auto-generated title when generation finishes, so the tool renames in a
   post-completion polling pass — not at creation time.
-- **Per-chapter source scoping.** All chapters share one notebook; identical source display
-  names (`doc.docx`, `slides.pdf`, `podcast-script.md`) are harmless because each upload has a
-  unique internal `source_id`, and each podcast is generated with `source_ids` limited to its
-  own chapter.
+- **Per-chapter source scoping.** All chapters share one notebook; each podcast is generated
+  with `source_ids` limited to its own chapter, so content never bleeds across chapters (the
+  unique internal `source_id` per upload guarantees correct scoping regardless of titles).
+- **Distinguishable source names.** The on-disk files are all named `doc.docx` / `slides.pdf` /
+  `podcast-script.md`, which is unreadable in one shared notebook. The tool titles each uploaded
+  source with a chapter prefix (`chapter_{NN}_…`) so a person browsing the notebook can tell
+  which chapter each file belongs to.
+- **Course-series framing.** Without guidance, each episode is generated in isolation and
+  re-tells the whole scenario from scratch. The tool passes a per-chapter focus prompt naming
+  the episode's position in the series so the podcast references the course and connects to
+  adjacent chapters. Append extra steering with `--general-instructions`.
 
 ## Error-handling summary
 

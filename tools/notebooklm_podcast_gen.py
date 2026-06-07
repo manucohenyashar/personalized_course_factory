@@ -24,6 +24,16 @@ practice:
   * Shared notebook, per-chapter scoping. All chapters share ONE notebook, so
     each podcast is scoped to that chapter's own 3 source_ids — otherwise every
     podcast would be generated from every chapter's content.
+  * Distinguishable source names. Because all chapters share one notebook,
+    every uploaded source is titled with a chapter prefix (e.g.
+    `chapter_03_doc.docx`, `chapter_03_slides.pdf`, `chapter_03_podcast-script.md`)
+    so a person browsing the notebook can tell which chapter each file belongs to.
+  * Course-series framing. Each podcast is generated with a focus prompt telling
+    NotebookLM the episode is Chapter N of M of the course, so it opens with that
+    context (e.g. "This is the podcast for Chapter 3 of 9 of <course>: <title>.
+    In this chapter we will discuss ...") and does NOT re-tell the overall
+    scenario from scratch. Extra guidance can be appended via
+    `--general-instructions`.
   * Transient `INVALID_ARGUMENT` upload errors. `source_add` intermittently
     fails (often on the 2nd/3rd file of a chapter). Uploads are retried with
     backoff; if a chapter still fails, its already-uploaded sources are deleted
@@ -45,11 +55,15 @@ if `notebooklm_tools` is not importable in the current interpreter:
         --notebook-name "<course_slug>" \
         --course-root   "outputs/<course_slug>"
 
-Modes:
-    (default)        generate missing podcasts, then rename all on completion
-    --rename-only    skip generation; only run the post-completion rename pass
-    --no-rename      generate only; do not wait/rename (fastest)
-    --no-slides      do not upload slides.pdf even if present
+Options:
+    --course-title "<title>"      human course title used in the series prompt
+                                  (default: prettified --notebook-name)
+    --general-instructions "..."  extra guidance appended to every chapter's
+                                  series focus prompt
+    --rename-only                 skip generation; only run the rename pass
+    --no-rename                   generate only; do not wait/rename (fastest)
+    --no-series-prompt            do not inject the course-series focus prompt
+    --no-slides                   do not upload slides.pdf even if present
 
 Prerequisites:
     * `nlm login` has been run and is valid (verify with `nlm login --check`).
@@ -189,6 +203,61 @@ def log(msg: str) -> None:
     print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
 
+def chapter_number(slug: str) -> str:
+    """'ch03-context-and-session-management' -> '03'."""
+    m = re.match(r"^ch(\d{2})-", slug)
+    return m.group(1) if m else slug
+
+
+def chapter_title(cdir: Path) -> str:
+    """Human chapter title: from doc.handoff.json if present, else from the slug."""
+    handoff = cdir / "doc.handoff.json"
+    if handoff.exists():
+        try:
+            data = json.loads(handoff.read_text(encoding="utf-8"))
+            t = (data.get("chapter") or {}).get("title")
+            if t:
+                return str(t).strip()
+        except Exception:
+            pass
+    # Fallback: prettify the slug (drop 'chNN-', hyphens -> spaces, title case).
+    return re.sub(r"^ch\d{2}-", "", cdir.name).replace("-", " ").strip().title()
+
+
+def prettify_course(notebook_name: str) -> str:
+    """Derive a human course title from a slug when none is supplied."""
+    return notebook_name.replace("-", " ").replace("_", " ").strip().title()
+
+
+def build_series_prompt(course_title: str, n: int, total: int, this_title: str,
+                        all_titles: list[str], extra: str = "") -> str:
+    """Instruct NotebookLM that this podcast is one episode in a course series.
+
+    Ensures the episode references its position in the series and does NOT
+    re-tell the overall scenario from scratch.
+    """
+    roster = "; ".join(f"{i}. {t}" for i, t in enumerate(all_titles, start=1))
+    lines = [
+        f'This audio is Chapter {n} of {total} in a multi-part podcast SERIES for the '
+        f'course "{course_title}". Each chapter is a separate episode; together they form '
+        f'one course.',
+        f'This episode is Chapter {n}: "{this_title}".',
+        f'Open by clearly stating the series context, for example: "This is the podcast for '
+        f'Chapter {n} of {total} of the course {course_title}: {this_title}. In this chapter '
+        f'we will discuss ...".',
+        'Treat this as part of an ongoing series: do NOT re-introduce the overall course '
+        'scenario, characters, setting, or premise from scratch. Assume listeners have '
+        'already heard the earlier chapters. Briefly connect back to what prior chapters '
+        'established and, where natural, preview what the next chapter covers.',
+        'Base the discussion ONLY on the provided sources for this chapter; do not pull in '
+        'material from other chapters except for brief connective references.',
+        f'For context, the full ordered chapter list of the course is: {roster}.',
+    ]
+    if extra.strip():
+        lines.append(extra.strip())
+    return "\n".join(lines)
+
+
 def _id(result, *keys) -> str:
     if isinstance(result, dict):
         for k in keys:
@@ -287,33 +356,35 @@ def find_or_create_notebook(client, name: str) -> str:
     return nid
 
 
-def upload_one(client, notebook_id: str, fpath: Path) -> str:
+def upload_one(client, notebook_id: str, fpath: Path, display_title: str | None = None) -> str:
     last_err = ""
+    label = display_title or fpath.name
     for attempt, wait in enumerate(UPLOAD_BACKOFF):
         if wait:
-            log(f"    retry {fpath.name} in {wait}s (attempt {attempt+1}): {last_err[:100]}")
+            log(f"    retry {label} in {wait}s (attempt {attempt+1}): {last_err[:100]}")
             time.sleep(wait)
         try:
-            res = srcsvc.add_source(client, notebook_id, "file",
-                                    file_path=str(fpath), wait=True, wait_timeout=300.0)
+            res = srcsvc.add_source(client, notebook_id, "file", file_path=str(fpath),
+                                    title=display_title, wait=True, wait_timeout=300.0)
             sid = _id(res, "source_id", "id")
             if sid:
-                log(f"    uploaded {fpath.name} -> {sid}")
+                log(f"    uploaded {fpath.name} as '{label}' -> {sid}")
                 return sid
             last_err = "no source_id returned"
         except Exception as e:
             last_err = f"{type(e).__name__}: {e}"
-    raise RuntimeError(f"upload failed for {fpath.name}: {last_err}")
+    raise RuntimeError(f"upload failed for {label}: {last_err}")
 
 
-def generate_audio(client, notebook_id: str, source_ids: list[str]) -> str:
+def generate_audio(client, notebook_id: str, source_ids: list[str], focus_prompt: str = "") -> str:
     last_err = ""
     for attempt, wait in enumerate(GENERATE_BACKOFF):
         if wait:
             log(f"  generation retry in {wait}s (attempt {attempt+1}): {last_err[:100]}")
             time.sleep(wait)
         try:
-            res = studiosvc.create_artifact(client, notebook_id, "audio", source_ids=source_ids)
+            res = studiosvc.create_artifact(client, notebook_id, "audio",
+                                            source_ids=source_ids, focus_prompt=focus_prompt)
             aid = _id(res, "artifact_id", "id")
             if aid:
                 return aid
@@ -384,12 +455,17 @@ def discover_chapters(course_root: Path) -> tuple[list[Path], list[tuple[str, st
     return valid, bad
 
 
-def process_chapter(client, notebook_id: str, cdir: Path, use_slides: bool) -> dict:
+def process_chapter(client, notebook_id: str, cdir: Path, use_slides: bool,
+                    focus_prompt: str = "") -> dict:
     """Upload a chapter's sources and generate its scoped podcast.
 
+    Uploaded sources are titled with a chapter prefix (e.g. chapter_03_doc.docx)
+    so they are distinguishable in the shared notebook. The podcast is generated
+    with a series-context focus prompt so it references its place in the course.
     Cleans up its own uploads if generation never starts, so failures leave no
     orphan sources behind.
     """
+    nn = chapter_number(cdir.name)
     files = [cdir / "doc.docx"]
     if use_slides:
         pdf = ensure_slides_pdf(cdir)
@@ -404,8 +480,9 @@ def process_chapter(client, notebook_id: str, cdir: Path, use_slides: bool) -> d
     uploaded: list[str] = []
     try:
         for f in files:
-            uploaded.append(upload_one(client, notebook_id, f))
-        aid = generate_audio(client, notebook_id, uploaded)
+            title = f"chapter_{nn}_{f.name}"
+            uploaded.append(upload_one(client, notebook_id, f, display_title=title))
+        aid = generate_audio(client, notebook_id, uploaded, focus_prompt=focus_prompt)
         return {"ok": True, "artifact_id": aid, "source_ids": uploaded}
     except Exception as e:
         # Clean up partial uploads so a later retry doesn't accumulate orphans.
@@ -421,8 +498,11 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Batch-generate NotebookLM podcasts per chapter.")
     ap.add_argument("--notebook-name", required=True, help="Shared NotebookLM notebook name (find-or-create).")
     ap.add_argument("--course-root", required=True, help="Course folder; chapters under <root>/chapters/.")
+    ap.add_argument("--course-title", default="", help="Human course title used in the series prompt (default: prettified --notebook-name).")
+    ap.add_argument("--general-instructions", default="", help="Extra instructions appended to every chapter's series focus prompt.")
     ap.add_argument("--rename-only", action="store_true", help="Only run the post-completion rename pass.")
     ap.add_argument("--no-rename", action="store_true", help="Generate only; skip the rename pass.")
+    ap.add_argument("--no-series-prompt", action="store_true", help="Do not inject the course-series focus prompt.")
     ap.add_argument("--no-slides", action="store_true", help="Do not upload slides even if present.")
     args = ap.parse_args(argv)
 
@@ -437,12 +517,17 @@ def main(argv=None) -> int:
         raise SystemExit("Error: the course has no chapter folders matching ch{NN}-{slug}.")
     log(f"discovered {len(chapter_dirs)} chapter(s)")
 
+    # Precompute course metadata for the series focus prompt.
+    course_title = args.course_title.strip() or prettify_course(args.notebook_name)
+    titles = [chapter_title(d) for d in chapter_dirs]
+    total = len(chapter_dirs)
+
     notebook_id = find_or_create_notebook(client, args.notebook_name)
     results = load_results(results_path)
 
     if not args.rename_only:
         first = True
-        for cdir in chapter_dirs:
+        for idx, cdir in enumerate(chapter_dirs, start=1):
             name = cdir.name
             if results.get(name, {}).get("ok"):
                 log(f"SKIP {name} (already succeeded)")
@@ -452,7 +537,11 @@ def main(argv=None) -> int:
                 time.sleep(PAUSE_BETWEEN_CHAPTERS)
             first = False
             log(f"=== {name} ===")
-            outcome = process_chapter(client, notebook_id, cdir, use_slides=not args.no_slides)
+            focus = "" if args.no_series_prompt else build_series_prompt(
+                course_title, idx, total, titles[idx - 1], titles,
+                extra=args.general_instructions)
+            outcome = process_chapter(client, notebook_id, cdir,
+                                      use_slides=not args.no_slides, focus_prompt=focus)
             results[name] = outcome
             save_results(results_path, results)
             log(f"  {'OK' if outcome['ok'] else 'FAIL'} {name}"

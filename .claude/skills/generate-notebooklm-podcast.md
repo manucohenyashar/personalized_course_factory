@@ -15,10 +15,12 @@ notebook with the requested name already exists it is reused, otherwise it is cr
 |-------|---------|
 | `notebook_name` | Name of the target NotebookLM notebook (find-or-create). |
 | `podcast_name` | Title to assign to the generated Audio Overview. |
-| `content_files` | List of local file paths to upload as source material. |
+| `content_files` | Source material to upload. Either a list of local file paths, or a list of `{ "path": <local path>, "display_title": <name to show in the notebook> }` objects when you want each uploaded source to have a distinct display name (see Step 2). |
+| `general_instructions` | *Optional.* Free-text context about the rest of the course and how this episode fits in, plus any extra steering for the host(s). It is passed to NotebookLM as the audio **focus prompt** (Step 3) so the podcast references its place in the series and does not re-tell the overall scenario from scratch. Example: *"This is Chapter 3 of 9 of the course 'Automate Your Work with Claude'. Open by saying 'This is the podcast for Chapter 3 of 9 …'. Do not re-introduce the overall scenario or characters from scratch — assume listeners have heard the earlier chapters; briefly connect back and preview the next chapter."* |
 
-If any input is missing from the user's request, ask for it before proceeding. Do not
-invent a notebook name, a podcast name, or file paths.
+If a required input (`notebook_name`, `podcast_name`, `content_files`) is missing from the
+user's request, ask for it before proceeding. Do not invent a notebook name, a podcast name,
+or file paths. `general_instructions` is optional — omit the focus prompt when it is absent.
 
 Supported source file extensions (per the MCP server): PDF, TXT, MD, DOCX, CSV, EPUB,
 MP3, M4A, WAV, AAC, OGG, OPUS, MP4, JPG, JPEG, PNG, GIF, WEBP. If a path in
@@ -65,7 +67,7 @@ returning `server_info` call means the server is available.
 
 ## Step 2 — Upload each content file
 
-For every path in `content_files`, call `mcp__notebooklm-mcp__source_add` with:
+For every entry in `content_files`, call `mcp__notebooklm-mcp__source_add` with:
 
 - `notebook_id = <notebook_id>`
 - `source_type = "file"`
@@ -74,6 +76,17 @@ For every path in `content_files`, call `mcp__notebooklm-mcp__source_add` with:
   large media files)
 
 Track the returned source ID for each file. Behavior on failure:
+
+> **Setting a distinct display name (`display_title`).** The file-upload RPC ignores any
+> title and shows the on-disk filename, so when entries provide a `display_title` (or when you
+> otherwise need unique names — e.g. several chapters of one course share a notebook and all
+> have files literally named `doc.docx` / `slides.pdf`), apply the name with a follow-up
+> `mcp__notebooklm-mcp__source_rename` (`notebook_id`, the returned `source_id`, and the
+> desired title) right after the upload of that file. This is what lets sources be uploaded as,
+> e.g., `chapter_03_doc.docx` so a person browsing the notebook can tell which chapter each
+> file belongs to.
+
+
 
 - If a single file fails to upload, report which file failed and why, then ask the user
   whether to continue with the successfully uploaded files or abort. Do not silently
@@ -89,8 +102,14 @@ Call `mcp__notebooklm-mcp__studio_create` with:
 - `artifact_type = "audio"`  (Audio Overview = podcast)
 - `confirm = true`  (only after the user has approved generation; if they have not
   explicitly approved, confirm with them first since this consumes NotebookLM quota)
-- Optionally pass `source_ids` with the IDs collected in Step 2 to scope the podcast to
-  exactly the uploaded files; omit to use all sources in the notebook.
+- `source_ids` = the IDs collected in Step 2, to scope the podcast to exactly the files
+  uploaded for THIS episode. When several episodes of a course share one notebook this is
+  **required**, not optional — otherwise the podcast would be generated from every chapter's
+  sources. Omit only when the notebook holds a single episode's sources.
+- `focus_prompt = general_instructions` — when `general_instructions` is provided, pass it as
+  the focus prompt so NotebookLM frames the episode within the series (states its position,
+  avoids re-telling the scenario from scratch, connects to adjacent chapters). Omit when
+  `general_instructions` is absent.
 
 Record the returned artifact ID as `podcast_id`.
 
