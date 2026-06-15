@@ -1,6 +1,6 @@
 ---
 name: presentation-generator
-description: Generates the chapter slide deck (slides.pptx) and speaker-notes file (slides-notes.docx) following GreatPresentationSpec v2. Uses anthropic-skills:pptx to produce the .pptx file and anthropic-skills:docx to produce the .docx speaker-notes file. Implements the required slide order, LO coverage tracking (in speaker notes only), retrieval prompts, and Mayer multimedia principles. Bloom labels and LO-IDs are tracked in speaker notes, never on student-visible slides. Accepts feedback_failures[] on retry.
+description: Generates the chapter slide deck (slides.pptx) and speaker-notes file (slides-notes.docx) following GreatPresentationSpec v2. Uses the pptx-generator skill (PptxGenJS) to render the .pptx and anthropic-skills:docx to produce the .docx speaker-notes file. After rendering, deletes the pptx-generator JS build scaffold so only slides.pptx survives. Implements the required slide order, LO coverage tracking (in speaker notes only), retrieval prompts, and Mayer multimedia principles. Bloom labels and LO-IDs are tracked in speaker notes, never on student-visible slides. Accepts feedback_failures[] on retry.
 model: claude-sonnet-4-6
 ---
 
@@ -84,19 +84,20 @@ Every 5–7 concept slides, insert a retrieval slide:
 
 ## Generating the Slide Deck
 
-Step 1 — Build a slide manifest JSON:
+Step 1 — Build an internal slide plan (planning worksheet, NOT a renderer input):
 ```json
 {
   "deck_title": "...",
   "chapter": <number>,
+  "theme": { "primary": "22252A", "secondary": "6A737D", "accent": "005A9E", "light": "E6EEF5", "bg": "FFFFFF" },
   "slides": [
     {
       "slide_number": 1,
       "type": "title | lo | agenda | recap_prior | vocabulary | concept | worked_example | try_now | pitfalls | recap | quiz_cue | retrieval",
       "title": "...",
       "body_text": "...",
-      "bloom_badge": "Apply",
-      "lo_ref": "LO-3.2",
+      "bloom_badge": "Apply",   // notes only — never rendered on the slide
+      "lo_ref": "LO-3.2",       // notes only — never rendered on the slide
       "diagram": { "mmd_source": "...", "alt_text": "..." },
       "word_count": <int>
     }
@@ -104,12 +105,33 @@ Step 1 — Build a slide manifest JSON:
 }
 ```
 
-Step 2 — Invoke the PPTX skill to generate the deck:
+Step 2 — Render the deck with the `pptx-generator` skill (PptxGenJS):
 
 ```
-Use the Skill tool: anthropic-skills:pptx
-Pass the slide manifest JSON as input.
-The skill will produce the .pptx file at the declared output_paths.primary.
+Use the Skill tool: pptx-generator
+Build under a scratch dir: outputs/{course_slug}/chapters/ch{NN}-{slug}/_pptx-build/
+Pass the slide plan + the theme object {primary, secondary, accent, light, bg}.
+The skill authors one createSlide(pres, theme) JS module per slide, generates compile.js,
+and compiles to _pptx-build/slides/output/presentation.pptx.
+```
+
+Apply the course design system inside the slide modules: 16:9 layout, uniform top title anchor,
+muted eyebrow line, bottom-right slide-number badge (every slide except the title slide), the
+three structural layouts, and NO Bloom badges or LO-IDs on any student-visible slide. See
+`/generate-presentation` for the full theme mapping and per-slide rules.
+
+Step 2a — Place the deliverable: move `_pptx-build/slides/output/presentation.pptx` to
+`output_paths.primary` (`.../slides.pptx`).
+
+Step 2b — MANDATORY cleanup: delete the entire `_pptx-build/` working tree (all `.js` modules,
+`compile.js`, the `slides/` scratch folder). The JS scripts the `pptx-generator` skill produces
+MUST NOT be shipped — they are neither a student deliverable nor a pipeline artifact. After
+deletion, verify no `*.js` / `compile.js` remains anywhere under the chapter folder. The only
+surviving rendering output is `slides.pptx`.
+
+```
+# Windows PowerShell
+Remove-Item -Recurse -Force "outputs/{course_slug}/chapters/ch{NN}-{slug}/_pptx-build"
 ```
 
 Step 3 — Write the speaker-notes file (`slides-notes.docx`):
@@ -152,8 +174,10 @@ Apply Word formatting:
 
 ## Output
 
-1. `slides.pptx` — produced by `anthropic-skills:pptx`
+1. `slides.pptx` — rendered by the `pptx-generator` skill (PptxGenJS), JS build scaffold deleted
 2. `slides-notes.docx` — produced by `anthropic-skills:docx`
 
-Report after completion: slide count, diagram count, retrieval-slide positions, any gate
-concerns flagged proactively.
+No `_pptx-build/` directory, `*.js` modules, or `compile.js` may remain under the chapter folder.
+
+Report after completion: slide count, diagram count, retrieval-slide positions, confirmation that
+the JS build scaffold was deleted, and any gate concerns flagged proactively.

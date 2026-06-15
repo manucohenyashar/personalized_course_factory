@@ -16,8 +16,10 @@ self-contained plugin under `course-factory-plugin/`:
 
   - .claude/agents/*.md   → course-factory-plugin/agents/*.md      (paths rewritten)
   - .claude/skills/*.md   → course-factory-plugin/commands/*.md    (paths rewritten)
+  - .claude/skills/<dir>/ → course-factory-plugin/skills/<dir>/    (copied verbatim, recursive)
   - doc/*.md              → course-factory-plugin/doc/*.md         (copied verbatim)
   - tools/notebooklm_podcast_gen.py → course-factory-plugin/tools/ (copied verbatim)
+  - tools/install-pptx-prereqs.{ps1,sh} → course-factory-plugin/tools/ (copied verbatim)
   - CLAUDE.md             → course-factory-plugin/CLAUDE.md        (copied verbatim)
   - inputs/templates/*    → course-factory-plugin/templates/inputs/ (copied)
   - generated: .claude-plugin/plugin.json, .mcp.json, README.md
@@ -198,10 +200,35 @@ Outputs are written under `outputs/{{course_slug}}/` in your current project.
 - **{n_commands} commands** (`commands/`) — the orchestration and per-artifact skills
   (invoke as `/{PLUGIN_NAME}:<command>`).
 - **Specs** (`doc/`) — the binding specifications the agents follow.
-- **Tool** (`tools/notebooklm_podcast_gen.py`) — batch NotebookLM podcast generator.
+- **Skills** (`skills/`) — bundled skills the agents invoke, including the `pptx-generator`
+  slide renderer.
+- **Tools** (`tools/`) — `notebooklm_podcast_gen.py` (batch NotebookLM podcast generator) and
+  `install-pptx-prereqs.{{ps1,sh}}` (slide-rendering prerequisites installer).
 - **`course-factory-guide.md`** — the project rules/schemas the agents read (the project's
   `CLAUDE.md`, bundled; agents load it from `${{CLAUDE_PLUGIN_ROOT}}/course-factory-guide.md`).
 - **`templates/inputs/`** — starter input files.
+
+## Setting up slide rendering
+
+Chapter slide decks are rendered by the bundled **`pptx-generator`** skill (under `skills/`), which
+compiles [PptxGenJS](https://gitbrent.github.io/PptxGenJS/) scripts into a `.pptx`. That needs the
+`pptxgenjs` package installed in your project. Run the bundled one-shot installer from your project
+root (where `outputs/` is generated):
+
+```powershell
+# Windows (PowerShell)
+pwsh ${{CLAUDE_PLUGIN_ROOT}}/tools/install-pptx-prereqs.ps1
+```
+
+```bash
+# macOS / Linux
+bash ${{CLAUDE_PLUGIN_ROOT}}/tools/install-pptx-prereqs.sh
+```
+
+It installs `pptxgenjs` (required) plus the optional `markitdown[pptx]` QA tool into your project's
+`node_modules/`. The pipeline generates the slide scripts under
+`outputs/<course_slug>/chapters/<ch>/_pptx-build/` and deletes them after compiling each deck, so
+only `slides.pptx` is kept. Requires Node.js 18+ (and Python 3 for the optional QA tool).
 
 ## Optional: NotebookLM podcasts
 
@@ -217,8 +244,9 @@ Without it, the podcast phase is skipped and the rest of the course still genera
 
 ## Requirements
 
-- Claude Code, Node.js 18+, Python 3 (for the podcast tool), and the
-  `anthropic-skills:docx` / `anthropic-skills:pptx` skills.
+- Claude Code, Node.js 18+ (for the bundled `pptx-generator` slide renderer, which uses
+  PptxGenJS), Python 3 (for the podcast tool), and the `anthropic-skills:docx` skill. The
+  `pptx-generator` skill ships with the plugin under `skills/`.
 - See the project README for full details: {REPO_URL}
 """
 
@@ -269,12 +297,29 @@ def main() -> int:
     n_doc = copy_tree_verbatim(REPO / "doc", PLUGIN_DIR / "doc", "*.md")
     print(f"  doc specs: {n_doc}")
 
+    # Bundled skills (verbatim, recursive). Top-level *.md under .claude/skills are the
+    # orchestration commands (copied to commands/ above); subdirectory skills — e.g. the
+    # pptx-generator renderer the presentation-generator depends on — ship under skills/ so
+    # the installed plugin stays self-contained.
+    n_skills = 0
+    skills_src = REPO / ".claude" / "skills"
+    if skills_src.exists():
+        for d in sorted(p for p in skills_src.iterdir() if p.is_dir()):
+            shutil.copytree(d, PLUGIN_DIR / "skills" / d.name)
+            n_skills += 1
+    print(f"  bundled skills: {n_skills}")
+
     (PLUGIN_DIR / "tools").mkdir(parents=True, exist_ok=True)
-    for name in ("notebooklm_podcast_gen.py", "README.md"):
+    for name in (
+        "notebooklm_podcast_gen.py",
+        "install-pptx-prereqs.ps1",
+        "install-pptx-prereqs.sh",
+        "README.md",
+    ):
         src = REPO / "tools" / name
         if src.exists():
             shutil.copy2(src, PLUGIN_DIR / "tools" / name)
-    print("  tools: notebooklm_podcast_gen.py (+ README)")
+    print("  tools: notebooklm_podcast_gen.py, install-pptx-prereqs.{ps1,sh} (+ README)")
 
     shutil.copy2(REPO / "CLAUDE.md", PLUGIN_DIR / "course-factory-guide.md")
     print("  CLAUDE.md bundled as course-factory-guide.md")

@@ -1,6 +1,6 @@
 ---
 name: generate-presentation
-description: Slide-by-slide generation instructions for the chapter slide deck, including per-slide content rules, Bloom badge format, retrieval slide structure, speaker-notes section template, Mayer principle application, and the slide manifest JSON format passed to anthropic-skills:pptx. Invoked by presentation-generator.
+description: Slide-by-slide generation instructions for the chapter slide deck, including per-slide content rules, Bloom badge format, retrieval slide structure, speaker-notes section template, Mayer principle application, and the slide-plan format used to author the deck with the pptx-generator skill (PptxGenJS). Invoked by presentation-generator.
 ---
 
 # Generate Presentation — Detailed Instructions
@@ -112,94 +112,41 @@ To prevent repetitive, single-column layouts, the generation tool must programma
 
 ---
 
-## python-pptx Implementation Guide
+## Rendering Engine — the `pptx-generator` Skill (PptxGenJS)
 
-Apply this code structural logic when generating slides via the pptx skill:
+The deck is rendered by the **`pptx-generator`** skill (MiniMax), which builds the `.pptx`
+with PptxGenJS. You do NOT pass a manifest to a renderer and you do NOT write python-pptx. You
+author one PptxGenJS slide module per slide, compile them into the final `.pptx`, then delete the
+JS build scaffold. The "Build Workflow" section below is authoritative; this section maps the
+course visual-design system onto the skill's contract.
 
-```python
-from pptx import Presentation
-from pptx.util import Inches, Pt
-from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN
+### Map the course palette onto the skill's theme object
 
-# 1. Establish strict layout constants
-SLIDE_WIDTH = Inches(13.333)
-SLIDE_HEIGHT = Inches(7.5)
+The `pptx-generator` skill passes every slide module a `theme` object with EXACTLY these keys —
+`primary`, `secondary`, `accent`, `light`, `bg` (never invent other key names). Bind the course's
+4-color system to those keys so every slide stays on-brand:
 
-COLOR_PRIMARY_TEXT = RGBColor(0x22, 0x25, 0x2A)  # Charcoal
-COLOR_MUTED_TEXT = RGBColor(0x6A, 0x73, 0x7D)    # Slate Gray
-COLOR_ACCENT = RGBColor(0x00, 0x5A, 0x9E)        # Accent Blue
-
-FONT_TITLE = "Arial"
-FONT_BODY = "Calibri"
-
-def apply_text_styling(paragraph, font_name, size, color, bold=False, alignment=PP_ALIGN.LEFT):
-    paragraph.font.name = font_name
-    paragraph.font.size = Pt(size)
-    paragraph.font.color.rgb = color
-    paragraph.font.bold = bold
-    paragraph.alignment = alignment
-
-# 2. Universal Header Logic (Enforces Whitespace and Alignment)
-def add_slide_header(slide, title_text, eyebrow_text=None, tracking_text=None):
-    # Eyebrow/Metadata Tracker
-    if eyebrow_text:
-        eb_box = slide.shapes.add_textbox(Inches(1.0), Inches(0.4), Inches(9.0), Inches(0.4))
-        tf_eb = eb_box.text_frame
-        tf_eb.word_wrap = True
-        p_eb = tf_eb.paragraphs[0]
-        p_eb.text = eyebrow_text.upper()
-        apply_text_styling(p_eb, FONT_BODY, 11, COLOR_MUTED_TEXT, bold=True)
-    
-    # Standardized Title Location
-    title_box = slide.shapes.add_textbox(Inches(1.0), Inches(0.7), Inches(9.0), Inches(0.8))
-    tf_title = title_box.text_frame
-    tf_title.word_wrap = True
-    p_title = tf_title.paragraphs[0]
-    p_title.text = title_text
-    apply_text_styling(p_title, FONT_TITLE, 26, COLOR_PRIMARY_TEXT, bold=True)
-    
-    # Slide Tracking Indicator
-    if tracking_text:
-        track_box = slide.shapes.add_textbox(Inches(11.0), Inches(0.4), Inches(1.333), Inches(0.4))
-        tf_track = track_box.text_frame
-        p_track = tf_track.paragraphs[0]
-        p_track.text = tracking_text
-        apply_text_styling(p_track, FONT_BODY, 11, COLOR_MUTED_TEXT, alignment=PP_ALIGN.RIGHT)
-
-# 3. Dynamic Column Generation Logic (Layout A)
-def create_split_columns(slide, items_data):
-    """
-    items_data expected format: [{"title": "SKILL", "body_lines": ["Line 1...", ...]}, ...]
-    """
-    count = len(items_data)
-    left_margin = Inches(1.0)
-    top_margin = Inches(2.0)
-    total_width = SLIDE_WIDTH - (left_margin * 2)
-    gap = Inches(0.4)
-    
-    # Calculate uniform width dynamically based on item count
-    col_width = (total_width - (gap * (count - 1))) / count
-    
-    for i, item in enumerate(items_data):
-        col_left = left_margin + i * (col_width + gap)
-        box = slide.shapes.add_textbox(col_left, top_margin, col_width, Inches(4.5))
-        tf = box.text_frame
-        tf.word_wrap = True
-        
-        # Column Header
-        p_header = tf.paragraphs[0]
-        p_header.text = item["title"]
-        apply_text_styling(p_header, FONT_TITLE, 14, COLOR_ACCENT, bold=True)
-        p_header.space_after = Pt(12)
-        
-        # Column Body Text
-        for line in item["body_lines"]:
-            p_line = tf.add_paragraph()
-            p_line.text = line
-            apply_text_styling(p_line, FONT_BODY, 13, COLOR_PRIMARY_TEXT)
-            p_line.space_after = Pt(6)
+```javascript
+const theme = {
+  primary:   "22252A",  // Charcoal — slide titles and primary text (avoid pure #000)
+  secondary: "6A737D",  // Slate gray — eyebrow metadata, slide numbers, muted labels
+  accent:    "005A9E",  // Brand blue — focal points and active labels ONLY
+  light:     "E6EEF5",  // Pale blue tint — subtle fills, table header bands, dividers
+  bg:        "FFFFFF"   // White — slide background for content readability
+};
 ```
+
+Fonts: title font **Arial** (bold, 24–28pt at the standard title anchor), body font **Calibri**
+(or Arial). Never more than two font families per deck. Colors are 6-char hex WITHOUT `#`.
+
+### Apply the design system inside the slide modules
+
+The three structural layouts (Split-Screen Columns, Structured Tables, Ordered Timesteps) and the
+header/whitespace/scannability rules above still govern every slide — implement them with PptxGenJS
+calls (`slide.addText`, `slide.addTable`, `slide.addShape`) inside each `createSlide(pres, theme)`
+module. Keep the standard 16:9 layout (`LAYOUT_16x9`), the uniform top title anchor, the muted
+eyebrow line above the title, and the bottom-right slide-number badge (every slide except the
+title slide). Consult the skill's own reference files for the PptxGenJS API and slide-type recipes.
 
 ---
 
@@ -365,26 +312,17 @@ sequenceDiagram
 
 ---
 
-## Slide Manifest JSON for anthropic-skills:pptx
+## Slide Plan (internal planning artifact)
 
-Pass this to the pptx skill:
+Before authoring any PptxGenJS module, draft an internal slide plan so each slide is fully
+specified — content, type, Bloom/LO tracking (notes-only), word count, and diagram. This plan is
+NOT a renderer input; it is your worksheet. Each entry feeds exactly one `createSlide` module.
 
 ```json
 {
-  "template": "default",
-  "color_palette": {
-    "primary": "#FFFFFF",
-    "accent": "#005A9E",
-    "background": "#FFFFFF",
-    "text": "#22252A",
-    "muted": "#6A737D"
-  },
-  "font_config": {
-    "title_font": "Arial",
-    "title_size_pt": 26,
-    "body_font": "Calibri",
-    "body_size_pt": 13
-  },
+  "deck_title": "...",
+  "chapter": <int>,
+  "theme": { "primary": "22252A", "secondary": "6A737D", "accent": "005A9E", "light": "E6EEF5", "bg": "FFFFFF" },
   "slides": [
     {
       "slide_number": 1,
@@ -392,8 +330,8 @@ Pass this to the pptx skill:
       "title": "...",
       "subtitle": "...",
       "body": "...",
-      "bloom_badge": null,
-      "lo_ref": null,
+      "bloom_badge": null,        // notes only — NEVER rendered on the slide
+      "lo_ref": null,             // notes only — NEVER rendered on the slide
       "diagram": null,
       "word_count": <int>
     },
@@ -402,8 +340,8 @@ Pass this to the pptx skill:
       "type": "concept",
       "title": "{conclusion statement}",
       "body": "{≤40 words}",
-      "bloom_badge": "Apply",
-      "lo_ref": "LO-03.2",
+      "bloom_badge": "Apply",     // notes only
+      "lo_ref": "LO-03.2",        // notes only
       "diagram": {
         "mmd_source": "graph TD\n  A --> B",
         "alt_text": "{shapes and relationships described}",
@@ -414,6 +352,50 @@ Pass this to the pptx skill:
   ]
 }
 ```
+
+---
+
+## Build Workflow — author, compile, then DELETE the JS scaffold
+
+Render the deck with the **`pptx-generator`** skill (invoke it via the `Skill` tool). The skill
+authors the deck as PptxGenJS JS modules and compiles them to `.pptx`. The JS modules are a
+disposable build scaffold — they MUST be removed once the `.pptx` exists.
+
+**Step 1 — Pick a scratch build directory.** Build under a temporary scaffold folder so the JS
+never lands beside the deliverables, e.g.:
+```
+outputs/{course_slug}/chapters/ch{NN}-{slug}/_pptx-build/
+```
+
+**Step 2 — Invoke the `pptx-generator` skill.** Hand it the slide plan and the theme object, and
+instruct it to:
+- write one synchronous `createSlide(pres, theme)` module per slide under `_pptx-build/slides/`
+  (`slide-01.js`, `slide-02.js`, …), using the theme keys `primary/secondary/accent/light/bg`;
+- apply the course design system (16:9, uniform title anchor, muted eyebrow line, bottom-right
+  slide-number badge on every slide except the title, the three structural layouts, no decorative
+  clutter, no Bloom badges or LO-IDs on any slide);
+- generate `_pptx-build/slides/compile.js` and compile with `node compile.js`, writing the deck to
+  `_pptx-build/slides/output/presentation.pptx`.
+
+**Step 3 — Place the deliverable.** Move/copy `_pptx-build/slides/output/presentation.pptx` to the
+declared `output_paths.primary` (`outputs/{course_slug}/chapters/ch{NN}-{slug}/slides.pptx`).
+
+**Step 4 — MANDATORY cleanup (delete the JS scaffold).** Once `slides.pptx` is in place, delete the
+entire `_pptx-build/` working tree — every `.js` module, `compile.js`, and the `slides/` scratch
+folder. The JS scripts generated by the `pptx-generator` skill MUST NOT be shipped: they are not a
+student deliverable and not an internal pipeline artifact. The ONLY surviving rendering output is
+`slides.pptx`.
+
+```bash
+# Windows PowerShell
+Remove-Item -Recurse -Force "outputs/{course_slug}/chapters/ch{NN}-{slug}/_pptx-build"
+# POSIX
+rm -rf "outputs/{course_slug}/chapters/ch{NN}-{slug}/_pptx-build"
+```
+
+**Step 5 — Verify cleanup.** Confirm no `*.js` or `compile.js` remains anywhere under the chapter
+folder before reporting completion. If any JS file survives, deletion failed — fix it before
+finishing.
 
 ---
 

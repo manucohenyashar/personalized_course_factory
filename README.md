@@ -531,11 +531,59 @@ input — they are non-negotiable.
   below with `@agent-name` and skills with `/skill-name`.
 - Node.js 18+ (for Claude Code itself, and for `npx mmdc` — Mermaid diagram export)
 - Lab environment tools as declared in your subject spec (Python, etc.)
-- The `anthropic-skills:pptx` and `anthropic-skills:docx` skills (available globally in Claude Code)
+- The `pptx-generator` skill (ships under `.claude/skills/pptx-generator/`) and the
+  `anthropic-skills:docx` skill. `pptx-generator` renders slide decks with PptxGenJS and needs
+  `pptxgenjs` installed in your project. Run the one-shot installer below — see
+  [Setting up slide rendering](#setting-up-slide-rendering). `anthropic-skills:docx` is available
+  globally in Claude Code with no setup.
 - **For chapter podcasts (optional):** the NotebookLM CLI / MCP server and a NotebookLM login.
   See [Setting up NotebookLM podcasts](#setting-up-notebooklm-podcasts-optional) below for the
   full install, authentication, and Claude Code registration steps. Without it, the podcast
   phase is skipped and the rest of the course still generates.
+
+---
+
+## Setting up slide rendering
+
+Chapter slide decks (`slides.pptx`) are rendered by the **`pptx-generator`** skill, which compiles
+[PptxGenJS](https://gitbrent.github.io/PptxGenJS/) slide scripts into a `.pptx`. That requires the
+`pptxgenjs` package to be installed in your project. A one-shot installer sets it up.
+
+### Run the installer (once per project)
+
+Run it from your **project root** — the directory where you launch Claude Code and where
+`outputs/` is generated:
+
+```powershell
+# Windows (PowerShell)
+pwsh tools/install-pptx-prereqs.ps1
+```
+
+```bash
+# macOS / Linux
+bash tools/install-pptx-prereqs.sh
+```
+
+That installs, into the project's local `node_modules/`:
+
+- **`pptxgenjs`** — required; builds the `.pptx`.
+- **`markitdown[pptx]`** — recommended QA tool that extracts text from a `.pptx` (skipped
+  automatically if Python is unavailable; opt out with `-SkipMarkitdown` / `--skip-markitdown`).
+
+Add `-WithIcons` (PowerShell) or `--with-icons` (bash) to also install the optional
+`react-icons react react-dom sharp` libraries used for rasterized slide icons.
+
+### Why install into the project root
+
+When the pipeline builds a deck it generates PptxGenJS scripts under
+`outputs/<course_slug>/chapters/<ch>/_pptx-build/slides/` and runs them with Node. Node resolves
+`require('pptxgenjs')` by walking **up** the directory tree, so a `pptxgenjs` installed in the
+project root's `node_modules/` is found from the build directory. (The build scripts are deleted
+automatically after each deck is compiled — only `slides.pptx` is kept.) Generate your courses
+from the same directory where you ran the installer.
+
+Prerequisites: **Node.js 18+** (already required for Claude Code) and, for the optional QA tool,
+**Python 3** with `pip`.
 
 ---
 

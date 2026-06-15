@@ -50,3 +50,21 @@ also handles:
   PowerPoint COM); drops slides gracefully if no converter is available.
 
 See also: `.claude/skills/generate-notebooklm-podcast.md` for the single-podcast case.
+
+## `build_plugin.py`
+
+Assembles the whole factory into a self-contained, relocatable Claude Code plugin under
+`course-factory-plugin/`, and refreshes the install marketplace at `.claude-plugin/marketplace.json`.
+
+```bash
+python tools/build_plugin.py
+```
+
+It keeps `.claude/` as the single source of truth and **generates** the plugin: agents →
+`agents/`, skills → `commands/`, plus `doc/` specs, the podcast tool, the project guide
+(`CLAUDE.md` → `course-factory-guide.md`), and input templates. Crucially, it rewrites
+repo-relative references (`doc/*.md`, `tools/notebooklm_podcast_gen.py`, `CLAUDE.md`) to
+`${CLAUDE_PLUGIN_ROOT}/...` so they resolve once the plugin is installed into another project
+(`inputs/` and `outputs/` are left project-relative on purpose). Re-run after editing any source,
+then commit the regenerated `course-factory-plugin/`. Validate with
+`claude plugin validate ./course-factory-plugin`.
