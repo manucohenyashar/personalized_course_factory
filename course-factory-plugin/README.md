@@ -43,10 +43,35 @@ Outputs are written under `outputs/{course_slug}/` in your current project.
 - **12 commands** (`commands/`) — the orchestration and per-artifact skills
   (invoke as `/personalized-course-factory:<command>`).
 - **Specs** (`doc/`) — the binding specifications the agents follow.
-- **Tool** (`tools/notebooklm_podcast_gen.py`) — batch NotebookLM podcast generator.
+- **Skills** (`skills/`) — bundled skills the agents invoke, including the `pptx-generator`
+  slide renderer.
+- **Tools** (`tools/`) — `notebooklm_podcast_gen.py` (batch NotebookLM podcast generator) and
+  `install-pptx-prereqs.{ps1,sh}` (slide-rendering prerequisites installer).
 - **`course-factory-guide.md`** — the project rules/schemas the agents read (the project's
   `CLAUDE.md`, bundled; agents load it from `${CLAUDE_PLUGIN_ROOT}/course-factory-guide.md`).
 - **`templates/inputs/`** — starter input files.
+
+## Setting up slide rendering
+
+Chapter slide decks are rendered by the bundled **`pptx-generator`** skill (under `skills/`), which
+compiles [PptxGenJS](https://gitbrent.github.io/PptxGenJS/) scripts into a `.pptx`. That needs the
+`pptxgenjs` package installed in your project. Run the bundled one-shot installer from your project
+root (where `outputs/` is generated):
+
+```powershell
+# Windows (PowerShell)
+pwsh ${CLAUDE_PLUGIN_ROOT}/tools/install-pptx-prereqs.ps1
+```
+
+```bash
+# macOS / Linux
+bash ${CLAUDE_PLUGIN_ROOT}/tools/install-pptx-prereqs.sh
+```
+
+It installs `pptxgenjs` (required) plus the optional `markitdown[pptx]` QA tool into your project's
+`node_modules/`. The pipeline generates the slide scripts under
+`outputs/<course_slug>/chapters/<ch>/_pptx-build/` and deletes them after compiling each deck, so
+only `slides.pptx` is kept. Requires Node.js 18+ (and Python 3 for the optional QA tool).
 
 ## Optional: NotebookLM podcasts
 
@@ -62,6 +87,7 @@ Without it, the podcast phase is skipped and the rest of the course still genera
 
 ## Requirements
 
-- Claude Code, Node.js 18+, Python 3 (for the podcast tool), and the
-  `anthropic-skills:docx` / `anthropic-skills:pptx` skills.
+- Claude Code, Node.js 18+ (for the bundled `pptx-generator` slide renderer, which uses
+  PptxGenJS), Python 3 (for the podcast tool), and the `anthropic-skills:docx` skill. The
+  `pptx-generator` skill ships with the plugin under `skills/`.
 - See the project README for full details: https://github.com/manucohenyashar/personalized_course_factory

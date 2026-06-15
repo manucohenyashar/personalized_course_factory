@@ -725,18 +725,21 @@ the `.mmd` is the editable source. Every diagram MUST include alt text in the ha
 
 ---
 
-## Available Anthropic Skills
+## Available Skills
 
-- **`anthropic-skills:pptx`** — generates `.pptx` PowerPoint slide decks; invoked by
-  `presentation-generator` via the `Skill` tool
+- **`pptx-generator`** — the MiniMax PowerPoint skill; renders `.pptx` slide decks with PptxGenJS.
+  Invoked by `presentation-generator` via the `Skill` tool. It authors disposable JS slide
+  modules and compiles them to `.pptx`; the `presentation-generator` MUST delete the JS build
+  scaffold after rendering so only `slides.pptx` survives. Requires the skill and its
+  prerequisites (Node.js + PptxGenJS) to be installed.
 - **`anthropic-skills:docx`** — generates `.docx` Word documents; invoked by ALL content
   generators that produce student-facing text artifacts: `chapter-text-generator`,
   `exercise-generator`, `companion-generator`, `lab-generator`, `presentation-generator`
   (for speaker notes), `quiz-generator` (for student-facing quiz documents), and
   `glossary-aggregator`
 
-Both skills are available globally in Claude Code; no installation or configuration required.
-Invoke them via the `Skill` tool, passing the document content as input.
+`anthropic-skills:docx` is available globally in Claude Code with no setup; `pptx-generator` must
+be installed (it ships under `.claude/skills/pptx-generator/`). Invoke both via the `Skill` tool.
 
 ### When to use each skill
 
@@ -744,7 +747,7 @@ Invoke them via the `Skill` tool, passing the document content as input.
 |---------------|----------------|------------|
 | Student reads a chapter | `anthropic-skills:docx` | `chapter-text-generator` |
 | Student works an exercise | `anthropic-skills:docx` | `exercise-generator` (brief.docx, walkthrough.docx, debrief.docx) |
-| Instructor presents slides | `anthropic-skills:pptx` | `presentation-generator` |
+| Instructor presents slides | `pptx-generator` | `presentation-generator` |
 | Instructor reads presenter notes | `anthropic-skills:docx` | `presentation-generator` (slides-notes.docx) |
 | Student reads cheatsheet | `anthropic-skills:docx` | `companion-generator` |
 | Instructor reads guide | `anthropic-skills:docx` | `companion-generator` |
