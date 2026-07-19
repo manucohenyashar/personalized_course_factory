@@ -63,13 +63,13 @@ STUDENT SPEC (→ inputs/students.yaml):
   accessibility_needs: anything the user mentions; default []
   preferred_modalities: infer from context (default ["text", "hands-on"])
 
-SUBJECT SPEC (→ inputs/subject.md):
-  The subject spec is the curriculum contract — it defines what topics MUST be taught.
-  If the user provides a subject outline, chapter list, or topic list, write it to inputs/subject.md.
+course skeleton  (→ inputs/course-skeleton.md):
+  The course skeleton  is the curriculum contract — it defines what topics MUST be taught.
+  If the user provides a subject outline, chapter list, or topic list, write it to inputs/course-skeleton.md.
   If the user explicitly says "use default" or doesn't provide a curriculum, keep the existing
-  inputs/subject.md and state clearly which curriculum will be used (e.g., "Using the default
+  inputs/course-skeleton.md and state clearly which curriculum will be used (e.g., "Using the default
   18-chapter Cowork Automation curriculum").
-  If neither applies — no subject spec provided and no clear default confirmation — ask the user
+  If neither applies — no course skeleton  provided and no clear default confirmation — ask the user
   to provide one before writing any other file (see course-factory-agent.md for the prompt).
 
 ORCHESTRATION SPEC (→ inputs/orchestration.yaml):
@@ -102,7 +102,7 @@ After extracting, write draft YAML to the input files. Then present a summary to
 ```markdown
 ## Spec Summary — Please Review
 
-**Curriculum (subject spec):** {subject title from subject.md}
+**Curriculum (course skeleton ):** {subject title from course-skeleton.md}
   {N} chapters/topics defined — e.g., "Ch 1 — Introduction, Ch 2 — Automation Mindset, …"
   _(This is the curriculum contract. Every topic listed here MUST be covered in the generated course.)_
 **Problem domain:** {domain}
@@ -116,11 +116,11 @@ After extracting, write draft YAML to the input files. Then present a summary to
 ### Global Requirements Applied:
 {If any general-requirements fields were set, list them here as:}
 - Total time: {min}–{max} h  (or "default")
-- Chapters: {count} (or "from subject spec")
+- Chapters: {count} (or "from course skeleton ")
 - Chapter duration: {N} min (or "45–90 min default")
 - Focus areas: {list} (or "none")
 - Excluded topics: {list} (or "none")
-- Difficulty: {target} (or "from subject spec")
+- Difficulty: {target} (or "from course skeleton ")
 - Artifacts: {list} (or "all six")
 - Delivery format: {format} (or "blended")
 - Custom instructions: {yes/no}
@@ -164,7 +164,7 @@ students.yaml:
   ✓ professional_context present
   ✓ mode_preference is one of: self_taught, cohort, both
 
-subject.md:
+course-skeleton.md:
   ✓ Course title present
   ✓ Chapter list with ≥ 3 chapters
 
@@ -263,7 +263,7 @@ Tell the user:
 
 Invoke `@environment-scaffold-generator` with:
 - `course_slug`: from course-plan.yaml
-- `subject_spec_path`: `inputs/subject.md`
+- `subject_spec_path`: `inputs/course-skeleton.md`
 - `orchestration_path`: `inputs/orchestration.yaml`
 - `student_context_path`: `inputs/students.yaml`
 
@@ -391,7 +391,7 @@ Invoke `@evaluator-agent` with:
 - `course_plan`: `_plan/course-plan.yaml`
 - `personalization_plan`: `_plan/personalization-plan.json`
 - `reserved_scenarios`: `_plan/reserved-scenarios.json`
-- `subject_spec_path`: `inputs/subject.md`
+- `subject_spec_path`: `inputs/course-skeleton.md`
 - `subject_coverage_index`: `_plan/subject-coverage-index.json`
 
 After completion, read `COURSE_VERDICT.md`. Check `overall_status`:
@@ -614,7 +614,7 @@ All files are in: `outputs/{course_slug}/`
 ## Quality Summary
 | Gate | Status |
 |------|--------|
-| Subject spec coverage | ✓ N/N curriculum topics addressed |
+| course skeleton  coverage | ✓ N/N curriculum topics addressed |
 | §16.1 Coverage | ✓ all chapters |
 | §16.2 Pedagogy | ✓ all chapters |
 | §16.3 Personalization | ✓ all chapters |

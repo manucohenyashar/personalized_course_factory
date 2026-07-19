@@ -65,10 +65,10 @@ exercise_specific_inputs:
   pack carries the **≥ 60 %** hands-on share (§7.14); explanation
   artifacts (doc + slides) carry the remainder.
 
-If the Subject Spec or Orchestration Spec declares a smaller exercise share
-(for example the Cowork Automation Subject Spec example originally said
+If the course skeleton  or Orchestration Spec declares a smaller exercise share
+(for example the Cowork Automation course skeleton  example originally said
 "5–15 min optional exercises"), the generator MUST log the conflict and
-follow master spec precedence (master §3.5: master > Subject Spec on
+follow master spec precedence (master §3.5: master > course skeleton  on
 pedagogical numerics). The Orchestration Spec MAY override the 25–40 min
 SHOULD band by setting `numeric_overrides.exercises.pack_minutes`, but the
 60 % MUST floor (§7.14) cannot be overridden.
@@ -168,7 +168,7 @@ exercise-03/
   practiced-track/   # problem-heavy, less scaffolding
 ```
 
-For `intermediate` or `advanced` Subject Specs, `target_track = both` is
+For `intermediate` or `advanced` course skeleton s, `target_track = both` is
 the default.
 
 ## 7. Per-Exercise Schema (REQUIRED in each `README.md` front-matter)

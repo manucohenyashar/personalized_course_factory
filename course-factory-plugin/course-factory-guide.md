@@ -3,7 +3,7 @@
 ## Purpose
 
 This repository generates personalized technical training courses using a multi-agent Claude Code
-pipeline. Given a subject specification, a problem domain, and a student cohort description, the
+pipeline. Given a course skeleton , a problem domain, and a student cohort description, the
 pipeline produces a complete course: chapter documents, slide decks, exercises, quizzes, podcast
 scripts, a capstone lab, and supporting artifacts — all grounded in learning-science best practices
 and personalized to the learner's domain and context.
@@ -205,14 +205,14 @@ submitting any student-facing document.
 
 ---
 
-## Subject Specification — The Curriculum Contract
+## course skeleton  — The Curriculum Contract
 
-`inputs/subject.md` is the **curriculum baseline**. It defines:
+`inputs/course-skeleton.md` is the **curriculum baseline**. It defines:
 - The topics, subjects, and chapters that MUST be taught
 - The high-level learning objectives for the course
 - The recommended chapter structure and delivery approach
 
-**The subject spec is not optional.** Every course is built by taking the subject spec as a
+**The course skeleton  is not optional.** Every course is built by taking the course skeleton  as a
 syllabus and personalizing it — applying learning-science best practices, grounding every example
 in the student's domain, and adapting depth and register to the cohort's background. The subject
 spec defines *what* to teach; the student context and problem spec define *how* to teach it.
@@ -220,37 +220,37 @@ spec defines *what* to teach; the student context and problem spec define *how* 
 ### Relationship between specs and generated content
 
 ```
-inputs/subject.md          ← WHAT to teach (curriculum contract, topic list, objectives)
+inputs/course-skeleton.md          ← WHAT to teach (curriculum contract, topic list, objectives)
 inputs/problem.yaml        ← Domain context for examples (scenarios, vocabulary, success criteria)
 inputs/students.yaml       ← WHO is being taught (prior knowledge, reading level, register)
 inputs/general-requirements.yaml ← User overrides (time, chapter count, difficulty, focus)
                                     ↓
               planner-agent produces a personalized course-plan.yaml
-              that MUST cover every topic in subject.md
+              that MUST cover every topic in course-skeleton.md
                                     ↓
               generators produce artifacts grounded in problem.yaml
               and calibrated to students.yaml
                                     ↓
-              evaluator-agent verifies ALL subject.md topics are covered
+              evaluator-agent verifies ALL course-skeleton.md topics are covered
 ```
 
-### Subject spec coverage is a MUST gate
+### course skeleton  coverage is a MUST gate
 
 The `evaluator-agent` checks every topic, chapter objective, and subject area listed in
-`inputs/subject.md` against the generated course. Any topic that has no corresponding
+`inputs/course-skeleton.md` against the generated course. Any topic that has no corresponding
 chapter section, exercise, or assessment FAILS the coverage gate and blocks course delivery.
 
 This check is in addition to — not instead of — the Bloom LO coverage gate (§16.1).
 
-### Providing a subject specification
+### Providing a course skeleton 
 
-When creating a course, the user MUST supply a subject specification. Three ways:
-- **Default**: keep `inputs/subject.md` (the 18-chapter Cowork Automation course)
-- **Replace**: overwrite `inputs/subject.md` with a custom curriculum outline
+When creating a course, the user MUST supply a course skeleton . Three ways:
+- **Default**: keep `inputs/course-skeleton.md` (the 18-chapter Cowork Automation course)
+- **Replace**: overwrite `inputs/course-skeleton.md` with a custom curriculum outline
 - **Inline**: paste chapter titles, topics, and objectives in the message to
-  `@course-factory-agent` — the agent writes them to `inputs/subject.md`
+  `@course-factory-agent` — the agent writes them to `inputs/course-skeleton.md`
 
-If no subject specification is provided and the user's message does not contain a topic list,
+If no course skeleton  is provided and the user's message does not contain a topic list,
 `@course-factory-agent` MUST ask the user to supply one before proceeding.
 
 ---
@@ -327,11 +327,11 @@ when they return. The orchestrator holds only state-file summaries. Consequently
 ## Agent Pipeline Overview
 
 ```
-subject-spec-builder-agent  ← optional step 0a: validates/builds inputs/subject.md
+subject-spec-builder-agent  ← optional step 0a: validates/builds inputs/course-skeleton.md
   │  Skill: /build-subject-spec
   │  Accepts: existing spec file, pasted outline, or topic description
   │  Validates: chapter count, duration, concept density, hands-on ratio, Bloom compatibility
-  │  Produces: inputs/subject.md (validated curriculum contract)
+  │  Produces: inputs/course-skeleton.md (validated curriculum contract)
   │  Uses AskUserQuestion to surface issues and gather user decisions
 
 spec-builder-agent  ← optional step 0b: builds problem/student specs from unstructured docs
@@ -646,7 +646,7 @@ Naming rules:
 
 When specs conflict on pedagogical numerics:
 ```
-General Requirements > Student Context > Problem Spec > Subject Spec > Orchestration Spec > Master Spec defaults
+General Requirements > Student Context > Problem Spec > course skeleton  > Orchestration Spec > Master Spec defaults
 ```
 
 `inputs/general-requirements.yaml` holds explicit user requirements (total time, chapter count,
@@ -763,19 +763,19 @@ be installed (it ships under `.claude/skills/pptx-generator/`). Invoke both via 
 |----------|---------|
 | `doc/GreatCourseSpec.md` | Master spec; all §N references point here |
 | `doc/PlannerSpec.md` | `planner-agent` — 12-step algorithm |
-| `doc/GreatTextSpec.md` | `chapter-text-generator` — chapter doc |
+| `doc/GreatTutorialSpec.md` | `chapter-text-generator` — chapter doc |
 | `doc/GreatModuleExercise.md` | `exercise-generator` — exercise pack |
 | `doc/GreatPresentationSpec.md` | `presentation-generator` — slide deck |
 | `doc/GreatQuizSpec.md` | `quiz-generator` — quiz Forms A & B |
 | `doc/GreatLabSpec.md` | `lab-generator` — capstone lab |
 | `doc/DocxDesignSpec.md` | Document design + typography for all student-facing `.docx` files |
-| `doc/MainSubjectSpec-Practical-Cowork-Automation.md` | Default subject spec (18-chapter Cowork Automation course) |
+| `doc/MainSubjectSpec-Practical-Cowork-Automation.md` | Default course skeleton  (18-chapter Cowork Automation course) |
 
 ### Input Files
 
 | File | Role | Required |
 |------|------|----------|
-| `inputs/subject.md` | **Curriculum contract** — defines topics, objectives, and chapter structure that MUST be taught | REQUIRED |
+| `inputs/course-skeleton.md` | **Curriculum contract** — defines topics, objectives, and chapter structure that MUST be taught | REQUIRED |
 | `inputs/problem.yaml` | Problem domain — representative scenarios, domain vocabulary, success criteria | REQUIRED |
 | `inputs/students.yaml` | Cohort profile — prior knowledge, reading level, professional context | REQUIRED |
 | `inputs/orchestration.yaml` | Pipeline settings — quality gates, numeric overrides, output root | REQUIRED |

@@ -15,12 +15,12 @@ defined in `planner-agent.md` and `${CLAUDE_PLUGIN_ROOT}/doc/PlannerSpec.md`.
 Parse and validate:
 
 ```
-subject.md:
+course-skeleton.md:
   ✓ Course title present
   ✓ Chapter list with titles (≥ 3 chapters)
   ✓ Each chapter has ≥ 1 intended learning outcome (verb + object)
   ✓ Prerequisites list (may be empty)
-  ✓ Estimated chapter times (may be derived from subject spec)
+  ✓ Estimated chapter times (may be derived from course skeleton )
 
 problem.yaml:
   ✓ problem_id present (no REPLACE_ME)
@@ -55,13 +55,13 @@ Present to the user as a markdown table:
 ## Normalization Summary — Please Review and Approve
 
 ### Chapter Slug Generation
-| Subject Spec Title | Generated Slug | Notes |
+| course skeleton  Title | Generated Slug | Notes |
 |--------------------|---------------|-------|
 | "Introduction to Prompt Engineering" | intro-to-prompt-engineering | |
 | ... | ... | |
 
 ### Spec Conflict Resolution (Precedence: Student > Problem > Subject > Orchestration)
-| Field | Subject Spec Value | Overriding Spec | Applied Value | Reason |
+| Field | course skeleton  Value | Overriding Spec | Applied Value | Reason |
 |-------|--------------------|-----------------|---------------|--------|
 | reading_level | Grade 12 | Student Context Grade 10 | Grade 10 | Student wins |
 | ... | | | | |
@@ -85,12 +85,12 @@ Present to the user as a markdown table:
 
 ## Step 3 Detail — Chapter Partitioning Rules
 
-When partitioning from the subject spec:
+When partitioning from the course skeleton :
 
-1. **Time constraint**: each chapter should be 45–90 minutes. If a subject spec chapter is
+1. **Time constraint**: each chapter should be 45–90 minutes. If a course skeleton  chapter is
    > 90 min worth of content, split it. If < 45 min, merge with the next chapter.
 
-2. **Concept load**: no chapter may introduce > 4 new core concepts. If the subject spec
+2. **Concept load**: no chapter may introduce > 4 new core concepts. If the course skeleton 
    chapter has 5+, split it.
 
 3. **Bloom staircase** — assign dominant Bloom tier by course position:
@@ -209,7 +209,7 @@ Derive tone from `professional_context`:
 From `students.yaml.prior_knowledge[]`, produce two lists:
 ```
 assumed_knowledge: [<topics to reference but never teach>]
-gap_topics: [<topics from subject spec NOT in prior_knowledge — these need full scaffolding>]
+gap_topics: [<topics from course skeleton  NOT in prior_knowledge — these need full scaffolding>]
 partial_knowledge: [<topics mentioned in prior_knowledge with caveats — need bridging>]
 ```
 
@@ -217,7 +217,7 @@ Generators use this to decide: introduce from scratch vs. bridge from prior expo
 
 ### 6.4 — Domain analogy bank
 
-For each of the top 5 most abstract concepts in the course (from subject spec), provide a
+For each of the top 5 most abstract concepts in the course (from course skeleton ), provide a
 domain-grounded analogy the generators can use:
 
 ```json

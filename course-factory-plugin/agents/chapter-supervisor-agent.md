@@ -97,7 +97,7 @@ Execute generator-evaluator pairs in the order below. Steps 2 and 3 each run mul
 generators **in parallel** to maximize throughput. Evaluate each generator's output through
 the feedback loop before proceeding to the next step.
 
-### Step 1. Chapter Text (sequential — seeds all downstream generators)
+### Step 1. Chapter tutorial (sequential — seeds all downstream generators)
 
 Invoke `@chapter-text-generator` with:
 - `feedback_failures`: [] on first attempt

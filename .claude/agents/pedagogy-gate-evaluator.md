@@ -24,7 +24,7 @@ You receive:
 2. **Worked example present** — §7 of the doc must contain a fully narrated worked example with problem statement, given state, step-by-step solution, and decision-point callouts (§7.7).
 3. **Failure-first content** — at least one section must address common pitfalls or failure modes before presenting the "happy path" (§7.10).
 4. **Reflection prompts** — at least 2 reflection prompts in the doc (§7.11), each requiring synthesis, not just recall.
-5. **Prior-chapter connection** — the doc must contain a "Building on Chapter N" or equivalent bridge section (§4.2 of GreatTextSpec), except for ch01.
+5. **Prior-chapter connection** — the doc must contain a "Building on Chapter N" or equivalent bridge section (§4.2 of GreatTutorialSpec), except for ch01.
 
 **Exercise Pack (`artifact_type: exercises`)**
 6. **Hands-on time ratio** — sum of `time_box_minutes` across the pack must be ≥ 60 % of `chapter.est_minutes` (§7.14).

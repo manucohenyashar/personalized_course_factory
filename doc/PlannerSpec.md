@@ -8,7 +8,7 @@ implements: GreatCourseSpec_v2.md §3 (input contracts), §3.5 (precedence),
             §3.1 (narrative normalization), §6 (chapter partition), §9.5
             (prereq diagnostic), §10 (personalization plan), §14 (lab
             environment), §19 (skill orchestration)
-governs:    GreatTextSpec_v2.md, GreatModuleExercise_v2.md,
+governs:    GreatTutorialSpec_v2.md, GreatModuleExercise_v2.md,
             GreatPresentationSpec_v2.md, GreatQuizSpec_v2.md,
             GreatLabSpec_v2.md
 agent_target: PlannerAgent (Claude Code agent)
@@ -51,7 +51,7 @@ a pre-resolved, machine-readable assignment.
 The PlannerAgent reads the four sibling specifications declared in
 master §3:
 
-1. **Subject Spec** — `subject.yaml` *or* `subject.md` (narrative form;
+1. **course skeleton ** — `subject.yaml` *or* `course-skeleton.md` (narrative form;
    see §6 for normalization).
 2. **Problem Spec** — `problem.yaml`.
 3. **Student Context Spec** — `students.yaml`.
@@ -69,7 +69,7 @@ The PlannerAgent emits the following artifacts under `<output_root>/_plan/`:
 _plan/
   course-plan.yaml                  # THE Plan (see §9 schema)
   personalization-plan.json         # master §10, embedded by reference in the Plan
-  subject.normalized.yaml           # only if Subject Spec was narrative (§6)
+  subject.normalized.yaml           # only if course skeleton  was narrative (§6)
   subject.normalized.diff.md        # side-by-side diff for human review
   precedence-log.md                 # resolved conflicts (§7)
   chapter-partition-rationale.md    # human-readable explanation of partition decisions
@@ -94,7 +94,7 @@ Step 1.  INPUT VALIDATION
    HALT if any MUST field is missing.
 
 Step 2.  NARRATIVE NORMALIZATION  (master §3.1)
-   2.1 If Subject Spec is narrative (.md), run the Narrative Subject
+   2.1 If course skeleton  is narrative (.md), run the Narrative Subject
        Spec normalization pre-step:
          - extract subject_id, title, domain_taxonomy, target_level,
            prerequisites[], currency_stamp;
@@ -116,7 +116,7 @@ Step 3.  PRECEDENCE RESOLUTION
        (master §2).
 
 Step 4.  CHAPTER PARTITION  (master §6)
-   4.1 Start from the (normalized) Subject Spec's chapter_partitioning[].
+   4.1 Start from the (normalized) course skeleton 's chapter_partitioning[].
    4.2 Compute estimated time per chapter via master §6 formula.
    4.3 If a chapter exceeds 60 min, split into sub-chapters ≤ 45 min.
    4.4 If chapter_partitioning is empty, propose a partition and
@@ -186,7 +186,7 @@ Step 12. HUMAN REVIEW PACKET
 
 ## 6. Narrative-to-Structured Normalization
 
-When `subject.md` (narrative) is the input, the PlannerAgent MUST:
+When `course-skeleton.md` (narrative) is the input, the PlannerAgent MUST:
 
 1. Extract every chapter heading and treat it as a candidate chapter
    title.
@@ -215,12 +215,12 @@ the Planner MUST resolve and log:
 
 | Conflict | Resolution rule |
 |---|---|
-| Subject Spec declares "optional exercises" or "5–15 min hands-on", but master §7.14 demands ≥ 60 % hands-on | Master wins (pedagogical floor is non-overridable). Log and keep ≥ 60 % rule. |
-| Subject Spec chapter time exceeds master §6 cap | Split into ≤ 45 min sub-chapters; halt for human review of the proposed split. |
+| course skeleton  declares "optional exercises" or "5–15 min hands-on", but master §7.14 demands ≥ 60 % hands-on | Master wins (pedagogical floor is non-overridable). Log and keep ≥ 60 % rule. |
+| course skeleton  chapter time exceeds master §6 cap | Split into ≤ 45 min sub-chapters; halt for human review of the proposed split. |
 | Orchestration Spec sets `numeric_overrides.quiz.items` outside [4, 10] | Reject — log the override as invalid; use default. |
 | Student Context's `time_budget_per_week` is less than estimated total chapter time × 0.25 | Surface in PLAN_REVIEW.md as a learner-load warning; do not silently shorten the course. |
 | Problem Spec lacks enough scenarios for one-per-chapter + unseen-capstone | Halt; request more scenarios. Do not invent. |
-| Subject Spec inferred `target_level` disagrees with Student Context's `prior_knowledge` | Surface for human confirmation; do not auto-resolve. |
+| course skeleton  inferred `target_level` disagrees with Student Context's `prior_knowledge` | Surface for human confirmation; do not auto-resolve. |
 
 ## 8. Agent Roster (executed downstream of the Plan)
 
@@ -231,7 +231,7 @@ the upstream node; it does not generate learner-facing artifacts.
 |---|---|---|---|
 | **PlannerAgent** | 1 per course | `PlannerSpec_v2.md` (this) | The Plan |
 | **ChapterSupervisorAgent** | 1 per chapter | (this spec §11) | Per-chapter dispatch + intra-chapter dependency enforcement |
-| **ChapterTextGenerator** | 1 per chapter | `GreatTextSpec_v2.md` | Chapter doc + `tutorial.handoff.json` |
+| **ChapterTextGenerator** | 1 per chapter | `GreatTutorialSpec_v2.md` | Chapter doc + `tutorial.handoff.json` |
 | **ExerciseGenerator** | 1 per chapter | `GreatModuleExercise_v2.md` | Exercise pack |
 | **PresentationGenerator** | 1 per chapter | `GreatPresentationSpec_v2.md` | Slide deck + notes |
 | **QuizGenerator** | 1 per chapter + 1 diagnostic | `GreatQuizSpec_v2.md` | Quiz Form A + Form B + prereq diagnostic |
@@ -304,7 +304,7 @@ per_chapter_assignments:
     supervisor: ChapterSupervisorAgent
     deliverables:
       - agent:           ChapterTextGenerator
-        sub_spec:        GreatTextSpec_v2.md
+        sub_spec:        GreatTutorialSpec_v2.md
         envelope:        <common §19.2 envelope + text-specific inputs>
         output_paths:    [...]
         depends_on:      []                # text is the seed
@@ -459,7 +459,7 @@ Before the PlannerAgent emits the Plan it MUST verify:
 
 ### MUST gates
 - [ ] All four input specs validated; `schema_version` recorded.
-- [ ] If Subject Spec was narrative, normalization is complete and
+- [ ] If course skeleton  was narrative, normalization is complete and
       diff approved.
 - [ ] Precedence log covers every multi-spec field with a winner.
 - [ ] Every chapter has `est_minutes ≤ 60` and `hands_on_minutes ≥ 0.6
@@ -498,6 +498,6 @@ Before the PlannerAgent emits the Plan it MUST verify:
   `precedence-log.md`).
 - Auto-approving the Plan (every checkpoint MUST be human-approved
   before the Plan is consumed by downstream agents).
-- Skipping the diagnostic quiz (master §9.5) when the Subject Spec
+- Skipping the diagnostic quiz (master §9.5) when the course skeleton 
   declares any prerequisites.
 

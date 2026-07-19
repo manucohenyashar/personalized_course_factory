@@ -1,7 +1,7 @@
 # Personalized Course Factory
 
 A multi-agent Claude Code pipeline that generates complete, personalized technical training
-courses from a subject specification, a problem domain, and a learner cohort description.
+courses from a course skeleton , a problem domain, and a learner cohort description.
 
 ---
 
@@ -60,7 +60,7 @@ Then generate a course from any project with `@course-factory-agent` (see
 
 Two helper agents can prepare your input files before you run the course generator:
 
-**Validate or build your curriculum (`inputs/subject.md`):**
+**Validate or build your curriculum (`inputs/course-skeleton.md`):**
 ```
 @subject-spec-builder-agent
 ```
@@ -69,7 +69,7 @@ The agent **searches the web** for similar courses, syllabi, and industry resour
 evaluate whether your curriculum is complete, well-sequenced, and current — then asks you
 targeted questions and suggests additions or changes based on what it finds. It also validates
 scope, chapter density, hands-on feasibility, and generator compatibility before writing a
-validated `inputs/subject.md`. Use this when:
+validated `inputs/course-skeleton.md`. Use this when:
 - You have an existing training spec or syllabus you want to adapt or improve
 - You want to build a curriculum from scratch with research-backed guidance
 - You are unsure whether your topic list covers the subject adequately for your audience
@@ -108,7 +108,7 @@ Curriculum:
 - Chapter 6: Testing, debugging, and deployment
 ```
 
-If you already have a curriculum in `inputs/subject.md`, you can omit the chapter list
+If you already have a curriculum in `inputs/course-skeleton.md`, you can omit the chapter list
 and the agent will use that file. If you provide neither, the agent will ask you to
 supply one before proceeding.
 
@@ -136,7 +136,7 @@ If you prefer to edit the input files yourself:
 
 ```
 inputs/
-  subject.md                ← REQUIRED: your curriculum (default: Cowork Automation — replace with your own)
+  course-skeleton.md                ← REQUIRED: your curriculum (default: Cowork Automation — replace with your own)
   problem.yaml              ← REQUIRED: fill in problem domain + ≥ 4 representative scenarios
   students.yaml             ← REQUIRED: fill in cohort profile
   general-requirements.yaml ← OPTIONAL: global overrides (time, chapters, focus areas, etc.)
@@ -157,7 +157,7 @@ The input files are ready in inputs/. Generate the course.
 Run each agent individually for full control:
 
 ```
-@subject-spec-builder-agent                 ← Step 0a: validate/build inputs/subject.md (optional)
+@subject-spec-builder-agent                 ← Step 0a: validate/build inputs/course-skeleton.md (optional)
 @spec-builder-agent                         ← Step 0b: build inputs/problem.yaml + inputs/students.yaml (optional)
 @planner-agent                              ← Step 1: plan (two human-review halts)
 @environment-scaffold-generator             ← Step 2: environment (once)
@@ -179,14 +179,14 @@ from scratch.
 
 ---
 
-## Subject Specification — Your Curriculum Contract
+## course skeleton  — Your Curriculum Contract
 
-The **subject specification** (`inputs/subject.md`) is the curriculum baseline: it defines
+The **course skeleton ** (`inputs/course-skeleton.md`) is the curriculum baseline: it defines
 the topics, chapters, and learning objectives that the course MUST teach. Every generated
 artifact — chapter docs, exercises, quizzes, slides, the capstone lab — is built by taking
 this curriculum and personalizing it for your students and problem domain.
 
-**The subject spec is required.** The pipeline enforces that every topic listed in it is
+**The course skeleton  is required.** The pipeline enforces that every topic listed in it is
 covered in the generated course. Any topic that ends up without a corresponding chapter
 section, exercise, or assessment will cause the final evaluation to fail.
 
@@ -194,7 +194,7 @@ section, exercise, or assessment will cause the final evaluation to fail.
 
 In most cases, you will start with a rough idea of what the course should cover — a list of
 topics, a training brief, an existing syllabus, or just a description of what your students
-need to learn. **Rather than writing `inputs/subject.md` by hand, use the subject spec
+need to learn. **Rather than writing `inputs/course-skeleton.md` by hand, use the course skeleton 
 builder agent to turn that starting point into a validated curriculum.**
 
 ```
@@ -216,7 +216,7 @@ in plain language. The agent will:
 4. **Validate generator compatibility** — checks chapter count, per-chapter scope, hands-on
    feasibility, concept density, and learning objective quality against the pipeline's
    hard constraints
-5. **Write `inputs/subject.md`** — produces the validated, structured curriculum file ready
+5. **Write `inputs/course-skeleton.md`** — produces the validated, structured curriculum file ready
    for the planner
 
 You can start from something as rough as:
@@ -239,24 +239,24 @@ Suggest any topics that are missing or could be improved.
 ```
 
 See [`doc/MainSubjectSpec-Practical-Cowork-Automation.md`](doc/MainSubjectSpec-Practical-Cowork-Automation.md)
-for a complete example of a finished subject spec (the 18-chapter default curriculum).
+for a complete example of a finished course skeleton  (the 18-chapter default curriculum).
 
 ---
 
-### Other ways to provide the subject spec
+### Other ways to provide the course skeleton 
 
 If you prefer not to use the agent interactively, two alternatives are available:
 
 **Use the default curriculum (no action needed)**
 
-`inputs/subject.md` already contains the 18-chapter Cowork Automation curriculum. If this
+`inputs/course-skeleton.md` already contains the 18-chapter Cowork Automation curriculum. If this
 matches your course, keep it as-is and move straight to filling in `inputs/problem.yaml`
 and `inputs/students.yaml`.
 
 **Paste your curriculum inline when invoking `@course-factory-agent`**
 
 Include your chapter list directly in the message. The factory agent extracts it and writes
-it to `inputs/subject.md` automatically — without validation or research:
+it to `inputs/course-skeleton.md` automatically — without validation or research:
 
 ```
 @course-factory-agent
@@ -279,7 +279,7 @@ performs. Use it when you are confident your topic list is complete and well-sco
 
 ### What happens at planning time
 
-The planner reads `inputs/subject.md` and builds a **subject coverage index** — a map from
+The planner reads `inputs/course-skeleton.md` and builds a **subject coverage index** — a map from
 every topic and chapter in the spec to the course chapters it generates. This index appears
 in the normalization diff (first human-review halt) so you can see exactly how your curriculum
 maps to the personalized course structure before any content is generated.
@@ -294,7 +294,7 @@ until resolved.
 
 You can tell the pipeline exactly how long your course should be, how many chapters to
 produce, which topics to emphasize, and more. These requirements take the **highest
-precedence** in the pipeline — they override the subject spec, orchestration settings,
+precedence** in the pipeline — they override the course skeleton , orchestration settings,
 and all other defaults.
 
 ### What you can control
@@ -302,10 +302,10 @@ and all other defaults.
 | Requirement | What it does | Example |
 |-------------|-------------|---------|
 | **Total course time** | Sets a maximum (and optionally minimum) total duration | "max 4 hours", "3 to 5 hours" |
-| **Chapter count** | Overrides the chapter count in the subject spec | "6 chapters", "8 modules" |
+| **Chapter count** | Overrides the chapter count in the course skeleton  | "6 chapters", "8 modules" |
 | **Chapter duration** | Sets a per-chapter time target (default: 45–90 min) | "60 minutes per chapter" |
 | **Focus areas** | Topics that must have dedicated sections in some chapter | "focus on error recovery and debugging" |
-| **Excluded topics** | Topics to omit entirely, even if in the subject spec | "skip history and background" |
+| **Excluded topics** | Topics to omit entirely, even if in the course skeleton  | "skip history and background" |
 | **Difficulty** | Shifts the Bloom taxonomy distribution across the course | "intermediate", "advanced" |
 | **Artifact types** | Skip artifact types you don't need | "no podcast scripts", "skip slides" |
 | **Delivery format** | Self-paced, instructor-led, or blended (affects tone and priorities) | "self-paced", "instructor-led" |
@@ -441,11 +441,11 @@ On any gate failure, the generator is re-invoked with the specific failures as f
 ## Changing the Subject
 
 To generate a course on a different topic:
-1. Replace `inputs/subject.md` with your subject specification
+1. Replace `inputs/course-skeleton.md` with your course skeleton 
 2. Fill in `inputs/problem.yaml` and `inputs/students.yaml` for your domain
 3. Run `@planner-agent`
 
-The default subject (`inputs/subject.md`) is an 18-chapter course on Claude-based workflow
+The default subject (`inputs/course-skeleton.md`) is an 18-chapter course on Claude-based workflow
 automation for knowledge workers (Cowork Automation).
 
 ---
@@ -466,7 +466,7 @@ tools/              ← reusable helper scripts
 doc/                ← specification documents (read-only)
   GreatCourseSpec.md         ← master spec
   PlannerSpec.md
-  GreatTextSpec.md
+  GreatTutorialSpec.md
   GreatModuleExercise.md
   GreatPresentationSpec.md
   GreatQuizSpec.md
@@ -477,7 +477,7 @@ inputs/                      ← user-supplied configuration (edit these)
   problem.yaml               ← problem domain + scenarios (REQUIRED)
   students.yaml              ← cohort profile (REQUIRED)
   general-requirements.yaml  ← global overrides: time, chapters, focus, difficulty (OPTIONAL)
-  subject.md                 ← subject specification (default: Cowork Automation)
+  course-skeleton.md                 ← course skeleton  (default: Cowork Automation)
   orchestration.yaml         ← low-level pipeline settings
 
 outputs/            ← generated course content (created at runtime)
@@ -501,7 +501,7 @@ CLAUDE.md           ← project guide + shared schemas (always loaded by Claude 
 When specifications conflict, this order resolves them:
 
 ```
-General Requirements > Student Context > Problem Spec > Subject Spec > Orchestration Spec > Master Spec defaults
+General Requirements > Student Context > Problem Spec > course skeleton  > Orchestration Spec > Master Spec defaults
 ```
 
 See [Global Course Requirements](#global-course-requirements) for how to set requirements
@@ -530,7 +530,7 @@ input — they are non-negotiable.
   <https://docs.claude.com/en/docs/claude-code>.) Once Claude Code is running, invoke the agents
   below with `@agent-name` and skills with `/skill-name`.
 - Node.js 18+ (for Claude Code itself, and for `npx mmdc` — Mermaid diagram export)
-- Lab environment tools as declared in your subject spec (Python, etc.)
+- Lab environment tools as declared in your course skeleton  (Python, etc.)
 - The `pptx-generator` skill (ships under `.claude/skills/pptx-generator/`) and the
   `anthropic-skills:docx` skill. `pptx-generator` renders slide decks with PptxGenJS and needs
   `pptxgenjs` installed in your project. Run the one-shot installer below — see

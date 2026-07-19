@@ -21,7 +21,7 @@ You receive:
 - `personalization_plan`: `_plan/personalization-plan.json`
 - `reserved_scenarios`: `_plan/reserved-scenarios.json`
 - `chapter_manifests[]`: list of all `chapter.manifest.json` files (one per chapter)
-- `subject_spec_path`: `inputs/subject.md` (the curriculum contract)
+- `subject_spec_path`: `inputs/course-skeleton.md` (the curriculum contract)
 - `subject_coverage_index`: `_plan/subject-coverage-index.json` (from planner-agent)
 
 ## Your Procedure
@@ -35,10 +35,10 @@ Read each `chapter.manifest.json`. A chapter is complete when:
 If any chapter has `status: failed` or is missing, list the chapter number and stop — do not
 proceed to course-wide checks. Report the specific chapter(s) that need attention.
 
-### Step 2 — Subject specification coverage
+### Step 2 — course skeleton  coverage
 
 **This is the primary curriculum integrity check.** The generated course must address every
-topic, chapter, and objective listed in `inputs/subject.md`. Read `_plan/subject-coverage-index.json`
+topic, chapter, and objective listed in `inputs/course-skeleton.md`. Read `_plan/subject-coverage-index.json`
 produced by `planner-agent`.
 
 For each item in `subject_coverage_index.items[]`:
@@ -58,9 +58,9 @@ For each item in `subject_coverage_index.items[]`:
 Report:
 
 ```markdown
-## Subject Specification Coverage
+## course skeleton  Coverage
 
-| Subject Spec Item | Expected In | Actual Status | Notes |
+| course skeleton  Item | Expected In | Actual Status | Notes |
 |-------------------|-------------|---------------|-------|
 | Ch 1 — Introduction | ch01 | ✓ verified | All 8 topics present |
 | Ch 2 — Automation Mindset | ch02 | ✓ verified | |
@@ -125,8 +125,8 @@ Generated: {timestamp}
 
 ## Overall Status: PASS | FAIL
 
-## Subject Specification Coverage
-| Subject Spec Item | Expected In | Status | Notes |
+## course skeleton  Coverage
+| course skeleton  Item | Expected In | Status | Notes |
 |-------------------|-------------|--------|-------|
 | … | … | ✓ / ✗ | … |
 

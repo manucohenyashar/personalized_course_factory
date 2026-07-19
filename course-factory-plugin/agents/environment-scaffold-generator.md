@@ -11,7 +11,7 @@ following master spec §14.
 
 You receive:
 - `course_slug`: string
-- `subject_spec_path`: `inputs/subject.md` (contains any tool/language requirements)
+- `subject_spec_path`: `inputs/course-skeleton.md` (contains any tool/language requirements)
 - `orchestration_path`: `inputs/orchestration.yaml`
 - `student_context_path`: `inputs/students.yaml` (platform info, accessibility needs)
 
@@ -63,7 +63,7 @@ Written to `outputs/{course_slug}/environment/devcontainer.json`:
 }
 ```
 
-Populate `features` and `extensions` based on the tools required by the subject spec.
+Populate `features` and `extensions` based on the tools required by the course skeleton .
 
 ### `preflight.sh`
 

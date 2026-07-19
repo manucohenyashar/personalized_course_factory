@@ -1,9 +1,9 @@
 ---
-title: Course Factory — Chapter Text (Document) Specification
+title: Course Factory — Chapter tutorial (Document) Specification
 version: 2.0.0
 status: draft
 last_updated: 2026-05-16
-supersedes: GreatTextSpec.md
+supersedes: GreatTutorialSpec.md
 implements: GreatCourseSpec_v2.md §8.1 (Chapter Document schema), §7.3
             (cognitive load), §7.4 (Mayer pre-training, modality), §7.5
             (retrieval), §7.6 (spacing), §7.7 (worked → completion →
@@ -13,8 +13,8 @@ implements: GreatCourseSpec_v2.md §8.1 (Chapter Document schema), §7.3
             §15 (style guide), §16 (quality gates)
 skill_target: ChapterTextGeneratorSkill
 scope: |
-  Defines the contract for the per-chapter Text artifact — the canonical
-  chapter document the learner reads. The chapter text is the PRIMARY
+  Defines the contract for the per-Chapter tutorial artifact — the canonical
+  chapter document the learner reads. The Chapter tutorial is the PRIMARY
   artifact for self-taught learners and the SEED for every other per-chapter
   artifact (exercises, slides, quiz, podcast); the orchestrator generates
   the text first and passes its outline, running example, glossary delta,
@@ -22,15 +22,15 @@ scope: |
 conformance_language: RFC 2119
 canonical_term_note: |
   "Text", "chapter doc", "chapter document", and "chapter markdown/docx"
-  all refer to this artifact. The canonical term is **Chapter Text**;
+  all refer to this artifact. The canonical term is **Chapter tutorial**;
   the filename uses the `--doc` artifact suffix per master §5.2.
 ---
 
-# Chapter Text Specification (v2)
+# Chapter tutorial Specification (v2)
 
 ## 1. Purpose
 
-Generate one Chapter Text per chapter
+Generate one Chapter tutorial per chapter
 (`tutorial.docx`, inside `chapters/ch{NN}-{chapter_slug}/`) that:
 
 - Carries the chapter's full conceptual content and worked example.
@@ -40,7 +40,7 @@ Generate one Chapter Text per chapter
   pitfalls, retrieval checkpoints) every downstream per-chapter generator
   reads.
 
-The Chapter Text is the **first** artifact generated per chapter; all
+The Chapter tutorial is the **first** artifact generated per chapter; all
 other chapter artifacts (exercise pack, slide deck, quiz, podcast,
 companion files) are produced from it (master §19.3).
 
@@ -142,7 +142,7 @@ reading_metrics:
 
 ## 6. Required Body Structure (REQUIRED, in this order)
 
-The Chapter Text MUST contain these 15 sections in order. This
+The Chapter tutorial MUST contain these 15 sections in order. This
 mirrors master §8.1; the present spec adds operational rules.
 
 ```
@@ -273,7 +273,7 @@ license:               <SPDX id>
   (master §11).
 
 ### 8.14 Further Reading
-- 2–5 citations drawn from `canonical_references[]` in the Subject Spec.
+- 2–5 citations drawn from `canonical_references[]` in the course skeleton .
 - Citation format `Author (Year). Title. URL.` (master §15.5).
 
 ## 9. Pedagogy Operationalized
@@ -342,7 +342,7 @@ license:               <SPDX id>
 
 ## 14. Mode Adaptation
 
-- **Self-taught:** The Chapter Text is the canonical artifact.
+- **Self-taught:** The Chapter tutorial is the canonical artifact.
   Sentences MUST be unambiguous; references to "I" or "we" MUST be
   avoided; second-person ("you") is the default voice (master §15.2).
   The text MUST be sufficient without the slide deck or instructor
@@ -353,7 +353,7 @@ license:               <SPDX id>
 
 ## 15. Quality Gates
 
-The Chapter Text MUST pass every MUST gate before shipping; on failure
+The Chapter tutorial MUST pass every MUST gate before shipping; on failure
 the generator regenerates and logs the reason in `CHANGELOG.md`.
 
 ### MUST gates

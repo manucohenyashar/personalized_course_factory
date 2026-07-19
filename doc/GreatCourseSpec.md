@@ -70,7 +70,7 @@ The generator consumes **four sibling specifications**. Each MUST declare a
 `schema_version`. Missing required fields halt generation with a clear error;
 the generator MUST NOT fabricate missing inputs.
 
-### 3.1 Subject Spec  (`subject.yaml` / `subject.md`)
+### 3.1 course skeleton   (`subject.yaml` / `course-skeleton.md`)
 
 | Field | Req | Description |
 |---|---|---|
@@ -87,7 +87,7 @@ the generator MUST NOT fabricate missing inputs.
 If `chapter_partitioning` is omitted, the generator MUST propose a partition
 (per §6) and halt for human review before producing artifacts.
 
-**Narrative Subject Spec normalization.** If the Subject Spec is supplied
+**Narrative course skeleton  normalization.** If the course skeleton  is supplied
 as a narrative markdown document (such as the bundled
 `MainSubjectSpec-Cowork-Automation.md` example) rather than the structured
 schema above, the orchestrator MUST run a **normalization pre-step** that
@@ -106,7 +106,7 @@ extracts the schema fields from the narrative and emits a derived
    inferred field and its source span in the narrative.
 
 The normalized YAML, once human-approved, becomes the authoritative
-Subject Spec for the rest of the pipeline. The narrative original
+course skeleton  for the rest of the pipeline. The narrative original
 is retained for traceability in `course.manifest.json`.
 
 ### 3.2 Problem Spec  (`problem.yaml` / `problem.md`)
@@ -177,7 +177,7 @@ When specs disagree, precedence is (highest first):
 
 1. Student Context Spec  (the learner is the ultimate constraint)
 2. Problem Spec  (the anchor for personalization)
-3. Subject Spec
+3. course skeleton 
 4. Orchestration Spec
 
 Conflicts MUST be logged in `CHANGELOG.md` with the resolution applied.
@@ -295,7 +295,7 @@ Every regeneration MUST bump at least the PATCH version and append an entry to
 
 The generator MUST partition the course such that each chapter:
 
-1. Maps to **one or two** learning outcomes from the Subject Spec.
+1. Maps to **one or two** learning outcomes from the course skeleton .
 2. Has an **estimated time ≤ 60 min**, computed as:
    ```
    time = (doc_words / 140 wpm)
@@ -373,7 +373,7 @@ quality gates can verify.
   (the "I do / we do / you do" pattern.)
 
 ### 7.8 Expertise Reversal & Differentiated Paths (Kalyuga)
-- **Rule:** When the Subject Spec's `target_level` is `intermediate` or
+- **Rule:** When the course skeleton 's `target_level` is `intermediate` or
   `advanced`, the generator MUST emit two tracks per chapter:
   - **Novice track:** worked-example-heavy.
   - **Practiced track:** problem-heavy, with worked examples linked but not
@@ -444,7 +444,7 @@ Length: **2,500–4,500 words**. Required sections, in this order:
 12. Retrieval Checkpoints      # ≥3 in-flow recall prompts (§7.5)
 13. Reflection Prompts         # 3 metacognition items (§7.11)
 14. Glossary Delta             # terms added this chapter
-15. Further Reading            # 2–5 citations from Subject Spec
+15. Further Reading            # 2–5 citations from course skeleton 
 ```
 
 The chapter doc MUST embed (or link) all diagrams as both source (Mermaid /
@@ -877,7 +877,7 @@ The Student Context Spec drives content shape, not just labels.
 ### 15.5 Citations
 - Further-reading citations use a consistent format
   (`Author (Year). Title. URL.`) and link to canonical sources from the
-  Subject Spec.
+  course skeleton .
 
 ---
 
@@ -967,10 +967,10 @@ The generator MUST NOT produce:
 
 | Term | Canonical definition |
 |---|---|
-| **Course** | The full deliverable for one Subject + Problem + Student Context combination. |
+| **Course** | The full deliverable for one Course Skeleton + Problem + Student Context combination. |
 | **Chapter** | A single learning unit, ≤ 60 min, mapping to 1–2 outcomes. |
 | **Section** | A subdivision within a chapter (concept, example, exercise, etc.). |
-| **Subject Spec** | Input spec defining the topic to teach (§3.1). |
+| **course skeleton ** | Input spec defining the topic to teach (§3.1). |
 | **Problem Spec** | Input spec defining the learner's real-world problem domain (§3.2). |
 | **Student Context Spec** | Input spec defining the learner's identity, prior knowledge, locale, and needs (§3.3). |
 | **Orchestration Spec** | Input spec defining the pipeline (§3.4). |
@@ -1007,7 +1007,7 @@ full hierarchy.
 | **PlannerAgent** | upstream (1 per course) | `course-plan.yaml`, `personalization-plan.json` (§10), `subject.normalized.yaml` (§3.1, if narrative), `reserved-scenarios.json`, `chapter-partition-rationale.md`, `precedence-log.md`, `dependency-graph.svg`, `PLAN_REVIEW.md` | `PlannerSpec_v2.md` | §3, §3.1, §3.5, §6, §9.5, §10, §14, §19 |
 | **ChapterSupervisorAgent** | per-chapter coordinator | `chapter.manifest.json`; dispatches deliverables in dependency order | `PlannerSpec_v2.md §11` | §19.3, §19.4 |
 | **EvaluatorAgent** | quality-gate runner | `evaluator-report.md` per chapter + course-wide + capstone | `PlannerSpec_v2.md §12` | §16 |
-| **ChapterTextGenerator** | per-chapter | `tutorial.docx`, `tutorial.handoff.json`, `diagrams/` | `GreatTextSpec_v2.md` | §7.3, §7.4, §7.5, §7.6, §7.7, §7.10, §7.11, §7.15, §8.1, §10, §12.3, §13, §15, §16 |
+| **ChapterTextGenerator** | per-chapter | `tutorial.docx`, `tutorial.handoff.json`, `diagrams/` | `GreatTutorialSpec_v2.md` | §7.3, §7.4, §7.5, §7.6, §7.7, §7.10, §7.11, §7.15, §8.1, §10, §12.3, §13, §15, §16 |
 | **QuizGenerator** | per-chapter (+ 1 diagnostic per course) | `quiz.json` (Form A), `quiz-formB.json`, `prereq-diagnostic.md` (in `diagnostic` mode) | `GreatQuizSpec_v2.md` | §9 |
 | **ExerciseGenerator** | per-chapter | `exercises/` folder (worked example + completion + ≥ 1 independent), per-exercise `rubric.json`, `verify/`, `failure-modes.md`, `manifest.json`, `debrief.md` | `GreatModuleExercise_v2.md` | §7.7, §7.10, §7.12, §7.14, §8.3, §9.6, §16.2, §16.5 |
 | **PresentationGenerator** | per-chapter | `slides.pptx`, `slides-notes.md` | `GreatPresentationSpec_v2.md` | §7.3, §7.4, §7.5, §7.11, §8.2, §10, §12.1, §12.2, §13.1, §16.4 |
@@ -1060,7 +1060,7 @@ dependency arrows; ChapterSupervisorAgent enforces them at runtime.
 
 ```
 Stage 0  — INPUTS (must pre-exist)
-0.1  Subject Spec, Problem Spec, Student Context Spec, Orchestration Spec
+0.1  course skeleton , Problem Spec, Student Context Spec, Orchestration Spec
      (validated per §3; halt on missing required fields)
 
 Stage 1  — PLANNING (PlannerAgent, 1 invocation)
@@ -1078,7 +1078,7 @@ Stage 2  — COURSE-WIDE PRE-WORK (dispatched by the Plan)
 2.3  GlossaryAggregator → glossary skeleton; ReferenceArchitectureGenerator → seed diagram
 
 Stage 3  — PER CHAPTER (ChapterSupervisorAgent per chapter, in order ch01 → chNN)
-3.1  ChapterTextGenerator → chapter doc + handoff (§8.1, GreatTextSpec_v2)
+3.1  ChapterTextGenerator → chapter doc + handoff (§8.1, GreatTutorialSpec_v2)
                                                    [seeds 3.2–3.6 via tutorial.handoff.json]
 3.2  ExerciseGenerator → exercises pack            [needs 3.1]
 3.3  PresentationGenerator → slides + notes        [needs 3.1, 3.2 for "Try this now" slide]

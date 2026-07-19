@@ -44,9 +44,9 @@ language_locale:     [FOUND|INFERRED|MISSING]
 learning_mode:       [FOUND|INFERRED|MISSING] — self-study, instructor-led, or both
 ```
 
-### 1.3 — Read the subject spec
+### 1.3 — Read the course skeleton 
 
-Read `inputs/subject.md`. Extract:
+Read `inputs/course-skeleton.md`. Extract:
 - Course title and goals
 - Intended audience
 - Major topics covered
@@ -61,7 +61,7 @@ This is the lens against which you will validate the problem domain and student 
 
 ### 2.1 — Alignment check
 
-Compare the extracted domain and problem summary against `inputs/subject.md`.
+Compare the extracted domain and problem summary against `inputs/course-skeleton.md`.
 
 Score alignment on a 0–3 scale:
 
@@ -77,7 +77,7 @@ Score alignment on a 0–3 scale:
 **Score = 1:** note the gap. In Phase 3, when asking the user questions, surface this:
 > "The course subject is designed for {subject_audience}. Your team is {user_description}.
 > The material will need significant adaptation. Should we proceed, or would you like to use
-> a different subject specification for `inputs/subject.md`?"
+> a different course skeleton  for `inputs/course-skeleton.md`?"
 
 **Score = 0:** flag immediately using `AskUserQuestion` before proceeding further:
 
@@ -86,14 +86,14 @@ Question: "The course subject ({subject_title}) appears to be in a very differen
 your problem ({user_domain}). This mismatch will make personalization difficult.
 How would you like to proceed?"
 Options:
-  - "Replace inputs/subject.md with a new subject spec (I'll describe it)"
+  - "Replace inputs/course-skeleton.md with a new course skeleton  (I'll describe it)"
   - "Keep the current subject — it's close enough with adaptation"
   - "Help me understand why these are compatible"
 ```
 
 ### 2.2 — Vocabulary overlap check
 
-List domain vocabulary from the user's documents. Compare against subject spec terminology.
+List domain vocabulary from the user's documents. Compare against course skeleton  terminology.
 Overlap of < 25% on domain vocabulary is a relevance warning — note it for Phase 3 questions.
 
 ---
@@ -104,7 +104,7 @@ Overlap of < 25% on domain vocabulary is a relevance warning — note it for Pha
 
 ### 3.1 — Topic count estimation
 
-From the subject spec and the user's problem description, estimate how many distinct
+From the course skeleton  and the user's problem description, estimate how many distinct
 learnable topics the course would cover. A "learnable topic" = something that requires
 its own chapter (45–90 min) to explain and practice.
 
@@ -121,13 +121,13 @@ Use this heuristic:
 - The user mentions "everything about X" or "full stack" or "end-to-end"
 - The topic list spans multiple disciplines (e.g., ML theory + DevOps + security)
 - Solving the problem would require skills that take months to develop
-- The subject spec covers > 15 chapter-level topics
+- The course skeleton  covers > 15 chapter-level topics
 
 **Signs the subject is TOO NARROW (flag for user):**
 - Only 1–2 learnable concepts
 - The entire course could be delivered in a single 2-hour workshop
 - The user's problem is solved by learning one specific command or API call
-- The subject spec covers < 3 chapter-level topics
+- The course skeleton  covers < 3 chapter-level topics
 
 ### 3.3 — Scope adjustment offer
 
@@ -654,7 +654,7 @@ After the user approves the specification:
 
 1. Write `inputs/problem.yaml` — full YAML, no REPLACE_ME tokens.
 2. Write `inputs/students.yaml` — full YAML, no REPLACE_ME tokens.
-3. Do NOT write `inputs/subject.md` unless the user asked you to replace it.
+3. Do NOT write `inputs/course-skeleton.md` unless the user asked you to replace it.
 4. Leave `inputs/orchestration.yaml` unchanged.
 
 Confirm after writing:
@@ -672,8 +672,8 @@ Confirm after writing:
 The input files are ready in inputs/. Generate the course.
 ```
 
-Or, if you want to review or adjust the subject specification first:
-- Open `inputs/subject.md` and modify it
+Or, if you want to review or adjust the course skeleton  first:
+- Open `inputs/course-skeleton.md` and modify it
 - Then invoke `@course-factory-agent`
 ```
 

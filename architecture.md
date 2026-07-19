@@ -35,8 +35,8 @@ generation, isolate heavy work in subagents, and persist state to disk.**
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
 │  INPUTS / SPECIFICATIONS  (the contracts — prose + YAML/JSON, versioned)    │
-│  inputs/{subject.md, problem.yaml, students.yaml, general-requirements.yaml}│
-│  doc/{GreatCourseSpec, PlannerSpec, GreatTextSpec, …}  ·  CLAUDE.md          │
+│  inputs/{course-skeleton.md, problem.yaml, students.yaml, general-requirements.yaml}│
+│  doc/{GreatCourseSpec, PlannerSpec, GreatTutorialSpec, …}  ·  CLAUDE.md          │
 └───────────────────────────────────────────────────────────────────────────┘
                 │ read by
                 ▼
@@ -174,7 +174,7 @@ Each boundary exists for a concrete reason.
   structure, the quiz rules, the lab gates, the file-naming convention, the Bloom verb tables,
   the docx design rules. They change rarely and are referenced by `§` number.
 - **Skills (`.claude/skills/*.md`)** are the **procedures** that implement a spec: step-by-step
-  instructions a generator follows. `generate-chapter-text` implements `GreatTextSpec`,
+  instructions a generator follows. `generate-chapter-text` implements `GreatTutorialSpec`,
   `generate-quiz` implements `GreatQuizSpec`, and so on.
 
 Why split them? A spec is a *normative reference* shared by a generator **and** its evaluator —
@@ -240,7 +240,7 @@ retry attempts) lives and dies inside the subagent.
   personalization, format, technical, accessibility, calibration are independent checks, so they
   run at once and the evaluator aggregates the verdicts.
 - Within a chapter, **independent generators run in parallel** (e.g. presentation + quiz +
-  podcast), while dependent ones run after the chapter text (its `tutorial.handoff.json` seeds them).
+  podcast), while dependent ones run after the Chapter tutorial (its `tutorial.handoff.json` seeds them).
 
 This compresses wall-clock time without sacrificing the independence that makes the checks
 trustworthy.
@@ -358,7 +358,7 @@ flowchart TD
 - **Two scopes of validation.** Per-artifact gates catch local defects; the course-level
   `evaluator-agent` catches *emergent* ones — cross-chapter LO coverage, running-example
   coherence across all artifacts, glossary completeness, **subject-spec coverage** (every topic
-  in `inputs/subject.md` is taught), and capstone eligibility.
+  in `inputs/course-skeleton.md` is taught), and capstone eligibility.
 
 ---
 
@@ -432,7 +432,7 @@ Two data contracts make loose coupling between subagents possible:
   every downstream chapter generator. It carries the section outline (with Bloom tags), the
   running example, the worked-example seed, glossary deltas, pitfalls, retrieval checkpoints,
   reflection prompts, diagram references, the quiz seed, and reading metrics. This is how the
-  slides, quiz, and podcast stay consistent with the chapter text **without** re-reading the full
+  slides, quiz, and podcast stay consistent with the Chapter tutorial **without** re-reading the full
   document — they read the handoff, not the prose. (It also feeds the course-level glossary via
   `glossary_delta`.)
 

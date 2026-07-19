@@ -11,16 +11,16 @@ instructions and output templates.
 ## Inputs Required
 
 Before starting, verify all required input files are complete (no REPLACE_ME tokens):
-- `inputs/subject.md` — **curriculum contract** (REQUIRED); defines topics and chapter structure
+- `inputs/course-skeleton.md` — **curriculum contract** (REQUIRED); defines topics and chapter structure
 - `inputs/problem.yaml` — problem domain with ≥ 4 representative scenarios (REQUIRED)
 - `inputs/students.yaml` — cohort profile (REQUIRED)
 - `inputs/orchestration.yaml` — pipeline settings (REQUIRED)
 - `inputs/general-requirements.yaml` — global course requirements (OPTIONAL; read if present)
 
-`inputs/subject.md` is the **curriculum baseline** — the authoritative list of topics, chapters,
+`inputs/course-skeleton.md` is the **curriculum baseline** — the authoritative list of topics, chapters,
 and objectives that the personalized course MUST teach. The planner's job is to take this
 curriculum and restructure, sequence, and personalize it for the target cohort and problem
-domain. No topic or chapter listed in `inputs/subject.md` may be silently omitted.
+domain. No topic or chapter listed in `inputs/course-skeleton.md` may be silently omitted.
 
 If any required file is missing or contains REPLACE_ME, **HALT immediately** and tell the user
 which fields need to be filled in. Do NOT invent values.
@@ -34,7 +34,7 @@ subsequent step. Log each active override in `_plan/CHANGELOG.md` at Step 12.
 ### Step 1 — Parse and validate inputs
 
 Read all input files. Extract:
-- Subject spec: course title, discipline, chapter list, chapter learning outcomes
+- course skeleton : course title, discipline, chapter list, chapter learning outcomes
 - Problem spec: problem_id, domain, representative_scenarios[] (≥ 4)
 - Student context: cohort_id, prior_knowledge[], accessibility_needs[], mode_preference
 - Orchestration: numeric_overrides, quality_gates_to_run, mode_targets
@@ -43,9 +43,9 @@ Read all input files. Extract:
 
 **Apply global_req overrides immediately:**
 - If `global_req.chapter_count` is set → use this as the target chapter count; ignore the
-  chapter count implied by inputs/subject.md
+  chapter count implied by inputs/course-skeleton.md
 - If `global_req.total_hours_max` is set → the sum of all chapter est_minutes must not exceed
-  this value × 60. Flag a conflict if subject.md chapters cannot fit.
+  this value × 60. Flag a conflict if course-skeleton.md chapters cannot fit.
 - If `global_req.chapter_duration_minutes` is set → use as the per-chapter time target in
   Step 7 instead of the 45–90 min default band
 - If `global_req.difficulty_target` is set → use to shape Bloom distribution in Step 4:
@@ -61,9 +61,9 @@ Read all input files. Extract:
 - If `global_req.custom_instructions` is set → treat as binding planner-level guidance;
   apply throughout all 12 steps
 
-**Build the subject spec coverage index:**
+**Build the course skeleton  coverage index:**
 
-From `inputs/subject.md`, extract every chapter/section heading, stated objective, and
+From `inputs/course-skeleton.md`, extract every chapter/section heading, stated objective, and
 topic bullet. Record them in a structured list — this is the **curriculum contract**:
 
 ```
@@ -84,19 +84,19 @@ a coverage gap and resolve before continuing.
 Validate:
 - ≥ 4 representative scenarios present
 - All LOs have Bloom verbs (from the taxonomy in ${CLAUDE_PLUGIN_ROOT}/course-factory-guide.md)
-- Chapter count ≥ 3 and ≤ 30 (use global_req.chapter_count if set, else subject.md count)
+- Chapter count ≥ 3 and ≤ 30 (use global_req.chapter_count if set, else course-skeleton.md count)
 - Student context has locale, age_range, primary_language
-- `inputs/subject.md` contains ≥ 1 chapter or topic section (if empty or missing: HALT)
+- `inputs/course-skeleton.md` contains ≥ 1 chapter or topic section (if empty or missing: HALT)
 
 ### Step 2 — Narrative normalization — HUMAN REVIEW HALT
 
 Produce a normalization diff showing:
 1. **Global requirements applied** — list every active field from `inputs/general-requirements.yaml`
-   and how it changes the plan (e.g., "chapter_count: 6 → subject.md's 18 chapters will be merged
+   and how it changes the plan (e.g., "chapter_count: 6 → course-skeleton.md's 18 chapters will be merged
    into 6"; "focus_areas: ['debugging'] → dedicated section added to chapter 3").
    If no file or no active fields: "None — all pipeline defaults apply."
-2. Which Subject Spec chapter titles will become chapter slugs
-3. Which Student Context fields override Subject Spec defaults
+2. Which course skeleton  chapter titles will become chapter slugs
+3. Which Student Context fields override course skeleton  defaults
 4. Which Problem Spec scenarios are assigned to which chapters
 5. Any conflicts between specs and how they resolve (per precedence:
    General Requirements > Student > Problem > Subject > Orchestration)
@@ -115,8 +115,8 @@ every entry in the `subject_coverage_index` built in Step 1.
 - No chapter may introduce more than 4 new concepts in a single section
 - Ensure a Bloom staircase across the course shaped by `global_req.difficulty_target` (see Step 1)
 
-**Subject spec mapping rule**: as you define each course chapter, update the
-`subject_coverage_index` by setting `mapped_to_course_chapter` for every subject spec entry
+**course skeleton  mapping rule**: as you define each course chapter, update the
+`subject_coverage_index` by setting `mapped_to_course_chapter` for every course skeleton  entry
 the chapter addresses. After partitioning, scan for any entry still set to `null`:
 - If a topic was excluded by `global_req.exclude_topics[]`: mark it `excluded` with reason
 - If a topic fits within an existing chapter but was missed: add it as a section
@@ -124,7 +124,7 @@ the chapter addresses. After partitioning, scan for any entry still set to `null
   a conflict in the normalization diff for the user to resolve
 
 **Chapter count resolution:**
-- If `global_req.chapter_count` is set: merge or split subject.md chapters to reach exactly
+- If `global_req.chapter_count` is set: merge or split course-skeleton.md chapters to reach exactly
   that count. Merged chapters combine their LOs; split chapters divide content and LOs evenly.
 - If `global_req.total_hours_max` is set: verify sum of est_minutes ≤ total_hours_max × 60.
   If over budget, trim chapter content or reduce chapter count until the budget is met.
@@ -183,7 +183,7 @@ For each chapter, allocate `est_minutes` across:
 
 ### Step 8 — Prerequisite diagnostic design
 
-Design `prereq-diagnostic.md`: 8 items, one per declared prerequisite in the subject spec.
+Design `prereq-diagnostic.md`: 8 items, one per declared prerequisite in the course skeleton .
 Each item: bloom_level, topic, diagnostic_purpose (what gap it reveals if missed).
 
 ### Step 9 — Lab scope definition
@@ -218,7 +218,7 @@ course_slug: <string>
 course_title: <string>
 version: "1.0.0"
 generated_at: <ISO datetime>
-subject_spec_ref: inputs/subject.md
+subject_spec_ref: inputs/course-skeleton.md
 problem_spec_ref: inputs/problem.yaml
 student_context_ref: inputs/students.yaml
 orchestration_ref: inputs/orchestration.yaml
@@ -272,15 +272,15 @@ chapters:
 - Reserved scenarios (must not appear in chapters)
 - Numeric overrides active (if any)
 - 13 MUST-gate checklist (PlannerSpec §13)
-- **Subject Spec Coverage Matrix** — shows every topic/chapter from `inputs/subject.md`
+- **course skeleton  Coverage Matrix** — shows every topic/chapter from `inputs/course-skeleton.md`
   and which course chapter(s) address it:
 
   ```markdown
-  ## Subject Specification Coverage
+  ## course skeleton  Coverage
 
-  Source: inputs/subject.md
+  Source: inputs/course-skeleton.md
 
-  | Subject Spec Item | Topics | Covered By | Status |
+  | course skeleton  Item | Topics | Covered By | Status |
   |-------------------|--------|------------|--------|
   | Ch 1 — Introduction | What Claude Cowork is, ... | Course ch01 | ✓ covered |
   | Ch 2 — Automation Mindset | Identifying repetitive work, ... | Course ch02 | ✓ covered |
@@ -288,7 +288,7 @@ chapters:
   | ... | ... | ... | ... |
   | Excluded: [topic] | — | — | ⊘ excluded by general-requirements |
 
-  **Coverage: N/N subject spec items addressed.**
+  **Coverage: N/N course skeleton  items addressed.**
   ```
 
   If any item is uncovered and not explicitly excluded: mark it `✗ MISSING` and list it
@@ -298,11 +298,11 @@ chapters:
 Write `_plan/subject-coverage-index.json` alongside the other plan artifacts:
 ```json
 {
-  "subject_spec_ref": "inputs/subject.md",
+  "subject_spec_ref": "inputs/course-skeleton.md",
   "items": [
     {
       "id": "S-01",
-      "source_heading": "<chapter or section heading from subject.md>",
+      "source_heading": "<chapter or section heading from course-skeleton.md>",
       "topics": ["<topic 1>", "..."],
       "objectives": ["<objective 1>", "..."],
       "mapped_to_course_chapters": ["ch01"],

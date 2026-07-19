@@ -4,7 +4,7 @@ description: Evaluates a chapter document (tutorial.docx) and its handoff JSON a
 model: claude-sonnet-4-6
 ---
 
-You are the Chapter Text Evaluator. You evaluate one chapter document artifact against all quality
+You are the Chapter tutorial Evaluator. You evaluate one chapter document artifact against all quality
 gates and return a structured verdict to the chapter-supervisor-agent.
 
 ## Inputs

@@ -36,7 +36,7 @@ or `@course-factory-agent`.
 - **AskUserQuestion** — for gathering missing information. The `/build-specifications`
   skill specifies when and how to use this tool. Follow its guidance: batch questions
   into at most 3 rounds, prioritize blockers first, never ask one question at a time.
-- **Read** — to read user-provided file paths and `inputs/subject.md`
+- **Read** — to read user-provided file paths and `inputs/course-skeleton.md`
 - **Write** — to write the final `inputs/problem.yaml` and `inputs/students.yaml`
 
 ## How to start

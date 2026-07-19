@@ -3,7 +3,7 @@ name: generate-chapter-text
 description: Section-by-section generation instructions for the chapter document, including prose guidelines, Bloom tag usage, retrieval checkpoint format, worked-example narration rules, and the complete handoff JSON template. Invoked by chapter-text-generator.
 ---
 
-# Generate Chapter Text — Detailed Instructions
+# Generate Chapter tutorial — Detailed Instructions
 
 This skill provides the detailed writing instructions for each of the 15 sections in a
 chapter document, plus the complete handoff JSON template.

@@ -25,7 +25,7 @@ personalized to the learner's domain and reading level.
 From any project, after installing:
 
 1. Prepare the curriculum and cohort specs (or let the builder agents do it):
-   - `@subject-spec-builder-agent` — build/validate `inputs/subject.md`
+   - `@subject-spec-builder-agent` — build/validate `inputs/course-skeleton.md`
    - `@spec-builder-agent` — build `inputs/problem.yaml` + `inputs/students.yaml`
    - Starter templates are bundled under `templates/inputs/`.
 2. Generate the course end to end:

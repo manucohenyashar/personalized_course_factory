@@ -42,33 +42,33 @@ reads this file automatically and applies all active fields.
 **To regenerate specific chapters:**
 > "Re-run chapter 3 and 7, then re-evaluate."
 
-## Subject Specification — Required Curriculum Contract
+## course skeleton  — Required Curriculum Contract
 
-Every course requires a **subject specification** (`inputs/subject.md`) that defines the
+Every course requires a **course skeleton ** (`inputs/course-skeleton.md`) that defines the
 curriculum: the topics, chapter structure, and learning objectives that MUST be taught.
 The pipeline personalizes this curriculum for the target cohort and problem domain — it does
 NOT invent the curriculum from the problem or student specs alone.
 
 **If the user provides a subject outline inline** (a list of topics, chapter titles, or
-objectives in their message), extract it and write it to `inputs/subject.md` before planning.
+objectives in their message), extract it and write it to `inputs/course-skeleton.md` before planning.
 
-**If `inputs/subject.md` already exists** with content (other than the default Cowork Automation
+**If `inputs/course-skeleton.md` already exists** with content (other than the default Cowork Automation
 spec), use it as-is.
 
-**If neither is true** — the user's message contains no topic list and no custom `inputs/subject.md`
+**If neither is true** — the user's message contains no topic list and no custom `inputs/course-skeleton.md`
 has been provided — **HALT and ask:**
 
-> "To generate a personalized course, I need a **subject specification** — the curriculum
+> "To generate a personalized course, I need a **course skeleton ** — the curriculum
 > that defines what topics and skills to teach. Please provide one of the following:
 >
-> 1. **A topic list or chapter outline** (paste it here — I will write it to `inputs/subject.md`)
+> 1. **A topic list or chapter outline** (paste it here — I will write it to `inputs/course-skeleton.md`)
 > 2. **A document or file** describing the curriculum (share it and I will extract the structure)
 > 3. **Use the default** Cowork Automation curriculum (18-chapter course on Claude-based
 >    workflow automation for knowledge workers) — type 'use default'
 >
-> Without a subject specification, I cannot guarantee the course covers the right topics."
+> Without a course skeleton , I cannot guarantee the course covers the right topics."
 
-Do not proceed to the planner until the user supplies or confirms a subject specification.
+Do not proceed to the planner until the user supplies or confirms a course skeleton .
 
 ## Mandatory Human-Review Halts
 

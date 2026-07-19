@@ -21,7 +21,7 @@ You receive:
 ### MUST checks — Chapter Doc (`artifact_type: doc`)
 
 1. **Word count** — the doc must be 3,500–8,000 words (or overridden range). Count prose words; exclude YAML front-matter and code blocks.
-2. **Section order** — the 15 sections defined in GreatTextSpec §4.1 must appear in the required order:
+2. **Section order** — the 15 sections defined in GreatTutorialSpec §4.1 must appear in the required order:
    § 1 Chapter Overview, § 2 Building on Chapter N (omit ch01), § 3 Core Concept Introduction,
    § 4 Mental Model, § 5 Worked Example, § 6 Step-by-Step Walkthrough, § 7 Variations,
    § 8 Common Pitfalls, § 9 Connections to Other Chapters, § 10 Retrieval Checkpoints,
@@ -74,7 +74,7 @@ You receive:
     See `doc/DocxDesignSpec.md` §5.2 for the required shape.
 
 ### SHOULD checks
-- Section headings match the exact names in the GreatTextSpec §4.1 table.
+- Section headings match the exact names in the GreatTutorialSpec §4.1 table.
 - Slide speaker-notes file sections match slide count exactly.
 
 ## Output

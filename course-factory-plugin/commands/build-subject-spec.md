@@ -1,15 +1,15 @@
 ---
 name: build-subject-spec
-description: Detailed logic for reviewing, validating, and improving a subject specification (inputs/subject.md) to ensure it is compatible with the Personalized Course Factory generator. Covers scope validation, structural checks, Bloom compatibility, hands-on feasibility, and capstone viability. Used by subject-spec-builder-agent.
+description: Detailed logic for reviewing, validating, and improving a course skeleton  (inputs/course-skeleton.md) to ensure it is compatible with the Personalized Course Factory generator. Covers scope validation, structural checks, Bloom compatibility, hands-on feasibility, and capstone viability. Used by subject-spec-builder-agent.
 ---
 
-# Build Subject Spec — Validation & Refinement Logic
+# Build course skeleton  — Validation & Refinement Logic
 
-This skill validates and improves a subject specification so it produces a coherent,
+This skill validates and improves a course skeleton  so it produces a coherent,
 teachable course when processed by the Personalized Course Factory pipeline.
 
 Follow every phase in order. Use `AskUserQuestion` to present findings and gather decisions.
-Complete all phases before writing `inputs/subject.md`.
+Complete all phases before writing `inputs/course-skeleton.md`.
 
 ---
 
@@ -43,8 +43,8 @@ The user describes their course topic but has no structured spec. Ask them to sh
 they have — even a rough list of topics, a training manual, or a paragraph description.
 Proceed to Phase 1 using whatever they provide.
 
-**Mode C — Reviewing `inputs/subject.md`:**
-No file specified; check if `inputs/subject.md` exists and contains non-default content.
+**Mode C — Reviewing `inputs/course-skeleton.md`:**
+No file specified; check if `inputs/course-skeleton.md` exists and contains non-default content.
 If it does, treat as Mode A with that file. If it contains the default Cowork Automation
 curriculum, confirm with the user whether to review the default or start fresh.
 
@@ -336,7 +336,7 @@ blocking issues → research gaps → structural warnings → optional improveme
 Present this full report in your text output before asking any questions:
 
 ```markdown
-## Subject Spec Review — {title or "Your Spec"}
+## course skeleton  Review — {title or "Your Spec"}
 
 **Chapters:** {N}  
 **Estimated total learning time:** ~{total_hours:.1f} hours  
@@ -518,16 +518,16 @@ Max 3 rounds. For each round:
 If after round 3 there are still unresolved CRITICAL issues, write them to
 `_subject-spec-issues.md` and tell the user: "These blocking issues remain unresolved.
 The generator can still attempt planning, but will likely halt at Step 1 of the planner.
-You can resolve them manually in `inputs/subject.md` before running `@course-factory-agent`."
+You can resolve them manually in `inputs/course-skeleton.md` before running `@course-factory-agent`."
 
 ---
 
-## PHASE 5 — Write `inputs/subject.md`
+## PHASE 5 — Write `inputs/course-skeleton.md`
 
 After all rounds are complete, write the final spec.
 
 **If working from an existing file that was modified:**
-Write the updated content to `inputs/subject.md` using the `Write` tool. Preserve all
+Write the updated content to `inputs/course-skeleton.md` using the `Write` tool. Preserve all
 original content that was not explicitly changed.
 
 **If building from scratch:**
@@ -590,7 +590,7 @@ By the end of this course, learners will be able to:
 
 After writing, confirm to the user:
 
-> "`inputs/subject.md` has been written and validated.
+> "`inputs/course-skeleton.md` has been written and validated.
 >
 > **Summary:**
 > - {N} chapters
