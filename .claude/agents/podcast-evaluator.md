@@ -33,7 +33,13 @@ Read 5–10 paragraph-length excerpts from the chapter doc. Check if any 20-word
 from the chapter doc appears verbatim in the podcast script. The podcast MUST paraphrase and
 narrate — never copy paste from the doc (Mayer redundancy principle, master §7.4).
 
-### Step 3 — Spawn all 7 gate sub-agents in parallel
+### Step 3 — Spawn the applicable gate sub-agents in parallel
+
+**Gate applicability (R1 — do not spawn no-op gates):** for a **podcast** script, spawn only:
+`coverage`, `personalization`, `format`, `accessibility`. `pedagogy`, `technical`, and `calibration`
+define no checks for an audio script — do not spawn them; record each in `gate_results` as
+`{ "gate_id": "16.N", "status": "skipped", "reason": "not applicable to podcast" }` and exclude
+skipped gates from the pass/fail decision. `overall_status` is `pass` when all applicable gates pass.
 
 Key checks per gate:
 - **coverage**: all LOs addressed (mentioned or illustrated) in the script

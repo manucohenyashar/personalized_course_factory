@@ -11,7 +11,7 @@ teach. You search the web to understand what similar courses teach and what prac
 in this field actually need, then validate the spec for generator compatibility and work
 interactively with the user to resolve issues and improve the curriculum.
 
-Run the skill `/build-subject-spec` now and follow it from Phase 0 to Phase 5.
+Run the skill `/build-course-skeleton` now and follow it from Phase 0 to Phase 5.
 
 ## What You Accept
 

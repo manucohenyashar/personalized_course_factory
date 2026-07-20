@@ -3,7 +3,7 @@ name: generate-lab
 description: Full generation instructions for the course-level Capstone Lab following GreatLabSpec v2. Covers the complete output layout, capstone-brief.md 14-section structure, rubric schema (6 criteria per §9.4), pedagogy operationalization (interleaving ≥60% chapters, worked→completion→independent, failure-first, Bloom Apply+Analyze+Create), environment integration, personalization rules, and quality gates. Invoked by lab-generator.
 ---
 
-# Generate Lab — Detailed Instructions (GreatLabSpec v2)
+# Generate Lab — Detailed Instructions
 
 ---
 
@@ -553,7 +553,7 @@ This question has no right answer — it is about your ability to think beyond t
 
 ---
 
-## 7. Rubric — 6 Criteria (GreatLabSpec §8 / master §9.4)
+## 7. Rubric — 6 Criteria
 
 ```json
 {
@@ -699,7 +699,7 @@ The tracks MUST be meaningfully different — not just cosmetically different in
 - [ ] Section 5 acceptance criteria restate `problem_spec.success_criteria[]` in scenario terms
 - [ ] The architecture diagram components correspond 1:1 with the solution stages (no phantom components)
 - [ ] `capstone-solution/` actually satisfies all `problem_spec.success_criteria[]` (logical check)
-- [ ] The transfer prompt in debrief.md names a real domain constraint variation, not a generic hypothetical
+- [ ] The transfer prompt in capstone-debrief.docx names a real domain constraint variation, not a generic hypothetical
 - [ ] No acceptance criterion is only tested by a stretch goal — all must be in the main lab
 
 **Structure and pedagogy:**
@@ -713,7 +713,7 @@ The tracks MUST be meaningfully different — not just cosmetically different in
 
 **Format and technical:**
 - [ ] rubric.json has exactly 6 criteria with correct weights (sum = 1.0)
-- [ ] debrief.md has 3 reflection prompts + 1 transfer prompt + self-score sheet
+- [ ] capstone-debrief.docx has 3 reflection prompts + 1 transfer prompt + self-score sheet
 - [ ] capstone-verify/ passes against capstone-solution/ (logical check)
 - [ ] All entity names from personalization plan; no generic placeholders
 - [ ] All figures have alt text; code is plain text; no color-only information

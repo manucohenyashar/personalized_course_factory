@@ -59,14 +59,19 @@ attempt = 1
 max_attempts = 3
 feedback_failures = []
 
+gates_to_recheck = []   # empty on attempt 1 → all applicable gates run
+
 while attempt <= max_attempts:
   1. Invoke the Generator agent with common_envelope (feedback_failures populated on retry)
-  2. Invoke the Evaluator agent with the generated artifact paths + common_envelope
+  2. Invoke the Evaluator agent with the generated artifact paths + common_envelope + gates_to_recheck
+     (targeted retry, R3: on attempts 2–3 the evaluator re-spawns only the gates in gates_to_recheck,
+     always including format + coverage as a guard; other gates keep their prior pass)
   3. If evaluator returns overall_status = "pass":
        mark artifact verified
        break loop
   4. Else:
        feedback_failures = evaluator.feedback_failures
+       gates_to_recheck = distinct gate_ids in feedback_failures
        log failure to _plan/CHANGELOG.md (attempt N, gate failures)
        attempt += 1
 
@@ -152,9 +157,14 @@ Step 2 completes.
 - `quiz_path`: path to the quiz JSON (from Step 2)
 
 **Glossary** (`@glossary-aggregator`):
-- `glossary_delta`: from handoff_json.glossary_delta
-- `master_glossary_path`: `outputs/{course_slug}/glossary.docx`
-- `chapter_number`: integer
+- If invoked with `defer_glossary: true` (parallel wave mode, R5), **skip** glossary aggregation
+  here — several chapters run concurrently and would race on the shared `glossary.docx`. The
+  orchestrator aggregates the whole glossary once after all chapters complete. The chapter's
+  `glossary_delta` is already persisted in its `tutorial.handoff.json`, so nothing is lost.
+- Otherwise (default, sequential mode), run `@glossary-aggregator` with:
+  - `glossary_delta`: from handoff_json.glossary_delta
+  - `master_glossary_path`: `outputs/{course_slug}/glossary.docx`
+  - `chapter_number`: integer
 
 Run `@presentation-evaluator` and `@companion-evaluator` in parallel after their generators
 complete. Glossary does not require evaluation.

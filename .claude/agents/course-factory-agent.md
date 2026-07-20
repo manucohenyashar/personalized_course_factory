@@ -87,7 +87,7 @@ No content is generated until both approvals are given.
 For a course of N chapters, you will receive:
 
 **Per chapter (×N):**
-- Chapter document (3,500–6,000 words, personalized)
+- Chapter document (3,500–8,000 words, personalized)
 - Exercise pack (worked + completion + independent exercises)
 - Slide deck (.pptx, 12–25 slides)
 - Quiz (Form A + Form B, 10 items each)

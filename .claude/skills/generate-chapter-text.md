@@ -165,6 +165,9 @@ Use this structure:
 
 ### Decision Points
 
+Include **at least 3 decision points** across the worked example, and show **at least 1 failure mode**
+(a step that goes wrong and how the protagonist diagnoses and recovers from it).
+
 > **Decision:** At Step {N}, {protagonist} considered {domain-grounded alternative}.
 > We chose {our approach} because {reason tied to scenario constraints, not generic tradeoffs}.
 > *In a different scenario — e.g. when {condition} — {alternative} would be the right call.*
@@ -220,9 +223,9 @@ Write this file after completing the chapter doc. Every field is required.
     { "id": "2", "heading": "Building on Chapter N", "bloom_tag": "Remember", "est_minutes": 5 },
     { "id": "3", "heading": "Core Concept Introduction", "bloom_tag": "Understand", "est_minutes": 10 },
     { "id": "4", "heading": "Mental Model", "bloom_tag": "Understand", "est_minutes": 8 },
-    { "id": "5", "heading": "Worked Example", "bloom_tag": "Apply", "est_minutes": 12 },
-    { "id": "6", "heading": "Step-by-Step Walkthrough", "bloom_tag": "Apply", "est_minutes": 8 },
-    { "id": "7", "heading": "Variations", "bloom_tag": "Apply", "est_minutes": 8 },
+    { "id": "5", "heading": "Worked Example", "bloom_tag": "Apply", "est_minutes": 10 },
+    { "id": "6", "heading": "Step-by-Step Walkthrough", "bloom_tag": "Apply", "est_minutes": 6 },
+    { "id": "7", "heading": "Variations", "bloom_tag": "Apply", "est_minutes": 7 },
     { "id": "8", "heading": "Common Pitfalls", "bloom_tag": "Analyze", "est_minutes": 8 },
     { "id": "9", "heading": "Connections to Other Chapters", "bloom_tag": "Analyze", "est_minutes": 5 },
     { "id": "10", "heading": "Retrieval Checkpoints", "bloom_tag": "Remember", "est_minutes": 5 },
@@ -303,4 +306,5 @@ Write this file after completing the chapter doc. Every field is required.
 | § 15 Summary | 200 | 350 |
 | **Total** | **3,350** | **6,050** |
 
-Target: 3,500–6,000 words (FK grade check after writing).
+Target: 3,500–8,000 words allowed range (the per-section counts above are the writing guide; the
+quality gate enforces 3,500–8,000). FK grade check after writing.

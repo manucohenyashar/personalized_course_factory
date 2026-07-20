@@ -332,6 +332,26 @@ window, drive Phase 3 with the `/next-chapter` skill instead of the inline loop 
 When invoked end-to-end by `@course-factory-agent`, the inline loop in §3.1 is equivalent;
 loop mode is the same work expressed one checkpoint at a time.
 
+#### Parallel wave mode (optional — faster wall-clock, R5)
+
+Chapters are independent except for two couplings: the shared course glossary, and quiz
+**carry-forward** (chapter N's quiz reuses items from chapters N-1 and N-3). To cut wall-clock
+without changing token cost, generate chapters in **concurrent waves** instead of one at a time:
+
+1. **Wave size:** dispatch 2–3 `@chapter-supervisor-agent` subagents concurrently.
+2. **Respect carry-forward ordering:** a chapter may only be in a wave once the chapters it reads
+   (N-1 and N-3) are already `complete`. Simple safe schedule: waves `{1,2,3}` → `{4,5,6}` → …
+   so every carry-forward source finished in an earlier wave.
+3. **Defer the glossary:** invoke each supervisor with `defer_glossary: true` so no chapter writes
+   the shared `glossary.docx` mid-run (avoids the write race). After **all** waves complete, run
+   `@glossary-aggregator` once, merging every chapter's `handoff_json.glossary_delta` in chapter
+   order into `outputs/{course_slug}/glossary.docx`.
+4. **State + failures:** update `PIPELINE_STATE.md` as each chapter returns; if any chapter in a
+   wave reports `failed`, finish the in-flight wave, then HALT per §3.1 step 6.
+
+Wave mode is **optional and opt-in**. The sequential §3.1 loop (and `/next-chapter`) remains the
+default and the safe fallback for low-context environments; use it whenever unsure.
+
 ### 3.1 — For each chapter N from 1 to total_chapters:
 
 ```

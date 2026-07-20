@@ -81,7 +81,7 @@ Scan each slide's `body_text`. Replace:
 
 ### 2. Header and Metadata Standardization
 
-* **Structural Anchors:** Every slide must feature a consistent top layout anchor. Place the Slide Title in a prominent bold font size (24pt to 28pt) at the exact same coordinates across all content slides.
+* **Structural Anchors:** Every slide must feature a consistent top layout anchor. Place the Slide Title in a prominent bold font size (36pt or larger, per the accessibility requirement) at the exact same coordinates across all content slides.
 * **Metadata Integration:** Contextual labels, learning objectives, and chapter markers must be separated from the main title text. Place them as small, muted eyebrow text (10pt to 12pt) directly above the title, or anchored uniformly in the header zone.
 * **Slide Tracking:** Include slide tracking indicators strictly in a single uniform location, such as the bottom right corner or integrated cleanly into the top metadata track.
 
@@ -136,7 +136,7 @@ const theme = {
 };
 ```
 
-Fonts: title font **Arial** (bold, 24–28pt at the standard title anchor), body font **Calibri**
+Fonts: title font **Arial** (bold, ≥ 36pt at the standard title anchor), body font **Calibri**
 (or Arial). Never more than two font families per deck. Colors are 6-char hex WITHOUT `#`.
 
 ### Apply the design system inside the slide modules
@@ -165,9 +165,10 @@ No Bloom badge | No LO reference
 
 ```
 Title: "By the end of this chapter, you will be able to…"
-Body: bullet list of Bloom-verbed LOs with IDs visible
-  • [LO-NN.1] {verb} {object} [Bloom: {level}]
-  • [LO-NN.2] ...
+Body: bullet list of the outcomes in plain student-facing language
+  • {verb} {object}          ← NO LO-ID, NO Bloom label on the slide
+  • {verb} {object} ...
+  (LO-IDs and Bloom tiers are tracked in the speaker notes only, never on the slide)
 ```
 
 Rules: no more than 7 LOs; if > 7, list only the 4 most important and note "(+ N more in the doc)"
@@ -177,7 +178,7 @@ Rules: no more than 7 LOs; if > 7, list only the 4 most important and note "(+ N
 ```
 Title: "Today's Journey"
 Body: list of section names from chapter_doc_outline
-  1. {section heading} [badge: {Bloom tier}]
+  1. {section heading}          ← NO Bloom badge on the slide
   2. ...
 ```
 
@@ -205,8 +206,8 @@ Body:
 ### Concept Slide Template
 
 ```
-[Top-right: Bloom badge] [Bottom-right: LO-ID]
-Title: {Conclusion statement — verb + assertion} ← REQUIRED
+(Bloom tier + LO-ID for this slide are recorded in the speaker notes only — NOT rendered on the slide)
+Title: {Conclusion statement, verb + assertion} ← REQUIRED
 Body: ≤ 40 words making ONE point
   [Optional: 1 diagram (C4/sequence/ER/flowchart)]
   [Optional: ≤ 3-item list (if > 3 items → progressive disclosure)]

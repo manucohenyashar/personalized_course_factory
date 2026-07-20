@@ -37,10 +37,17 @@ For each quiz form (A and B), extract:
 - `parallel_form_ref` field in each form pointing to the other
 - Item ID overlap between Form A and Form B (must be zero)
 
-### Step 2 — Spawn all 7 gate sub-agents in parallel
+### Step 2 — Spawn the applicable gate sub-agents in parallel
+
+**Gate applicability (R1 — do not spawn no-op gates):** for a **quiz**, spawn only: `coverage`,
+`pedagogy`, `personalization`, `format`, `accessibility`, `calibration`. Also spawn `technical`
+**only if the quiz contains code_review or error_spotting items**. Do not spawn a non-applicable
+gate; record each in `gate_results` as `{ "gate_id": "16.N", "status": "skipped", "reason": "not
+applicable to quiz" }` and exclude skipped gates from the pass/fail decision. `overall_status` is
+`pass` when all applicable gates pass.
 
 Pass Form A + B concatenated as `artifact_content`. Key checks per gate:
-- **coverage**: all LOs from learning_outcomes[] appear in at least one item across both forms; Bloom distribution matches GreatQuizSpec §6.1 table
+- **coverage**: all LOs from learning_outcomes[] appear in at least one item across both forms; Bloom distribution matches the quiz Bloom distribution table
 - **pedagogy**: ≥ 3 items at Apply+; carry-forward items present (except ch01); scenario_mcq present
 - **personalization**: every scenario_mcq uses a problem_spec scenario; no forbidden scenarios
 - **format**: item count matches target; both JSON form files exist with correct names; all required item fields present; all four student-facing .docx files exist (quiz-questions.docx, quiz-answers.docx, quiz-questions-formB.docx, quiz-answers-formB.docx); docx files contain NO Bloom labels, LO-IDs, item IDs, or internal metadata; docx files follow DocxDesignSpec

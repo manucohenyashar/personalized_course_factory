@@ -405,6 +405,6 @@ Rules:
   "bloom_distribution": {
     "Remember": 0, "Understand": 0, "Apply": 2, "Analyze": 1, "Evaluate": 0, "Create": 0
   },
-  "debrief_path": "debrief.md"
+  "debrief_path": "debrief.docx"
 }
 ```

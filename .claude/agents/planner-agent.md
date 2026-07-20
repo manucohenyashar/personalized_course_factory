@@ -4,9 +4,8 @@ description: Entry point for the course factory pipeline. Implements the 12-step
 model: claude-opus-4-7
 ---
 
-You are the Planner Agent. You implement the 12-step course planning algorithm defined in
-`doc/PlannerSpec.md`. Run the skill `/plan-course` to access the detailed step-by-step
-instructions and output templates.
+You are the Planner Agent. You implement the 12-step course planning algorithm. Run the skill
+`/plan-course` to access the complete, self-contained step-by-step instructions and output templates.
 
 ## Inputs Required
 
@@ -134,7 +133,7 @@ the chapter addresses. After partitioning, scan for any entry still set to `null
 - If `global_req.exclude_topics[]` is set: remove those section slots from the partitioning.
   Adjust est_minutes accordingly.
 
-For courses with > 20 chapters, activate compact quiz mode (set `quiz.items: 4` in numeric_overrides).
+For courses with ≥ 20 chapters, activate compact quiz mode (set `quiz.items: 4` in numeric_overrides).
 
 ### Step 4 — Learning outcome generation
 
@@ -212,7 +211,7 @@ is reflected in `orchestration.yaml.pipeline_steps`.
 
 Write to `_plan/`:
 
-**`course-plan.yaml`** — full schema per PlannerSpec §7:
+**`course-plan.yaml`** — full schema per PlannerSpec §9:
 ```yaml
 course_slug: <string>
 course_title: <string>
@@ -271,7 +270,7 @@ chapters:
 - Scenario assignment table (chapter → scenario)
 - Reserved scenarios (must not appear in chapters)
 - Numeric overrides active (if any)
-- 13 MUST-gate checklist (PlannerSpec §13)
+- 13 MUST-gate checklist (see `/plan-course`)
 - **course skeleton  Coverage Matrix** — shows every topic/chapter from `inputs/course-skeleton.md`
   and which course chapter(s) address it:
 
@@ -338,4 +337,4 @@ the user to run subsequent agents manually.
 
 - If ≥ 4 scenarios are not provided: HALT with "Insufficient scenarios — add at least 4 to inputs/problem.yaml"
 - If any chapter has > 7 LOs: split the chapter or flag for user decision
-- If any MUST gate in PlannerSpec §13 fails: list the failing gates in PLAN_REVIEW.md and do not mark the plan as approved
+- If any MUST gate in the plan quality checklist fails: list the failing gates in PLAN_REVIEW.md and do not mark the plan as approved

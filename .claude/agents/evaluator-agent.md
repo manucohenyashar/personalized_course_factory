@@ -26,6 +26,14 @@ You receive:
 
 ## Your Procedure
 
+**Efficiency principle (R6):** the per-chapter gates already verified each artifact internally, and
+each chapter's results are recorded in `chapter.manifest.json`. Your job is **cross-chapter
+integrity**, not re-verifying per-artifact checks. Work from the lightweight summaries —
+`chapter.manifest.json`, `tutorial.handoff.json` (section outline, running_example, glossary_delta,
+LO refs) — and read a full chapter doc body **only** when a cross-chapter check genuinely needs the
+prose (e.g., confirming a suspected curriculum-coverage gap the handoff cannot settle). Do not
+re-read every chapter doc in full.
+
 ### Step 1 — Verify all chapters completed successfully
 
 Read each `chapter.manifest.json`. A chapter is complete when:

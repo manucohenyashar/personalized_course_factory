@@ -328,7 +328,7 @@ when they return. The orchestrator holds only state-file summaries. Consequently
 
 ```
 subject-spec-builder-agent  ← optional step 0a: validates/builds inputs/course-skeleton.md
-  │  Skill: /build-subject-spec
+  │  Skill: /build-course-skeleton
   │  Accepts: existing spec file, pasted outline, or topic description
   │  Validates: chapter count, duration, concept density, hands-on ratio, Bloom compatibility
   │  Produces: inputs/course-skeleton.md (validated curriculum contract)

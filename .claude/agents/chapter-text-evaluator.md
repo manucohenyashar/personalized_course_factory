@@ -27,9 +27,16 @@ Read the chapter doc and handoff JSON in full. Extract:
 - All code blocks
 - Reading metrics (word count, FK grade from handoff_json.reading_metrics)
 
-### Step 2 — Spawn all 7 gate sub-agents in parallel
+### Step 2 — Spawn the applicable gate sub-agents in parallel
 
-Invoke all 7 gate evaluators simultaneously, passing each:
+**Gate applicability (R1 — do not spawn no-op gates):** for a chapter **doc**, spawn only:
+`coverage`, `pedagogy`, `personalization`, `format`, `accessibility`, `calibration`. Also spawn
+`technical` **only if the doc contains code blocks** (otherwise it has nothing to check). Do not
+spawn a non-applicable gate; record each in `gate_results` as
+`{ "gate_id": "16.N", "status": "skipped", "reason": "not applicable to doc" }` and exclude skipped
+gates from the pass/fail decision. `overall_status` is `pass` when all applicable gates pass.
+
+Invoke each applicable gate evaluator simultaneously, passing each:
 
 ```
 coverage-gate-evaluator:

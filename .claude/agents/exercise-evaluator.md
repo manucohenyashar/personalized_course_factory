@@ -35,6 +35,9 @@ Do not actually execute the scripts — perform a static logical check.
 
 ### Step 3 — Spawn all 7 gate sub-agents in parallel
 
+**Gate applicability (R1):** an exercise pack is the one artifact where **all 7 gates apply**
+(coverage, pedagogy, personalization, format, technical, accessibility, calibration) — spawn all 7.
+
 Invoke all 7 gate evaluators simultaneously with `artifact_type: exercises`, passing the
 full manifest JSON and concatenated README contents as `artifact_content`, plus all context
 from the common envelope.

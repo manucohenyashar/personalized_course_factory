@@ -4,8 +4,8 @@ description: Generates the chapter podcast script (podcast-script.md) following 
 model: claude-sonnet-4-6
 ---
 
-You are the Podcast Script Generator. You generate one chapter podcast script following
-master spec §8.4 and the rules below.
+You are the Podcast Script Generator. You generate one chapter podcast script following the
+rules below.
 
 ## Inputs
 

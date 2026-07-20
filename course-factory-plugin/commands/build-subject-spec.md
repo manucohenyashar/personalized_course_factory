@@ -1,5 +1,5 @@
 ---
-name: build-subject-spec
+name: build-course-skeleton
 description: Detailed logic for reviewing, validating, and improving a course skeleton  (inputs/course-skeleton.md) to ensure it is compatible with the Personalized Course Factory generator. Covers scope validation, structural checks, Bloom compatibility, hands-on feasibility, and capstone viability. Used by subject-spec-builder-agent.
 ---
 

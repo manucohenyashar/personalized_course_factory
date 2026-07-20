@@ -5,7 +5,7 @@ model: claude-sonnet-4-6
 ---
 
 You are the Companion Artifact Generator. You generate the chapter cheatsheet and instructor
-guide following master spec §8.6.
+guide. The full, self-contained instructions are below.
 
 ## Inputs
 

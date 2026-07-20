@@ -328,7 +328,7 @@ when they return. The orchestrator holds only state-file summaries. Consequently
 
 ```
 subject-spec-builder-agent  ← optional step 0a: validates/builds inputs/course-skeleton.md
-  │  Skill: /build-subject-spec
+  │  Skill: /build-course-skeleton
   │  Accepts: existing spec file, pasted outline, or topic description
   │  Validates: chapter count, duration, concept density, hands-on ratio, Bloom compatibility
   │  Produces: inputs/course-skeleton.md (validated curriculum contract)
@@ -370,7 +370,8 @@ course-factory-agent  ← top-level entry point (invokes everything below)
 ```
 
 Each generator-evaluator pair operates under the Feedback Loop Protocol (see below).
-Every evaluator spawns all 7 gate sub-agents in parallel.
+Every evaluator spawns **only the gate sub-agents applicable to its artifact type** in parallel
+(see the Gate-Applicability Matrix in §16); non-applicable gates are recorded as `skipped`.
 
 ---
 
@@ -380,14 +381,22 @@ For each generator-evaluator pair:
 
 ```
 attempt = 1  (max 3)
+gates_to_recheck = []           # empty on attempt 1 → evaluate all applicable gates
 while attempt <= 3:
   invoke Generator with feedback_failures=[] (attempt 1) or populated list (retry)
-  invoke Evaluator → spawns 7 gate sub-agents in parallel → returns verdict JSON
+  invoke Evaluator with gates_to_recheck → spawns applicable gate sub-agents in parallel → verdict JSON
   if ALL MUST gates PASS → mark artifact verified; break loop
   else → collect all failing gate details → re-invoke Generator with feedback_failures[]
+         gates_to_recheck = distinct gate_ids in feedback_failures   # targeted retry (R3)
   attempt += 1
 if all 3 attempts fail → HALT; surface to human; write failure in chapter.manifest.json
 ```
+
+**Targeted retry (R3):** on attempts 2–3 the Evaluator is given `gates_to_recheck` — the gate_ids
+that failed on the prior attempt. It re-spawns **only those gates**, always including `format` and
+`coverage` as a cheap regression guard; gates not re-checked retain their prior `pass`. This avoids
+re-running the full gate set to fix one gate. On attempt 1 `gates_to_recheck` is empty, so all
+applicable gates run.
 
 `feedback_failures[]` schema:
 ```json
@@ -426,7 +435,8 @@ Gate sub-agent output format:
 | Chapter supervisor | `chapter-supervisor-agent` | `claude-sonnet-4-6` | Dispatch and feedback-loop management |
 | Content generators (9) | `chapter-text-generator`, `exercise-generator`, `presentation-generator`, `quiz-generator`, `podcast-generator`, `companion-generator`, `lab-generator`, `environment-scaffold-generator`, `glossary-aggregator` | `claude-sonnet-4-6` | Content generation; detailed instructions come from skills |
 | Artifact evaluators (7) | `chapter-text-evaluator`, `exercise-evaluator`, `presentation-evaluator`, `quiz-evaluator`, `podcast-evaluator`, `companion-evaluator`, `lab-evaluator` | `claude-sonnet-4-6` | Structured gate aggregation |
-| Gate sub-agents (7) | `coverage-gate-evaluator`, `pedagogy-gate-evaluator`, `personalization-gate-evaluator`, `format-gate-evaluator`, `technical-gate-evaluator`, `accessibility-gate-evaluator`, `calibration-gate-evaluator` | `claude-sonnet-4-6` | Focused checklist evaluation |
+| Mechanical gates (4) | `coverage-gate-evaluator`, `format-gate-evaluator`, `technical-gate-evaluator`, `accessibility-gate-evaluator` | `claude-haiku-4-5` | Rule-driven checklist matching (counts, filenames, presence) — cheaper tier (R4) |
+| Judgment gates (3) | `pedagogy-gate-evaluator`, `personalization-gate-evaluator`, `calibration-gate-evaluator` | `claude-sonnet-4-6` | Require reasoning about pedagogy, domain fit, and calibration |
 | Spec builders (2) | `spec-builder-agent`, `subject-spec-builder-agent` | `claude-sonnet-4-6` | Interactive spec construction |
 
 ---
@@ -442,6 +452,22 @@ Gate sub-agent output format:
 | §16.5 Technical | `technical-gate-evaluator` | Code compiles, verify/ passes against solution/, preflight.sh succeeds |
 | §16.6 Accessibility | `accessibility-gate-evaluator` | WCAG 2.2 AA: alt text, ≥ 4.5:1 contrast, no color-only info, font sizes |
 | §16.7 Calibration | `calibration-gate-evaluator` | Difficulty heuristic 0.40–0.95, rubric schema, Flesch-Kincaid grade |
+
+### Gate-Applicability Matrix (R1)
+
+Each artifact evaluator spawns **only the gates that define checks for that artifact type**, not all
+7. A gate that has no checks for an artifact is recorded in `gate_results` as `status: "skipped"` and
+excluded from the pass/fail decision. This avoids no-op gate calls (the pipeline's largest cost).
+
+| Artifact | 16.1 coverage | 16.2 pedagogy | 16.3 personalization | 16.4 format | 16.5 technical | 16.6 accessibility | 16.7 calibration |
+|----------|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| doc | ✓ | ✓ | ✓ | ✓ | if code | ✓ | ✓ |
+| exercises | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| slides | ✓ | ✓ | ✓ | ✓ | — | ✓ | — |
+| quiz | ✓ | ✓ | ✓ | ✓ | if code items | ✓ | ✓ |
+| podcast | ✓ | — | ✓ | ✓ | — | ✓ | — |
+| companion | ✓ | — | ✓ | ✓ | if code | ✓ | — |
+| lab | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — |
 
 ---
 

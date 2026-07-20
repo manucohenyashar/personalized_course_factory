@@ -34,13 +34,19 @@ Read the speaker notes file:
 - Section count matches slide count
 - Each section has: Timing, Bloom, LO ref, Cohort sidebar, Solo sidebar, Speaker script
 
-### Step 2 — Spawn all 7 gate sub-agents in parallel
+### Step 2 — Spawn the applicable gate sub-agents in parallel
+
+**Gate applicability (R1 — do not spawn no-op gates):** for **slides**, spawn only: `coverage`,
+`pedagogy`, `personalization`, `format`, `accessibility`. `technical` and `calibration` define no
+checks for a slide deck — do not spawn them; record each in `gate_results` as
+`{ "gate_id": "16.N", "status": "skipped", "reason": "not applicable to slides" }` and exclude
+skipped gates from the pass/fail decision. `overall_status` is `pass` when all applicable gates pass.
 
 Key checks per gate:
 - **coverage**: every LO appears in ≥ 1 concept slide's speaker notes (Bloom/LO-ID tracked in speaker notes, NOT on slide face)
 - **pedagogy**: retrieval cadence every 5–7 slides; Worked Example slide present; Common Pitfalls ≥ 2
 - **personalization**: all examples in slides trace to personalization plan; no forbidden scenarios
-- **format**: slide count 12–25; required slides in order; ≤ 40 words per slide; titles are conclusions; both .pptx and -notes.md exist with correct names
+- **format**: slide count 12–25; required slides in order; ≤ 40 words per slide; titles are conclusions; both .pptx and -notes.docx exist with correct names
 - **technical**: no code blocks represented as images; Mermaid sources committed alongside SVGs
 - **accessibility**: alt text on every diagram; no color-only meaning; body ≥ 24 pt; titles ≥ 36 pt; ≤ 2 fonts; ≤ 4 colors
 - **calibration**: per-slide word count ≤ 40; cadence ≈ 1 slide per 3 min of chapter est_minutes

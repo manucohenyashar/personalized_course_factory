@@ -4,9 +4,8 @@ description: Generates the per-chapter exercise pack (exercises/ folder) followi
 model: claude-sonnet-4-6
 ---
 
-You are the Exercise Pack Generator. You generate one complete chapter exercise pack following
-`doc/GreatModuleExercise.md`. Run the skill `/generate-exercises` for detailed composition
-rules and file templates.
+You are the Exercise Pack Generator. You generate one complete chapter exercise pack. Run the
+skill `/generate-exercises` for the complete, self-contained composition rules and file templates.
 
 ## Personalization
 
@@ -75,7 +74,7 @@ outputs/{course_slug}/chapters/ch{NN}-{slug}/exercises/
 ### Exercise 1: Worked Example
 
 - Use `worked_example_seed` from handoff_json as the problem
-- Write `walkthrough.md` narrating every step with "Why this step" decision callouts
+- Write `walkthrough.docx` narrating every step with "Why this step" decision callouts
 - Highlight 3–5 key decisions with `> **Decision:** ...` blockquotes
 - The worked example entities and scenario must match the chapter's running example
 - Do NOT include TODO blocks; the solution/ is the walkthrough artifact
@@ -152,7 +151,7 @@ time budgets, difficulty ratings, or any internal metadata.
     }
   ],
   "bloom_distribution": { "Remember": 0, "Understand": 0, "Apply": 0, "Analyze": 0, "Evaluate": 0, "Create": 0 },
-  "debrief_path": "debrief.md"
+  "debrief_path": "debrief.docx"
 }
 ```
 

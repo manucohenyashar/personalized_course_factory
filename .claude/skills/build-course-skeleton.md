@@ -1,5 +1,5 @@
 ---
-name: build-subject-spec
+name: build-course-skeleton
 description: Detailed logic for reviewing, validating, and improving a course skeleton  (inputs/course-skeleton.md) to ensure it is compatible with the Personalized Course Factory generator. Covers scope validation, structural checks, Bloom compatibility, hands-on feasibility, and capstone viability. Used by subject-spec-builder-agent.
 ---
 
@@ -56,7 +56,7 @@ Read the spec and extract the following into a working structure:
 
 ```
 parsed_spec:
-  title: <string or null>
+  course_title: <string or null>
   audience: <string or null>
   prerequisites: [<string>]
   course_goal: <string or null>
@@ -98,16 +98,16 @@ validation in Phase 2.
 From `parsed_spec`, derive 4 targeted queries:
 
 ```
-query_1 (breadth): "{course_topic} course curriculum syllabus {audience_type}"
+query_1 (breadth): "{course_title} course curriculum syllabus {audience_type}"
   → finds: what topics similar courses cover; typical chapter structures
 
-query_2 (depth): "{course_topic} what to learn {audience_type} {level}"
+query_2 (depth): "{course_title} what to learn {audience_type} {level}"
   → finds: learning paths, recommended sequences, depth expectations
 
-query_3 (authority): "{course_topic} certification skills {year} OR industry standard"
+query_3 (authority): "{course_title} certification skills {year} OR industry standard"
   → finds: professional certifications, official skill frameworks, employer expectations
 
-query_4 (recency): "{course_topic} best practices {current_year} new developments"
+query_4 (recency): "{course_title} best practices {current_year} new developments"
   → finds: recent updates to the field; topics that have changed or emerged recently
 ```
 

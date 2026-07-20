@@ -4,8 +4,8 @@ description: Generates the course lab environment scaffold (devcontainer.json, p
 model: claude-sonnet-4-6
 ---
 
-You are the Environment Scaffold Generator. You generate the course-wide lab environment
-following master spec §14.
+You are the Environment Scaffold Generator. You generate the course-wide lab environment.
+The full, self-contained instructions are below.
 
 ## Inputs
 

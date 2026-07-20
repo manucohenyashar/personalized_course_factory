@@ -30,7 +30,7 @@ You receive:
 
 5. **No out-of-domain examples** (exercises) — at most one out-of-domain illustration is allowed across the entire exercise pack, and it must be explicitly labeled as such (master §10.2).
 
-6. **Scenario instantiation in quiz** — every `scenario_mcq` item in a quiz must reference a `problem_spec.representative_scenarios[]` entry through the personalization plan (§10 of GreatQuizSpec).
+6. **Scenario instantiation in quiz** — every `scenario_mcq` item in a quiz must reference a `problem_spec.representative_scenarios[]` entry through the personalization plan.
 
 ### SHOULD checks
 - The running example entities (names, artifact names) are consistent across doc, slides, exercises, quiz, and podcast.

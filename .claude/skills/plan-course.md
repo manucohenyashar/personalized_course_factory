@@ -6,7 +6,7 @@ description: Detailed step-by-step instructions for the 12-step course planning 
 # Plan Course — Detailed Instructions
 
 This skill provides the detailed step-by-step content for each of the 12 planning steps
-defined in `planner-agent.md` and `doc/PlannerSpec.md`.
+defined in `planner-agent.md`.
 
 ---
 
@@ -99,7 +99,7 @@ When partitioning from the course skeleton :
    - Chapters 60–80 %: Apply, Analyze
    - Chapters 80–100 %: Analyze, Evaluate, Create
 
-4. **Compact mode** (chapters > 20): activate `numeric_overrides.quiz.items: 4` and
+4. **Compact mode** (chapters ≥ 20): activate `numeric_overrides.quiz.items: 4` and
    note this in CHANGELOG.md.
 
 ---
@@ -303,7 +303,7 @@ These analogies MUST use entities from the domain — no generic "imagine a box"
 | Total chapters | N |
 | Total estimated hours | N.N |
 | Mode targets | self_taught, cohort |
-| Numeric overrides active | compact quiz (chapters > 20) |
+| Numeric overrides active | compact quiz (chapters ≥ 20) |
 
 ---
 
@@ -325,7 +325,7 @@ These analogies MUST use entities from the domain — no generic "imagine a box"
 
 ---
 
-## PlannerSpec §13 Quality Gate Checklist
+## Plan Quality Gate Checklist
 
 **Course Structure**
 - [ ] ≥ 4 representative scenarios provided

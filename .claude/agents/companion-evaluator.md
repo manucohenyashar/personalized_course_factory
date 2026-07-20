@@ -36,7 +36,14 @@ You receive:
 - Assessment guidance: pass criteria for exercises and quiz
 - Solution directory note (solution/ is instructor-only)
 
-### Step 2 — Spawn all 7 gate sub-agents in parallel
+### Step 2 — Spawn the applicable gate sub-agents in parallel
+
+**Gate applicability (R1 — do not spawn no-op gates):** for **companion** artifacts (cheatsheet +
+instructor guide), spawn only: `coverage`, `personalization`, `format`, `accessibility`. Also spawn
+`technical` **only if the cheatsheet contains a code snippet**. `pedagogy` and `calibration` define
+no checks for companion artifacts — do not spawn them; record each in `gate_results` as
+`{ "gate_id": "16.N", "status": "skipped", "reason": "not applicable to companion" }` and exclude
+skipped gates from the pass/fail decision. `overall_status` is `pass` when all applicable gates pass.
 
 Key checks per gate:
 - **coverage**: cheatsheet covers all LOs; instructor guide links every exercise from exercise_manifest
